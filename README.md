@@ -4,10 +4,10 @@ LazyCook soll eine Webanwendung sein. Die es ermöglichen seine vorhanden Zutate
 - [ ] Zutaten eintragen 
 - [ ] Rezepte/Gerichte vorgeschlagen bekommen auf Grundlage der eingetragenen Zutaten
 - [ ] Abhängig von eingetragener Personenzahl
-- [ ] Als User mit Konto Anmelden/Regisieren können 
+- [ ] Als User mit Konto Anmelden/Registern können 
 #### Optionale Features
-- [ ] KI basierte Rezeptvorschlag Einbindung
-- [ ] Alle Gespeicherten Zutaten aus der Datenbank, sollen auf einer Seite angezeigt werden und Suchbar sein z.B. nach Gerichtname "Pizza".
-- [ ] Auf der der Zutaten-Seite, werdern Grundlegende Zutaten wie z.B. Tomaten, Mehl, Salz, Milch Automatisch vorgeschlagen. Diese soll es möglich sein diese hinzuzufügen oder zuignorieren.
+- [ ] KI-basierte Rezeptvorschläge Einbindung
+- [ ] Alle gespeicherten Zutaten aus der Datenbank, sollen auf einer Seite angezeigt werden und Suchbar sein z.B. nach Gerichtname "Pizza".
+- [ ] Auf der Zutaten-Seite, werden grundlegende Zutaten wie z.B. Tomaten, Mehl, Salz und Milch automatisch vorgeschlagen. Diese sollen hinzufügbar oder ignorierbar sein.
 - [ ] Konto löschen/bearbeiten können
-- [ ] Fehlene Zutaten werden von einem Rezept in einer Einkaufliste aufgelistet 
+- [ ] Fehlende Zutaten werden von einem Rezept in einer Einkaufliste aufgelistet 
