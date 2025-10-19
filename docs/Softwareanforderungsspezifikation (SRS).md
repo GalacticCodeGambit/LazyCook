@@ -154,7 +154,7 @@ Die eingetragene Personenanzahl wir gespeichert. Bei dem automatischen Rezeptvor
 
 
 #### 2.9 Grundlegende Zutaten werden beim Eintragen empfohlen 
-##### User Story: 
+##### User Story: https://github.com/GalacticCodeGambit/LazyCook/issues/31
 
 ##### UI-Mockup:
 >`+ Bild`
