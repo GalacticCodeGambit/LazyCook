@@ -19,7 +19,7 @@ LazyCook soll eine Webanwendung sein. Die es ermöglichen seine vorhanden Zutate
 ## Technologies Used
 - Frontend: React 
 - Backend: Python
-- DB: SQL Lite 
+- DB: SQLite 
 - UML: UMLet
 - Mockup: Figma
 
