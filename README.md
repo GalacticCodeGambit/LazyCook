@@ -4,10 +4,10 @@ LazyCook soll eine Webanwendung sein. Die es ermöglichen seine vorhanden Zutate
 ## Features
 - [ ] Zutaten hinzufügen können 
 - [ ] Zutaten entfernen können  
-- [ ] Rezepte/Gerichte Automatisch vorgeschlagen bekommen auf Grundlage der eingetragenen Zutaten
-- [ ] Personenzahl hizufügen können und vorgeschlagende Rezept/Gericht größe Automatisch anpassen 
-- [ ] Als User mit Konto Anmelden können
-- [ ] Als User mit neuen Konto Registern können
+- [ ] Rezepte/Gerichte automatisch vorgeschlagen bekommen auf Grundlage der eingetragenen Zutaten
+- [ ] Personenzahl hinzufügen können und vorgeschlagene Rezept/Gericht Größe automatisch anpassen 
+- [ ] Als User mit Konto anmelden können
+- [ ] Als User mit neuem Konto registeren können
 
 ### Optionale Features
 - [ ] KI-basierte Rezeptvorschläge Einbindung
