@@ -15,6 +15,7 @@ LazyCook soll eine Webanwendung sein. Die es ermöglichen seine vorhanden Zutate
 - [ ] Auf der Zutaten-Seite, werden grundlegende Zutaten wie z.B. Tomaten, Mehl, Salz und Milch automatisch vorgeschlagen. Diese sollen hinzufügbar oder ignorierbar sein.
 - [ ] Konto löschen/bearbeiten können
 - [ ] Fehlende Zutaten werden von einem Rezept in einer Einkaufliste aufgelistet
+- [ ] Der Nutzer kann Rezepte in die Datenbank hinzufügen 
 
 ## Technologies Used
 - Frontend: React 
