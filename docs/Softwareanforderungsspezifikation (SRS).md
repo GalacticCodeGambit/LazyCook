@@ -1,6 +1,6 @@
 # LazyCook
 ## Softwareanforderungen
-
+___
 ### 1. Einleitung
 
 #### 1.1 Übersicht
@@ -9,47 +9,29 @@ Schlichtes/modernes Design, einfache Bedienbarkeit, gute Übersicht, viele Rezep
 
 #### 1.2 Geltungsbereich
 
-In diesem Dokument wird das gesamtes System von LazyCook behandelt. Es deckt sowohl funktionale als auch nicht-funktionale Anforderungen ab.
+In diesem Dokument wird das gesamte System von LazyCook behandelt. Es deckt sowohl funktionale als auch nicht-funktionale Anforderungen ab.
 
 #### 1.3 Definitionen, Akronyme und Abkürzungen
 
 | Abkürzung | Erklärung                          |
-| --------- | ---------------------------------- |
-| tbd       | to be determined                   |
+|-----------|------------------------------------|
 | UI        | user interface                     |
 | IDE       | integrated development environment |
+| n/a       | not applicable                     |
 
 #### 1.4 Referenzen
 
-| Title                                                               | Date       | Publishing organization |
-| ------------------------------------------------------------------- | ---------- | ----------------------- |
-| [GitHub - LazyCook](https://github.com/GalacticCodeGambit/LazyCook) | 22.10.2025 | LazyCook Team           |
+| Titel                                                               | Datum      | Veröffentlicht bei |
+|---------------------------------------------------------------------|------------|--------------------|
+| [GitHub - LazyCook](https://github.com/GalacticCodeGambit/LazyCook) | 22.10.2025 | LazyCook Team      |
 
+___
 ### 2. Funktionale Anforderungen
 
 #### 2.1 Übersicht
 
-LazyCook soll eine Webanwendung sein. Die es ermöglichen seine vorhanden Zutaten einzutragen und darauf soll LazyCook dir mögliche Rezepte/Gerichte vorschlagen die du aus diesen Zutaten gemacht werden können.
+LazyCook soll eine Webanwendung sein. Sie soll es ermöglichen, seine vorhandenen Zutaten einzutragen, und daraufhin mögliche Rezepte/Gerichte-vorschlagen, die sich aus diesen Zutaten zubereiten lassen.
 
-___
-Funktionale Anforderungen:
-- Zutaten eintragen (Zutaten hinzufügen können):
-  Mengenangabe/Personenangabe, Zutateneingabe mit ähnlichen Vorschlägen
-- (Personenzahl hinzufügen können und vorgeschlagene Rezept/Gericht Größe automatisch anpassen)
-- Zutaten löschen (Zutaten entfernen können)
-- Rezept/Gericht Vorschlag anhand der eingetragenen Zutaten bekommen
-  (Rezepte/Gerichte automatisch vorgeschlagen bekommen auf Grundlage der eingetragenen Zutaten)
-- Anmelden können (Als Kunde mit Konto anmelden können)
-- Registrieren können (Als Kunde mit neuem Konto registrieren können)
-
-Nicht funktionale Anforderungen:
-- Webbasierte Anwendung
-- Abgabe: 4. Semester (genaueres tbd.)
-- Programmiersprache/Technologies Used:
-    - Frontend: HTML, CSS, (JavaScript) React
-    - Backend: Python
-    - Datenbank: SQLite
-___
 #### 2.2 Zutaten hinzufügen können
 ##### User Story: https://github.com/GalacticCodeGambit/LazyCook/issues/23
 
@@ -57,16 +39,17 @@ ___
 >`+ Bild`
 
 ##### UML:
+<!-- %% Der Nutzer soll beim Eintragen passende Zutaten vorgeschlagen bekommen, die er auswählen kann. -->
 >`+ Text`
 `+ Bild`
 
 ##### Voraussetzungen:
-Der Nutzer muss angemeldet sein und sich auf der entsprechenden Seite befinden, um die Zutaten eintragen zu können.
+Der Nutzer muss angemeldet sein und sich auf der Seite befinden für Zutaten eintragen, um die Zutaten eintragen zu können.
 
 ##### Nachbedingungen:
-Die eingetragene Zutat wir gespeichert.
+Die eingetragene Zutat werden gespeichert.
 
-##### Geschätzter Aufwand: mittel
+##### Geschätzter Aufwand: mittel/hoch
 
 
 #### 2.3 Zutaten entfernen können
@@ -80,10 +63,9 @@ Die eingetragene Zutat wir gespeichert.
 `+ Bild`
 
 ##### Voraussetzungen:
-Der Nutzer muss angemeldet sein und sich auf der entsprechenden Seite befinden, um die Zutaten eintragen zu können und es muss mindestens eine Zutat bereits eingetragen sein.
-
+Der Nutzer muss angemeldet sein und sich auf der Seite befinden für Zutaten eintragen, um die Zutaten eintragen zu können und es muss mindestens eine Zutat bereits eingetragen sein.
 ##### Nachbedingungen:
-
+Die gelöschte Zutat wird aus dem Speicher gelöscht.
 ##### Geschätzter Aufwand: niedrig
 
 
@@ -98,9 +80,9 @@ Der Nutzer muss angemeldet sein und sich auf der entsprechenden Seite befinden, 
 `+ Bild`
 
 ##### Voraussetzungen:
-
+Der Nutzer muss angemeldet sein und Zutaten, die er vorrätig hat, eingetragen haben.
 ##### Nachbedingungen:
-
+n/a
 ##### Geschätzter Aufwand: hoch
 
 
@@ -115,10 +97,11 @@ Der Nutzer muss angemeldet sein und sich auf der entsprechenden Seite befinden, 
 `+ Bild`
 
 ##### Voraussetzungen:
-
+Ein Nutzer der LazyCook nutzen will
 ##### Nachbedingungen:
-
+n/a
 ##### Geschätzter Aufwand: mittel
+
 
 #### 2.6 Als Kunde mit Konto anmelden können
 ##### User Story: https://github.com/GalacticCodeGambit/LazyCook/issues/27
@@ -131,15 +114,14 @@ Der Nutzer muss angemeldet sein und sich auf der entsprechenden Seite befinden, 
 `+ Bild`
 
 ##### Voraussetzungen:
-Der User muss mit dem Konto bereits Registriert sein mit welchen er sich anmelden möchte.
+Der User muss mit dem Konto bereits registriert sein mit welchen er sich anmelden möchte.
 ##### Nachbedingungen:
-Der User ist mit dem Konto angemeldet welches er eingegeben hat.
-
+Der User ist mit dem Konto angemeldet, welches er eingegeben hat.
 ##### Geschätzter Aufwand: mittel
 
 
 #### 2.7 Als Kunde mit Konto abmelden können
-##### User Story:
+##### User Story: https://github.com/GalacticCodeGambit/LazyCook/issues/28
 
 ##### UI-Mockup:
 >`+ Bild`
@@ -154,7 +136,43 @@ Der Nutzer ist nicht angemeldet.
 ##### Geschätzter Aufwand: niedrig
 
 
+#### 2.8 Personenanzahl angegeben bei Zutaten eintragen
+##### User Story: https://github.com/GalacticCodeGambit/LazyCook/issues/30
+
+##### UI-Mockup:
+>`+ Bild`
+
+##### UML:
+>`+ Text`
+>`+ Bild`
+
+##### Voraussetzungen:
+Der Nutzer muss angemeldet sein und sich auf der Seite befinden für Zutaten eintragen, um die Personenanzahl eintragen zu können.
+##### Nachbedingungen:
+Die eingetragene Personenanzahl wir gespeichert. Bei dem automatischen Rezeptvorschlag wird die Personenanzahl berücksichtigt und passt entsprechend angepasst.
+##### Geschätzter Aufwand: mittel
+
+
+#### 2.9 Grundlegende Zutaten werden beim Eintragen empfohlen 
+##### User Story: 
+
+##### UI-Mockup:
+>`+ Bild`
+
+##### UML:
+>`+ Text`
+>`+ Bild`
+
+##### Voraussetzungen:
+Der Nutzer muss angemeldet sein und sich auf der Seite befinden für Zutaten eintragen.
+##### Nachbedingungen:
+Die hinzugefügten Grundzutaten müssen zu den bereits vorhandenen Zutaten hinzugefügt werden. 
+##### Geschätzter Aufwand: mittel
+
+
+___
 ### 3. Nicht-funktionale Anforderungen
+Das Projekt muss zum Ende des 4. Semesters abgegeben werden, genaueres wird noch bekannt gegeben. Es muss sich um eine webbasierte Anwendung handeln.
 
 #### 3.1 Verwendete Technologien
 - Frontend: HTML, CSS, JavaScript/React
@@ -163,7 +181,10 @@ Der Nutzer ist nicht angemeldet.
 - IDE: PyCharm
 - Projekt Management: GitHub Projects
 
+___
 ### 4. Technische Einschränkungen
+LazyCook soll für die Benutzung/Bedingung am Laptop oder am Computer optimiert sein.
 
-### 5.  Unterstützende Informationen
+___
+### 5. Unterstützende Informationen
 Für weitere Informationen können Sie sich an das LazyCook Team wenden oder unseren ([LazyCook-Discussions]([GalacticCodeGambit/LazyCook · Discussions · GitHub](https://github.com/GalacticCodeGambit/LazyCook/discussions))) besuchen. 

@@ -17,10 +17,13 @@ LazyCook soll eine Webanwendung sein. Die es ermöglichen seine vorhanden Zutate
 - [ ] Fehlende Zutaten werden von einem Rezept in einer Einkaufliste aufgelistet
 - [ ] Der Nutzer kann Rezepte in die Datenbank hinzufügen 
 
-## Technologies Used
-- Frontend: React 
+## Verwendete Technologien
+- Frontend: HTML, CSS, JavaScript/React
 - Backend: Python
-- DB: SQLite 
+- DB: SQLite
+- IDE: PyCharm
+- Projekt Management: GitHub Projects 
+
 - UML: UMLet
 - Mockup: Figma
 
