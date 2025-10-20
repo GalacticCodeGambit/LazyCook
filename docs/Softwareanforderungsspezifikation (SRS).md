@@ -1,6 +1,6 @@
 # LazyCook
 ## Softwareanforderungen
-___
+
 ### 1. Einleitung
 
 #### 1.1 Übersicht
