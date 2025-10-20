@@ -191,4 +191,4 @@ Das Projekt muss zum Ende des 4. Semesters abgegeben werden, genaueres wird noch
 
 ___
 ### 4. Unterstützende Informationen
-Für weitere Informationen können Sie sich an das LazyCook Team wenden oder unseren ([LazyCook-Discussions]([GalacticCodeGambit/LazyCook · Discussions · GitHub](https://github.com/GalacticCodeGambit/LazyCook/discussions))) besuchen. 
+Für weitere Informationen können Sie sich an das LazyCook Team wenden oder unseren ([LazyCook-Discussions](https://github.com/GalacticCodeGambit/LazyCook/discussions)) besuchen. 
