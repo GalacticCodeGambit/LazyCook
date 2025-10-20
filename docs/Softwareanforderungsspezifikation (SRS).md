@@ -36,7 +36,8 @@ LazyCook soll eine Webanwendung sein. Sie soll es ermöglichen, seine vorhandene
 ##### User Story: https://github.com/GalacticCodeGambit/LazyCook/issues/23
 
 ##### UI-Mockup:
->`+ Bild`
+![](docs/mockup/Zutateneingabe.png)
+![](docs/mockup/Zutaten_eingabe_Tomate.png)
 
 ##### UML:
 <!-- %% Der Nutzer soll beim Eintragen passende Zutaten vorgeschlagen bekommen, die er auswählen kann. -->
@@ -56,7 +57,8 @@ Die eingetragene Zutat werden gespeichert.
 ##### User Story: https://github.com/GalacticCodeGambit/LazyCook/issues/24
 
 ##### UI-Mockup:
->`+ Bild`
+![](docs/mockup/Zutaten_eingabe_Tomate.png)
+![](docs/mockup/Zutateneingabe.png)
 
 ##### UML:
 >`+ Text`
@@ -90,7 +92,7 @@ n/a
 ##### User Story: https://github.com/GalacticCodeGambit/LazyCook/issues/26
 
 ##### UI-Mockup:
->`+ Bild`
+![](docs/mockup/Registrieren.png)
 
 ##### UML:
 >`+ Text`
@@ -107,7 +109,7 @@ n/a
 ##### User Story: https://github.com/GalacticCodeGambit/LazyCook/issues/27
 
 ##### UI-Mockup:
->`+ Bild`
+![](docs/mockup/Anmelde_Screen.png)
 
 ##### UML:
 >`+ Text`
@@ -124,7 +126,7 @@ Der User ist mit dem Konto angemeldet, welches er eingegeben hat.
 ##### User Story: https://github.com/GalacticCodeGambit/LazyCook/issues/28
 
 ##### UI-Mockup:
->`+ Bild`
+>![]()
 
 ##### UML:
 >`+ Text`
