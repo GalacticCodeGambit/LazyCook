@@ -107,7 +107,6 @@ n/a
 ##### User Story: https://github.com/GalacticCodeGambit/LazyCook/issues/27
 
 ##### UI-Mockup:
->`+ Bild`
 
 ##### UML:
 >`+ Text`
