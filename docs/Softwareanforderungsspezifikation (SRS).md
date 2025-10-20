@@ -62,7 +62,8 @@ Die eingetragene Zutat werden gespeichert.
 
 ##### UML:
 >`+ Text`
-`+ Bild`
+<img width="1404" height="669" alt="image" src="https://github.com/user-attachments/assets/0717ae89-5dc7-4e61-ba25-2e1cb2c69c54" />
+
 
 ##### Voraussetzungen:
 Der Nutzer muss angemeldet sein und sich auf der Seite befinden für Zutaten eintragen, um die Zutaten eintragen zu können und es muss mindestens eine Zutat bereits eingetragen sein.
@@ -79,7 +80,8 @@ Die gelöschte Zutat wird aus dem Speicher gelöscht.
 
 ##### UML:
 >`+ Text`
-`+ Bild`
+<img width="1404" height="669" alt="image" src="https://github.com/user-attachments/assets/0fa4f1cc-b792-4dc3-829e-5bc9e7dd2011" />
+
 
 ##### Voraussetzungen:
 Der Nutzer muss angemeldet sein und Zutaten, die er vorrätig hat, eingetragen haben.
@@ -96,7 +98,8 @@ n/a
 
 ##### UML:
 >`+ Text`
-`+ Bild`
+<img width="1151" height="599" alt="image" src="https://github.com/user-attachments/assets/e9d58164-48cf-4007-a4bd-af42841ef019" />
+
 
 ##### Voraussetzungen:
 Ein Nutzer der LazyCook nutzen will
@@ -113,7 +116,8 @@ n/a
 
 ##### UML:
 >`+ Text`
-`+ Bild`
+<img width="1029" height="491" alt="image" src="https://github.com/user-attachments/assets/31a4661b-3b8f-441f-ba3d-121a4c254923" />
+
 
 ##### Voraussetzungen:
 Der User muss mit dem Konto bereits registriert sein mit welchen er sich anmelden möchte.
@@ -146,7 +150,8 @@ Der Nutzer ist nicht angemeldet.
 
 ##### UML:
 >`+ Text`
->`+ Bild`
+<img width="1404" height="669" alt="image" src="https://github.com/user-attachments/assets/10cea492-6933-4d3d-9839-5889a14f20f2" />
+
 
 ##### Voraussetzungen:
 Der Nutzer muss angemeldet sein und sich auf der Seite befinden für Zutaten eintragen, um die Personenanzahl eintragen zu können.
@@ -163,7 +168,8 @@ Die eingetragene Personenanzahl wir gespeichert. Bei dem automatischen Rezeptvor
 
 ##### UML:
 >`+ Text`
->`+ Bild`
+<img width="1404" height="669" alt="image" src="https://github.com/user-attachments/assets/7fd98fa4-d8ca-4d60-ad3c-84e2fb2fd0ae" />
+
 
 ##### Voraussetzungen:
 Der Nutzer muss angemeldet sein und sich auf der Seite befinden für Zutaten eintragen.
@@ -174,7 +180,7 @@ Die hinzugefügten Grundzutaten müssen zu den bereits vorhandenen Zutaten hinzu
 
 ___
 ### 3. Nicht-funktionale Anforderungen
-Das Projekt muss zum Ende des 4. Semesters abgegeben werden, genaueres wird noch bekannt gegeben. Es muss sich um eine webbasierte Anwendung handeln.
+Das Projekt muss zum Ende des 4. Semesters abgegeben werden, genaueres wird noch bekannt gegeben. Es muss sich um eine webbasierte Anwendung handeln. LazyCook soll für die Benutzung/Bedingung am Laptop oder am Computer optimiert sein.
 
 #### 3.1 Verwendete Technologien
 - Frontend: HTML, CSS, JavaScript/React
@@ -184,9 +190,5 @@ Das Projekt muss zum Ende des 4. Semesters abgegeben werden, genaueres wird noch
 - Projekt Management: GitHub Projects
 
 ___
-### 4. Technische Einschränkungen
-LazyCook soll für die Benutzung/Bedingung am Laptop oder am Computer optimiert sein.
-
-___
-### 5. Unterstützende Informationen
+### 4. Unterstützende Informationen
 Für weitere Informationen können Sie sich an das LazyCook Team wenden oder unseren ([LazyCook-Discussions]([GalacticCodeGambit/LazyCook · Discussions · GitHub](https://github.com/GalacticCodeGambit/LazyCook/discussions))) besuchen. 
