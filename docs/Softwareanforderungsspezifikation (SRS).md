@@ -28,11 +28,11 @@ In diesem Dokument wird das gesamte System von LazyCook behandelt. Es deckt sowo
 ___
 ### 2. Funktionale Anforderungen
 
-#### 2.1 Übersicht
+#### 2.01 Übersicht
 
 LazyCook soll eine Webanwendung sein. Sie soll es ermöglichen, seine vorhandenen Zutaten einzutragen, und daraufhin mögliche Rezepte/Gerichte-vorschlagen, die sich aus diesen Zutaten zubereiten lassen.
 
-#### 2.2 Zutaten hinzufügen können
+#### 2.02 Zutaten hinzufügen können
 ##### User Story: https://github.com/GalacticCodeGambit/LazyCook/issues/23
 
 ##### UI-Mockup:
@@ -53,7 +53,7 @@ Die eingetragene Zutat werden gespeichert.
 ##### Geschätzter Aufwand: mittel/hoch
 
 
-#### 2.3 Zutaten entfernen können
+#### 2.03 Zutaten entfernen können
 ##### User Story: https://github.com/GalacticCodeGambit/LazyCook/issues/24
 
 ##### UI-Mockup:
@@ -72,7 +72,7 @@ Die gelöschte Zutat wird aus dem Speicher gelöscht.
 ##### Geschätzter Aufwand: niedrig
 
 
-#### 2.4 Automatischer Rezepte vorgeschlagen auf Grundlage der eingetragenen Zutaten
+#### 2.04 Automatischer Rezepte vorgeschlagen auf Grundlage der eingetragenen Zutaten
 ##### User Story: https://github.com/GalacticCodeGambit/LazyCook/issues/25
 
 ##### UI-Mockup:
@@ -90,7 +90,7 @@ n/a
 ##### Geschätzter Aufwand: hoch
 
 
-#### 2.5 Als Kunde mit neuem Konto registrieren können
+#### 2.05 Als Kunde mit neuem Konto registrieren können
 ##### User Story: https://github.com/GalacticCodeGambit/LazyCook/issues/26
 
 ##### UI-Mockup:
@@ -108,7 +108,7 @@ n/a
 ##### Geschätzter Aufwand: mittel
 
 
-#### 2.6 Als Kunde mit Konto anmelden können
+#### 2.06 Als Kunde mit Konto anmelden können
 ##### User Story: https://github.com/GalacticCodeGambit/LazyCook/issues/27
 
 ##### UI-Mockup:
@@ -126,7 +126,7 @@ Der User ist mit dem Konto angemeldet, welches er eingegeben hat.
 ##### Geschätzter Aufwand: mittel
 
 
-#### 2.7 Als Kunde mit Konto abmelden können
+#### 2.07 Als Kunde mit Konto abmelden können
 ##### User Story: https://github.com/GalacticCodeGambit/LazyCook/issues/28
 
 ##### UI-Mockup:
@@ -142,7 +142,7 @@ Der Nutzer ist nicht angemeldet.
 ##### Geschätzter Aufwand: niedrig
 
 
-#### 2.8 Personenanzahl angegeben bei Zutaten eintragen
+#### 2.08 Personenanzahl angegeben bei Zutaten eintragen
 ##### User Story: https://github.com/GalacticCodeGambit/LazyCook/issues/30
 
 ##### UI-Mockup:
@@ -160,7 +160,7 @@ Die eingetragene Personenanzahl wir gespeichert. Bei dem automatischen Rezeptvor
 ##### Geschätzter Aufwand: mittel
 
 
-#### 2.9 Grundlegende Zutaten werden beim Eintragen empfohlen 
+#### 2.09 Grundlegende Zutaten werden beim Eintragen empfohlen 
 ##### User Story: https://github.com/GalacticCodeGambit/LazyCook/issues/31
 
 ##### UI-Mockup:
@@ -176,6 +176,23 @@ Der Nutzer muss angemeldet sein und sich auf der Seite befinden für Zutaten ein
 ##### Nachbedingungen:
 Die hinzugefügten Grundzutaten müssen zu den bereits vorhandenen Zutaten hinzugefügt werden. 
 ##### Geschätzter Aufwand: mittel
+
+
+#### 2.10 Rezepte Suchen können ohne eingetragene Zutaten
+##### User Story: https://github.com/GalacticCodeGambit/LazyCook/issues/33
+
+##### UI-Mockup:
+>`+ Bild`
+
+##### UML:
+>`+ Text`
+> `+ Bild`
+
+##### Voraussetzungen:
+Der Nutzer muss angemeldet sein und sich auf der Seite befinden für Zutaten eintragen.
+##### Nachbedingungen:
+
+##### Geschätzter Aufwand: niedrig
 
 
 ___
