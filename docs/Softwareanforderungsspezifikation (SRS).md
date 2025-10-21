@@ -29,7 +29,6 @@ ___
 ### 2. Funktionale Anforderungen
 
 #### 2.01 Übersicht
-
 LazyCook soll eine Webanwendung sein. Sie soll es ermöglichen, seine vorhandenen Zutaten einzutragen, und daraufhin mögliche Rezepte/Gerichte-vorschlagen, die sich aus diesen Zutaten zubereiten lassen.
 
 #### 2.02 Zutaten hinzufügen können
@@ -42,14 +41,12 @@ LazyCook soll eine Webanwendung sein. Sie soll es ermöglichen, seine vorhandene
 ##### UML:
 <!-- %% Der Nutzer soll beim Eintragen passende Zutaten vorgeschlagen bekommen, die er auswählen kann. -->
 >`+ Text`
-`+ Bild`
+<img width="1408" height="664" alt="image" src="https://github.com/user-attachments/assets/4e3289dd-3861-4c76-ab3c-9eb55b8b12b7" />
 
 ##### Voraussetzungen:
 Der Nutzer muss angemeldet sein und sich auf der Seite befinden für Zutaten eintragen, um die Zutaten eintragen zu können.
-
 ##### Nachbedingungen:
 Die eingetragene Zutat werden gespeichert.
-
 ##### Geschätzter Aufwand: mittel/hoch
 
 
@@ -63,7 +60,6 @@ Die eingetragene Zutat werden gespeichert.
 ##### UML:
 >`+ Text`
 <img width="1404" height="669" alt="image" src="https://github.com/user-attachments/assets/0717ae89-5dc7-4e61-ba25-2e1cb2c69c54" />
-
 
 ##### Voraussetzungen:
 Der Nutzer muss angemeldet sein und sich auf der Seite befinden für Zutaten eintragen, um die Zutaten eintragen zu können und es muss mindestens eine Zutat bereits eingetragen sein.
@@ -82,7 +78,6 @@ Die gelöschte Zutat wird aus dem Speicher gelöscht.
 >`+ Text`
 <img width="1404" height="669" alt="image" src="https://github.com/user-attachments/assets/0fa4f1cc-b792-4dc3-829e-5bc9e7dd2011" />
 
-
 ##### Voraussetzungen:
 Der Nutzer muss angemeldet sein und Zutaten, die er vorrätig hat, eingetragen haben.
 ##### Nachbedingungen:
@@ -99,7 +94,6 @@ n/a
 ##### UML:
 >`+ Text`
 <img width="1151" height="599" alt="image" src="https://github.com/user-attachments/assets/e9d58164-48cf-4007-a4bd-af42841ef019" />
-
 
 ##### Voraussetzungen:
 Ein Nutzer der LazyCook nutzen will
@@ -118,7 +112,6 @@ n/a
 >`+ Text`
 <img width="1029" height="491" alt="image" src="https://github.com/user-attachments/assets/31a4661b-3b8f-441f-ba3d-121a4c254923" />
 
-
 ##### Voraussetzungen:
 Der User muss mit dem Konto bereits registriert sein mit welchen er sich anmelden möchte.
 ##### Nachbedingungen:
@@ -130,11 +123,13 @@ Der User ist mit dem Konto angemeldet, welches er eingegeben hat.
 ##### User Story: https://github.com/GalacticCodeGambit/LazyCook/issues/28
 
 ##### UI-Mockup:
+>`+ Bild`
 >![]()
 
 ##### UML:
 >`+ Text`
-`+ Bild`
+<img width="1214" height="472" alt="image" src="https://github.com/user-attachments/assets/3be12ace-a6ef-474d-9d39-fc2b879d8638" />
+
 ##### Voraussetzungen:
 Der Nutzer muss angemeldet sein mit einem Konto.
 ##### Nachbedingungen:
@@ -152,7 +147,6 @@ Der Nutzer ist nicht angemeldet.
 >`+ Text`
 <img width="1404" height="669" alt="image" src="https://github.com/user-attachments/assets/10cea492-6933-4d3d-9839-5889a14f20f2" />
 
-
 ##### Voraussetzungen:
 Der Nutzer muss angemeldet sein und sich auf der Seite befinden für Zutaten eintragen, um die Personenanzahl eintragen zu können.
 ##### Nachbedingungen:
@@ -169,7 +163,6 @@ Die eingetragene Personenanzahl wir gespeichert. Bei dem automatischen Rezeptvor
 ##### UML:
 >`+ Text`
 <img width="1404" height="669" alt="image" src="https://github.com/user-attachments/assets/7fd98fa4-d8ca-4d60-ad3c-84e2fb2fd0ae" />
-
 
 ##### Voraussetzungen:
 Der Nutzer muss angemeldet sein und sich auf der Seite befinden für Zutaten eintragen.
