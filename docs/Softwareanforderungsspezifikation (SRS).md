@@ -1,6 +1,6 @@
 # LazyCook
 ## Softwareanforderungen
-___
+
 ### 1. Einleitung
 
 #### 1.1 Übersicht
@@ -28,39 +28,37 @@ In diesem Dokument wird das gesamte System von LazyCook behandelt. Es deckt sowo
 ___
 ### 2. Funktionale Anforderungen
 
-#### 2.1 Übersicht
-
+#### 2.01 Übersicht
 LazyCook soll eine Webanwendung sein. Sie soll es ermöglichen, seine vorhandenen Zutaten einzutragen, und daraufhin mögliche Rezepte/Gerichte-vorschlagen, die sich aus diesen Zutaten zubereiten lassen.
 
-#### 2.2 Zutaten hinzufügen können
+#### 2.02 Zutaten hinzufügen können
 ##### User Story: https://github.com/GalacticCodeGambit/LazyCook/issues/23
 
 ##### UI-Mockup:
->`+ Bild`
+![](docs/mockup/Zutateneingabe(1).png)
+![](docs/mockup/Zutateneingabe_Tomate(1).png)
 
 ##### UML:
-<!-- %% Der Nutzer soll beim Eintragen passende Zutaten vorgeschlagen bekommen, die er auswählen kann. -->
->`+ Text`
-`+ Bild`
+<img width="1408" height="664" alt="image" src="https://github.com/user-attachments/assets/4e3289dd-3861-4c76-ab3c-9eb55b8b12b7" />
+Die Zutaten sollen im Browser-Cache gespeichert werden.
 
 ##### Voraussetzungen:
 Der Nutzer muss angemeldet sein und sich auf der Seite befinden für Zutaten eintragen, um die Zutaten eintragen zu können.
-
 ##### Nachbedingungen:
 Die eingetragene Zutat werden gespeichert.
-
 ##### Geschätzter Aufwand: mittel/hoch
 
 
-#### 2.3 Zutaten entfernen können
+#### 2.03 Zutaten entfernen können
 ##### User Story: https://github.com/GalacticCodeGambit/LazyCook/issues/24
 
 ##### UI-Mockup:
->`+ Bild`
+![](docs/mockup/Zutateneingabe_Tomate(1).png)
+![](docs/mockup/Zutateneingabe(1).png)
 
 ##### UML:
->`+ Text`
-`+ Bild`
+<img width="1404" height="669" alt="image" src="https://github.com/user-attachments/assets/0717ae89-5dc7-4e61-ba25-2e1cb2c69c54" />
+Die Zutaten sollen im Browser-Cache aktualisiert werden.
 
 ##### Voraussetzungen:
 Der Nutzer muss angemeldet sein und sich auf der Seite befinden für Zutaten eintragen, um die Zutaten eintragen zu können und es muss mindestens eine Zutat bereits eingetragen sein.
@@ -69,15 +67,15 @@ Die gelöschte Zutat wird aus dem Speicher gelöscht.
 ##### Geschätzter Aufwand: niedrig
 
 
-#### 2.4 Automatischer Rezepte vorgeschlagen auf Grundlage der eingetragenen Zutaten
+#### 2.04 Automatischer Rezeptvorschlag auf Grundlage der eingetragenen Zutaten
 ##### User Story: https://github.com/GalacticCodeGambit/LazyCook/issues/25
 
 ##### UI-Mockup:
 >`+ Bild`
 
 ##### UML:
->`+ Text`
-`+ Bild`
+<img width="1404" height="669" alt="image" src="https://github.com/user-attachments/assets/0fa4f1cc-b792-4dc3-829e-5bc9e7dd2011" />
+Die Anzahl der Personen soll hier noch keine Auswirkung auf den automatischen Rezeptvorschlag haben. 
 
 ##### Voraussetzungen:
 Der Nutzer muss angemeldet sein und Zutaten, die er vorrätig hat, eingetragen haben.
@@ -86,15 +84,14 @@ n/a
 ##### Geschätzter Aufwand: hoch
 
 
-#### 2.5 Als Kunde mit neuem Konto registrieren können
+#### 2.05 Als Kunde mit neuem Konto registrieren können
 ##### User Story: https://github.com/GalacticCodeGambit/LazyCook/issues/26
 
 ##### UI-Mockup:
->`+ Bild`
+![](docs/mockup/Registrieren(1).png)
 
 ##### UML:
->`+ Text`
-`+ Bild`
+<img width="1151" height="599" alt="image" src="https://github.com/user-attachments/assets/e9d58164-48cf-4007-a4bd-af42841ef019" />
 
 ##### Voraussetzungen:
 Ein Nutzer der LazyCook nutzen will
@@ -103,15 +100,14 @@ n/a
 ##### Geschätzter Aufwand: mittel
 
 
-#### 2.6 Als Kunde mit Konto anmelden können
+#### 2.06 Als Kunde mit Konto anmelden können
 ##### User Story: https://github.com/GalacticCodeGambit/LazyCook/issues/27
 
 ##### UI-Mockup:
->`+ Bild`
+![](docs/mockup/Anmelde_Screen(1).png)
 
 ##### UML:
->`+ Text`
-`+ Bild`
+<img width="1029" height="491" alt="image" src="https://github.com/user-attachments/assets/31a4661b-3b8f-441f-ba3d-121a4c254923" />
 
 ##### Voraussetzungen:
 Der User muss mit dem Konto bereits registriert sein mit welchen er sich anmelden möchte.
@@ -120,15 +116,15 @@ Der User ist mit dem Konto angemeldet, welches er eingegeben hat.
 ##### Geschätzter Aufwand: mittel
 
 
-#### 2.7 Als Kunde mit Konto abmelden können
+#### 2.07 Als Kunde mit Konto abmelden können
 ##### User Story: https://github.com/GalacticCodeGambit/LazyCook/issues/28
 
 ##### UI-Mockup:
->`+ Bild`
+![](docs/mockup/Abmelde_Screen(1).png)
 
 ##### UML:
->`+ Text`
-`+ Bild`
+<img width="1214" height="472" alt="image" src="https://github.com/user-attachments/assets/3be12ace-a6ef-474d-9d39-fc2b879d8638" />
+
 ##### Voraussetzungen:
 Der Nutzer muss angemeldet sein mit einem Konto.
 ##### Nachbedingungen:
@@ -136,15 +132,15 @@ Der Nutzer ist nicht angemeldet.
 ##### Geschätzter Aufwand: niedrig
 
 
-#### 2.8 Personenanzahl angegeben bei Zutaten eintragen
+#### 2.08 Personenanzahl angegeben bei Zutaten eintragen
 ##### User Story: https://github.com/GalacticCodeGambit/LazyCook/issues/30
 
 ##### UI-Mockup:
->`+ Bild`
+![](docs/mockup/Zutateneingabe(1).png)
 
 ##### UML:
->`+ Text`
->`+ Bild`
+<img width="1404" height="669" alt="image" src="https://github.com/user-attachments/assets/10cea492-6933-4d3d-9839-5889a14f20f2" />
+Die angegebene Personenanzahl soll sich auf den automatischen Rezeptvorschlag auswirken. 
 
 ##### Voraussetzungen:
 Der Nutzer muss angemeldet sein und sich auf der Seite befinden für Zutaten eintragen, um die Personenanzahl eintragen zu können.
@@ -153,15 +149,15 @@ Die eingetragene Personenanzahl wir gespeichert. Bei dem automatischen Rezeptvor
 ##### Geschätzter Aufwand: mittel
 
 
-#### 2.9 Grundlegende Zutaten werden beim Eintragen empfohlen 
+#### 2.09 Grundlegende Zutaten werden beim Eintragen empfohlen 
 ##### User Story: https://github.com/GalacticCodeGambit/LazyCook/issues/31
 
 ##### UI-Mockup:
->`+ Bild`
+![](docs/mockup/Zutateneingabe_Tomate(1).png)
 
 ##### UML:
->`+ Text`
->`+ Bild`
+<img width="1404" height="669" alt="image" src="https://github.com/user-attachments/assets/7fd98fa4-d8ca-4d60-ad3c-84e2fb2fd0ae" />
+Beim Eintragen sollen dem Nutzer grundlegende Zutaten empfohlen werden, die er hinzufügen oder auch nicht hinzufügen kann. 
 
 ##### Voraussetzungen:
 Der Nutzer muss angemeldet sein und sich auf der Seite befinden für Zutaten eintragen.
@@ -170,9 +166,26 @@ Die hinzugefügten Grundzutaten müssen zu den bereits vorhandenen Zutaten hinzu
 ##### Geschätzter Aufwand: mittel
 
 
+#### 2.10 Rezepte Suchen können ohne eingetragene Zutaten
+##### User Story: https://github.com/GalacticCodeGambit/LazyCook/issues/33
+
+##### UI-Mockup:
+![](docs/mockup/Rezepte_Anzeige.png)
+
+##### UML:
+<img width="1218" height="574" alt="image" src="https://github.com/user-attachments/assets/f75238d5-9e98-4262-8fd1-5d60b26f86a0" />
+Rezepte sollen auch ohne den Eintrag von Zutaten suchbar sein.
+
+##### Voraussetzungen:
+Der Nutzer muss angemeldet sein und sich auf der Seite befinden für Zutaten eintragen.
+##### Nachbedingungen:
+
+##### Geschätzter Aufwand: niedrig
+
+
 ___
 ### 3. Nicht-funktionale Anforderungen
-Das Projekt muss zum Ende des 4. Semesters abgegeben werden, genaueres wird noch bekannt gegeben. Es muss sich um eine webbasierte Anwendung handeln.
+Das Projekt muss zum Ende des 4. Semesters abgegeben werden, genaueres wird noch bekannt gegeben. Es muss sich um eine webbasierte Anwendung handeln. LazyCook soll für die Benutzung/Bedingung am Laptop oder am Computer optimiert sein.
 
 #### 3.1 Verwendete Technologien
 - Frontend: HTML, CSS, JavaScript/React
@@ -182,9 +195,5 @@ Das Projekt muss zum Ende des 4. Semesters abgegeben werden, genaueres wird noch
 - Projekt Management: GitHub Projects
 
 ___
-### 4. Technische Einschränkungen
-LazyCook soll für die Benutzung/Bedingung am Laptop oder am Computer optimiert sein.
-
-___
-### 5. Unterstützende Informationen
-Für weitere Informationen können Sie sich an das LazyCook Team wenden oder unseren ([LazyCook-Discussions]([GalacticCodeGambit/LazyCook · Discussions · GitHub](https://github.com/GalacticCodeGambit/LazyCook/discussions))) besuchen. 
+### 4. Unterstützende Informationen
+Für weitere Informationen können Sie sich an das LazyCook Team wenden oder unseren ([LazyCook-Discussions](https://github.com/GalacticCodeGambit/LazyCook/discussions)) besuchen. 
