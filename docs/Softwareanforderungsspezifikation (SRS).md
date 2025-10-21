@@ -175,7 +175,7 @@ Die hinzugefügten Grundzutaten müssen zu den bereits vorhandenen Zutaten hinzu
 >`+ Bild`
 
 ##### UML:
-> `+ Bild`
+<img width="1218" height="574" alt="image" src="https://github.com/user-attachments/assets/f75238d5-9e98-4262-8fd1-5d60b26f86a0" />
 Rezepte sollen auch ohne den Eintrag von Zutaten suchbar sein.
 
 ##### Voraussetzungen:
