@@ -35,11 +35,10 @@ LazyCook soll eine Webanwendung sein. Sie soll es ermöglichen, seine vorhandene
 ##### User Story: https://github.com/GalacticCodeGambit/LazyCook/issues/23
 
 ##### UI-Mockup:
-![](docs/mockup/Zutateneingabe.png)
-![](docs/mockup/Zutaten_eingabe_Tomate.png)
+![](docs/mockup/Zutateneingabe(1).png)
+![](docs/mockup/Zutateneingabe_Tomate(1).png)
 
 ##### UML:
-<!-- %% Der Nutzer soll beim Eintragen passende Zutaten vorgeschlagen bekommen, die er auswählen kann. -->
 <img width="1408" height="664" alt="image" src="https://github.com/user-attachments/assets/4e3289dd-3861-4c76-ab3c-9eb55b8b12b7" />
 Die Zutaten sollen im Browser-Cache gespeichert werden.
 
@@ -54,8 +53,8 @@ Die eingetragene Zutat werden gespeichert.
 ##### User Story: https://github.com/GalacticCodeGambit/LazyCook/issues/24
 
 ##### UI-Mockup:
-![](docs/mockup/Zutaten_eingabe_Tomate.png)
-![](docs/mockup/Zutateneingabe.png)
+![](docs/mockup/Zutateneingabe_Tomate(1).png)
+![](docs/mockup/Zutateneingabe(1).png)
 
 ##### UML:
 <img width="1404" height="669" alt="image" src="https://github.com/user-attachments/assets/0717ae89-5dc7-4e61-ba25-2e1cb2c69c54" />
@@ -89,7 +88,7 @@ n/a
 ##### User Story: https://github.com/GalacticCodeGambit/LazyCook/issues/26
 
 ##### UI-Mockup:
-![](docs/mockup/Registrieren.png)
+![](docs/mockup/Registrieren(1).png)
 
 ##### UML:
 <img width="1151" height="599" alt="image" src="https://github.com/user-attachments/assets/e9d58164-48cf-4007-a4bd-af42841ef019" />
@@ -105,7 +104,7 @@ n/a
 ##### User Story: https://github.com/GalacticCodeGambit/LazyCook/issues/27
 
 ##### UI-Mockup:
-![](docs/mockup/Anmelde_Screen.png)
+![](docs/mockup/Anmelde_Screen(1).png)
 
 ##### UML:
 <img width="1029" height="491" alt="image" src="https://github.com/user-attachments/assets/31a4661b-3b8f-441f-ba3d-121a4c254923" />
@@ -121,8 +120,7 @@ Der User ist mit dem Konto angemeldet, welches er eingegeben hat.
 ##### User Story: https://github.com/GalacticCodeGambit/LazyCook/issues/28
 
 ##### UI-Mockup:
->`+ Bild`
->![]()
+![](docs/mockup/Abmelde_Screen(1).png)
 
 ##### UML:
 <img width="1214" height="472" alt="image" src="https://github.com/user-attachments/assets/3be12ace-a6ef-474d-9d39-fc2b879d8638" />
@@ -138,7 +136,7 @@ Der Nutzer ist nicht angemeldet.
 ##### User Story: https://github.com/GalacticCodeGambit/LazyCook/issues/30
 
 ##### UI-Mockup:
->`+ Bild`
+![](docs/mockup/Zutateneingabe(1).png)
 
 ##### UML:
 <img width="1404" height="669" alt="image" src="https://github.com/user-attachments/assets/10cea492-6933-4d3d-9839-5889a14f20f2" />
@@ -155,7 +153,7 @@ Die eingetragene Personenanzahl wir gespeichert. Bei dem automatischen Rezeptvor
 ##### User Story: https://github.com/GalacticCodeGambit/LazyCook/issues/31
 
 ##### UI-Mockup:
->`+ Bild`
+![](docs/mockup/Zutateneingabe_Tomate(1).png)
 
 ##### UML:
 <img width="1404" height="669" alt="image" src="https://github.com/user-attachments/assets/7fd98fa4-d8ca-4d60-ad3c-84e2fb2fd0ae" />
@@ -172,7 +170,7 @@ Die hinzugefügten Grundzutaten müssen zu den bereits vorhandenen Zutaten hinzu
 ##### User Story: https://github.com/GalacticCodeGambit/LazyCook/issues/33
 
 ##### UI-Mockup:
->`+ Bild`
+![](docs/mockup/Rezepte_Anzeige.png)
 
 ##### UML:
 > `+ Bild`
