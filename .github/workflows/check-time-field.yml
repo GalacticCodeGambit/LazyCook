@@ -1,0 +1,74 @@
+name: Check required "Time" field before moving to Done
+
+on:
+  issues:
+    types: [labeled, edited]
+
+jobs:
+  verify-time:
+    runs-on: ubuntu-latest
+
+    # Nur ausführen, wenn das Issue offen ist und das Label "Done" gesetzt wurde
+    if: github.event.issue.state == 'open' && contains(github.event.issue.labels.*.name, 'Done')
+
+    steps:
+      - name: Check for 'Time' field in issue body
+        id: check
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const issue = context.payload.issue;
+            const body = issue.body || "";
+
+            // Sucht nach Zeilen wie "Time: 5h" oder "Time: 2.5"
+            const timeField = body.match(/Time\s*:\s*\S+/i);
+
+            if (!timeField) {
+              core.setFailed("❌ 'Time' field is missing in the issue description!");
+            }
+
+      - name: Replace 'Done' with 'In Progress' if Time missing
+        if: failure()
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const issue_number = context.issue.number;
+
+            // Entferne 'Done'
+            try {
+              await github.rest.issues.removeLabel({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number,
+                name: "Done"
+              });
+              core.info("Removed 'Done' label.");
+            } catch (error) {
+              core.warning("Couldn't remove 'Done' label: " + error.message);
+            }
+
+            // Füge 'In Progress' hinzu
+            try {
+              await github.rest.issues.addLabels({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number,
+                labels: ["In Progress"]
+              });
+              core.notice("Added 'In Progress' label instead.");
+            } catch (error) {
+              core.warning("Couldn't add 'In Progress' label: " + error.message);
+            }
+
+      - name: Comment on issue (optional feedback)
+        if: failure()
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const issue_number = context.issue.number;
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number,
+              body: "⚠️ Bitte trage das Feld `Time:` in der Beschreibung ein, bevor du das Issue auf **Done** setzt."
+            });
