@@ -1,74 +1,113 @@
-name: Check required "Time" field before moving to Done
+name: Check "Time" field before Done (Projects v2)
 
 on:
-  issues:
-    types: [labeled, edited]
+  workflow_dispatch:  # Manuell testbar
+  project_item:
+    types: [edited]
 
 jobs:
-  verify-time:
+  check-time:
     runs-on: ubuntu-latest
 
-    # Nur ausführen, wenn das Issue offen ist und das Label "Done" gesetzt wurde
-    if: github.event.issue.state == 'open' && contains(github.event.issue.labels.*.name, 'Done')
-
     steps:
-      - name: Check for 'Time' field in issue body
-        id: check
+      - name: Prüfe Project Item auf fehlendes Time-Feld
         uses: actions/github-script@v7
         with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
-            const issue = context.payload.issue;
-            const body = issue.body || "";
+            const item = context.payload.project_item;
+            const projectId = item.project_node_id;
 
-            // Sucht nach Zeilen wie "Time: 5h" oder "Time: 2.5"
-            const timeField = body.match(/Time\s*:\s*\S+/i);
+            // Hole Daten über die GraphQL API
+            const query = `
+              query($id: ID!) {
+                node(id: $id) {
+                  ... on ProjectV2Item {
+                    id
+                    fieldValues(first: 20) {
+                      nodes {
+                        projectField {
+                          name
+                        }
+                        value
+                      }
+                    }
+                  }
+                }
+              }
+            `;
+            const result = await github.graphql(query, { id: item.node_id });
+            const fields = result.node.fieldValues.nodes;
 
-            if (!timeField) {
-              core.setFailed("❌ 'Time' field is missing in the issue description!");
-            }
+            const status = fields.find(f => f.projectField?.name === "Status")?.value ?? "";
+            const time = fields.find(f => f.projectField?.name === "Time")?.value ?? "";
 
-      - name: Replace 'Done' with 'In Progress' if Time missing
-        if: failure()
-        uses: actions/github-script@v7
-        with:
-          script: |
-            const issue_number = context.issue.number;
+            if (status === "Done" && (!time || time.trim() === "")) {
+              core.notice("Time ist leer – ändere Status zurück auf In Progress.");
 
-            // Entferne 'Done'
-            try {
-              await github.rest.issues.removeLabel({
-                owner: context.repo.owner,
-                repo: context.repo.repo,
-                issue_number,
-                name: "Done"
-              });
-              core.info("Removed 'Done' label.");
-            } catch (error) {
-              core.warning("Couldn't remove 'Done' label: " + error.message);
-            }
+              // Suche die Field-ID für "Status"
+              const fieldQuery = `
+                query($project: ID!) {
+                  node(id: $project) {
+                    ... on ProjectV2 {
+                      fields(first: 50) {
+                        nodes {
+                          id
+                          name
+                        }
+                      }
+                    }
+                  }
+                }
+              `;
+              const fieldsData = await github.graphql(fieldQuery, { project: projectId });
+              const statusField = fieldsData.node.fields.nodes.find(f => f.name === "Status");
+              if (!statusField) {
+                core.setFailed("Status-Feld wurde nicht gefunden.");
+                return;
+              }
 
-            // Füge 'In Progress' hinzu
-            try {
-              await github.rest.issues.addLabels({
-                owner: context.repo.owner,
-                repo: context.repo.repo,
-                issue_number,
-                labels: ["In Progress"]
-              });
-              core.notice("Added 'In Progress' label instead.");
-            } catch (error) {
-              core.warning("Couldn't add 'In Progress' label: " + error.message);
-            }
+              // Status auf "In Progress" setzen
+              const mutation = `
+                mutation($itemId: ID!, $fieldId: ID!, $value: String!) {
+                  updateProjectV2ItemFieldValue(
+                    input: {
+                      projectId: "${projectId}",
+                      itemId: $itemId,
+                      fieldId: $fieldId,
+                      value: { singleSelectOptionId: $value }
+                    }
+                  ) { projectV2Item { id } }
+                }
+              `;
 
-      - name: Comment on issue (optional feedback)
-        if: failure()
-        uses: actions/github-script@v7
-        with:
-          script: |
-            const issue_number = context.issue.number;
-            await github.rest.issues.createComment({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              issue_number,
-              body: "⚠️ Bitte trage das Feld `Time:` in der Beschreibung ein, bevor du das Issue auf **Done** setzt."
-            });
+              // ID der Option "In Progress" holen
+              const optionQuery = `
+                query($project: ID!) {
+                  node(id: $project) {
+                    ... on ProjectV2 {
+                      fields(first: 50) {
+                        nodes {
+                          ... on ProjectV2SingleSelectField {
+                            name
+                            options { id name }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              `;
+              const optionsData = await github.graphql(optionQuery, { project: projectId });
+              const statusFieldOptions = optionsData.node.fields.nodes.find(f => f.name === "Status");
+              const inProgressOption = statusFieldOptions.options.find(o => o.name === "In Progress");
+              
+              if (!inProgressOption) {
+                core.setFailed("Option 'In Progress' nicht gefunden.");
+                return;
+              }
+
+              await github.graphql(mutation, {
+                itemId: item.node_id,
+                fieldId: statusField.id,
+                v
