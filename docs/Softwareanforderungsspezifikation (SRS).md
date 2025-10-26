@@ -191,7 +191,7 @@ Das Projekt muss zum Ende des 4. Semesters abgegeben werden, genaueres wird noch
 - Frontend: HTML, CSS, JavaScript/React
 - Backend: Python
 - DB: SQLite
-- IDE: PyCharm
+- IDE: IntelliJ
 - Projekt Management: GitHub Projects
 
 ___
