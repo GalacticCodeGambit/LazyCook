@@ -178,7 +178,7 @@ Die hinzugefügten Grundzutaten müssen zu den bereits vorhandenen Zutaten hinzu
 
 ##### UML:
 <img width="1218" height="574" alt="image" src="https://github.com/user-attachments/assets/f75238d5-9e98-4262-8fd1-5d60b26f86a0" />
-![UML-Aktivitaetsdiagramm_Rezept-filtern.jpg](../docs/UML/UML-Aktivitaetsdiagramm_Rezept-filtern.jpg)
+![UML-Aktivitaetsdiagramm_Rezept-filtern.png](../docs/UML/UML-Aktivitaetsdiagramm_Rezept-filtern.png)
 ![UML-Sequenzdiagramm_Rezepte-Filtern.png](../docs/UML/UML-Sequenzdiagramm_Rezepte-Filtern.png)
 Rezepte sollen auch ohne den Eintrag von Zutaten suchbar sein.
 
