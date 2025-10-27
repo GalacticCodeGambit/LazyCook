@@ -40,7 +40,7 @@ LazyCook soll eine Webanwendung sein. Sie soll es ermöglichen, seine vorhandene
 
 ##### UML:
 <img width="1408" height="664" alt="image" src="https://github.com/user-attachments/assets/4e3289dd-3861-4c76-ab3c-9eb55b8b12b7" />
-![UML-Sequenzdiagramm_Zutaten-Eintragen.png](../docs/UML/UML-Sequenzdiagramm_Zutaten-Eintragen.png)
+![UML-Sequenzdiagramm_Zutaten-Eintragen.png](https://github.com/GalacticCodeGambit/LazyCook/blob/0eabc6e46a15b27392564b1048302d814c896cfd/docs/UML/UML-Sequenzdiagramm_Zutaten-Eintragen.png)
 Die Zutaten sollen im Browser-Cache gespeichert werden.
 
 ##### Voraussetzungen:
@@ -76,7 +76,7 @@ Die gelöschte Zutat wird aus dem Speicher gelöscht.
 
 ##### UML:
 <img width="1404" height="669" alt="image" src="https://github.com/user-attachments/assets/0fa4f1cc-b792-4dc3-829e-5bc9e7dd2011" />
-![UML-Sequenzdiagramm_automatischer-Rezeptvorschlag.png](../docs/UML/UML-Sequenzdiagramm_automatischer-Rezeptvorschlag.png)
+![UML-Sequenzdiagramm_automatischer-Rezeptvorschlag.png](https://github.com/GalacticCodeGambit/LazyCook/blob/0eabc6e46a15b27392564b1048302d814c896cfd/docs/UML/UML-Sequenzdiagramm_automatischer-Rezeptvorschlag.png)
 Die Anzahl der Personen soll hier noch keine Auswirkung auf den automatischen Rezeptvorschlag haben. 
 
 ##### Voraussetzungen:
@@ -94,7 +94,7 @@ n/a
 
 ##### UML:
 <img width="1151" height="599" alt="image" src="https://github.com/user-attachments/assets/e9d58164-48cf-4007-a4bd-af42841ef019" />
-![UML-Aktivitaetsdiagramm_Registrieren.jpg](../docs/UML/UML-Aktivitaetsdiagramm_Registrieren.jpg)
+![UML-Aktivitaetsdiagramm_Registrieren.jpg](https://github.com/GalacticCodeGambit/LazyCook/blob/0eabc6e46a15b27392564b1048302d814c896cfd/docs/UML/UML-Aktivitaetsdiagramm_Registrieren.jpg)
 
 ##### Voraussetzungen:
 Ein Nutzer der LazyCook nutzen will
@@ -111,7 +111,7 @@ n/a
 
 ##### UML:
 <img width="1029" height="491" alt="image" src="https://github.com/user-attachments/assets/31a4661b-3b8f-441f-ba3d-121a4c254923" />
-![UML-Aktivitaetsdiagramm_Anmelden.png](../docs/UML/UML-Aktivitaetsdiagramm_Anmelden.png)
+![UML-Aktivitaetsdiagramm_Anmelden.png](https://github.com/GalacticCodeGambit/LazyCook/blob/0eabc6e46a15b27392564b1048302d814c896cfd/docs/UML/UML-Aktivitaetsdiagramm_Anmelden.png)
 
 ##### Voraussetzungen:
 Der User muss mit dem Konto bereits registriert sein mit welchen er sich anmelden möchte.
@@ -178,8 +178,8 @@ Die hinzugefügten Grundzutaten müssen zu den bereits vorhandenen Zutaten hinzu
 
 ##### UML:
 <img width="1218" height="574" alt="image" src="https://github.com/user-attachments/assets/f75238d5-9e98-4262-8fd1-5d60b26f86a0" />
-![UML-Aktivitaetsdiagramm_Rezept-filtern.png](../docs/UML/UML-Aktivitaetsdiagramm_Rezept-filtern.png)
-![UML-Sequenzdiagramm_Rezepte-Filtern.png](../docs/UML/UML-Sequenzdiagramm_Rezepte-Filtern.png)
+![UML-Aktivitaetsdiagramm_Rezept-filtern.png](https://github.com/GalacticCodeGambit/LazyCook/blob/72c5aa65cddebc6d879e9e9607d70cd5e8d9f17d/docs/UML/UML-Aktivitaetsdiagramm_Rezept-filtern.png)
+![UML-Sequenzdiagramm_Rezepte-filtern.png](https://github.com/GalacticCodeGambit/LazyCook/blob/d772973d1593eff5b39f49ad2cee79598b3d55dd/docs/UML/UML-Sequenzdiagramm_Rezepte-filtern.png)
 Rezepte sollen auch ohne den Eintrag von Zutaten suchbar sein.
 
 ##### Voraussetzungen:
