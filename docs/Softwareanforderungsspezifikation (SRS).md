@@ -43,7 +43,7 @@ LazyCook soll eine Webanwendung sein. Sie soll es ermöglichen, seine vorhandene
 
 ![UML-Sequenzdiagramm_Zutaten-Eintragen.png](https://github.com/GalacticCodeGambit/LazyCook/blob/0eabc6e46a15b27392564b1048302d814c896cfd/docs/UML/UML-Sequenzdiagramm_Zutaten-Eintragen.png)
 
-Die Zutaten sollen im Browser-Cache gespeichert werden.
+Eine Zutat soll aus ihren Namen, ihre Menge und Einheit der Menge bestehen. Die Zutaten sollen im Browser-Cache gespeichert werden. 
 
 ##### Voraussetzungen:
 Der Nutzer muss angemeldet sein und sich auf der Seite befinden für Zutaten eintragen, um die Zutaten eintragen zu können.
@@ -61,7 +61,7 @@ Die eingetragene Zutat werden gespeichert.
 
 ##### UML:
 <img width="1404" height="669" alt="image" src="https://github.com/user-attachments/assets/0717ae89-5dc7-4e61-ba25-2e1cb2c69c54" />
-Die Zutaten sollen im Browser-Cache aktualisiert werden.
+Die jeweilige Zutat sollen im Browser-Cache entfernt werden.
 
 ##### Voraussetzungen:
 Der Nutzer muss angemeldet sein und sich auf der Seite befinden für Zutaten eintragen, um die Zutaten eintragen zu können und es muss mindestens eine Zutat bereits eingetragen sein.
@@ -81,6 +81,7 @@ Die gelöschte Zutat wird aus dem Speicher gelöscht.
 
 ![UML-Sequenzdiagramm_automatischer-Rezeptvorschlag.png](https://github.com/GalacticCodeGambit/LazyCook/blob/0eabc6e46a15b27392564b1048302d814c896cfd/docs/UML/UML-Sequenzdiagramm_automatischer-Rezeptvorschlag.png)
 
+Die hinzugefügte Zutaten sollen auswirkung auf den Rezeptvorschlag haben und dem Backend zugesendet werden. 
 Die Anzahl der Personen soll hier noch keine Auswirkung auf den automatischen Rezeptvorschlag haben. 
 
 ##### Voraussetzungen:
@@ -101,6 +102,8 @@ n/a
 
 ![UML-Aktivitaetsdiagramm_Registrieren.jpg](https://github.com/GalacticCodeGambit/LazyCook/blob/0eabc6e46a15b27392564b1048302d814c896cfd/docs/UML/UML-Aktivitaetsdiagramm_Registrieren.jpg)
 
+Die Eingabe für die Registrierung soll im Frontend und im Backend Validiert werden, ob sich bei dieser um eine gültige handelt.  
+
 ##### Voraussetzungen:
 Ein Nutzer der LazyCook nutzen will
 ##### Nachbedingungen:
@@ -119,6 +122,8 @@ n/a
 
 ![UML-Aktivitaetsdiagramm_Anmelden.png](https://github.com/GalacticCodeGambit/LazyCook/blob/0eabc6e46a15b27392564b1048302d814c896cfd/docs/UML/UML-Aktivitaetsdiagramm_Anmelden.png)
 
+Als Nutzer soll man sich auf der Webseite Anmelden können um alle Funktionen der Seite nutzen zu können. 
+
 ##### Voraussetzungen:
 Der User muss mit dem Konto bereits registriert sein mit welchen er sich anmelden möchte.
 ##### Nachbedingungen:
@@ -135,6 +140,8 @@ Der User ist mit dem Konto angemeldet, welches er eingegeben hat.
 ##### UML:
 <img width="1214" height="472" alt="image" src="https://github.com/user-attachments/assets/3be12ace-a6ef-474d-9d39-fc2b879d8638" />
 
+Als Nutzer soll man sich auch abmelden können um sich z.B. auch mit anderen Konten anmelden zu können. 
+
 ##### Voraussetzungen:
 Der Nutzer muss angemeldet sein mit einem Konto.
 ##### Nachbedingungen:
@@ -150,7 +157,7 @@ Der Nutzer ist nicht angemeldet.
 
 ##### UML:
 <img width="1404" height="669" alt="image" src="https://github.com/user-attachments/assets/10cea492-6933-4d3d-9839-5889a14f20f2" />
-Die angegebene Personenanzahl soll sich auf den automatischen Rezeptvorschlag auswirken. 
+Die angegebene Personenanzahl soll sich auf den automatischen Rezeptvorschlag auswirken und auch mit den Zutaten zum Backend gesendet werden. 
 
 ##### Voraussetzungen:
 Der Nutzer muss angemeldet sein und sich auf der Seite befinden für Zutaten eintragen, um die Personenanzahl eintragen zu können.
@@ -168,6 +175,7 @@ Die eingetragene Personenanzahl wir gespeichert. Bei dem automatischen Rezeptvor
 ##### UML:
 <img width="1404" height="669" alt="image" src="https://github.com/user-attachments/assets/7fd98fa4-d8ca-4d60-ad3c-84e2fb2fd0ae" />
 Beim Eintragen sollen dem Nutzer grundlegende Zutaten empfohlen werden, die er hinzufügen oder auch nicht hinzufügen kann. 
+Dieser Vorschlag soll fest eingestellt sein. 
 
 ##### Voraussetzungen:
 Der Nutzer muss angemeldet sein und sich auf der Seite befinden für Zutaten eintragen.
