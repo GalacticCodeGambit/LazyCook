@@ -35,12 +35,15 @@ LazyCook soll eine Webanwendung sein. Sie soll es ermöglichen, seine vorhandene
 ##### User Story: https://github.com/GalacticCodeGambit/LazyCook/issues/23
 
 ##### UI-Mockup:
-![docs/mockup/Zutateneingabe(1).png](https://github.com/GalacticCodeGambit/LazyCook/blob/b8c1b83d1638018a833d4059391ef0811db4aee4/docs/mockup/Zutateneingabe(1).png)
-![docs/mockup/Zutateneingabe_Tomate(1).png](https://github.com/GalacticCodeGambit/LazyCook/blob/b8c1b83d1638018a833d4059391ef0811db4aee4/docs/mockup/Zutateneingabe_Tomate(1).png)
+![docs/mockup/Zutateneingabe(1).png](https://github.com/GalacticCodeGambit/LazyCook/blob/42bdf80060783a341b2a4f4ad1618ae6d92132e1/docs/mockup/Zutateneingabe(1).png)
+![docs/mockup/Zutateneingabe_Tomate(1).png](https://github.com/GalacticCodeGambit/LazyCook/blob/42bdf80060783a341b2a4f4ad1618ae6d92132e1/docs/mockup/Zutateneingabe_Tomate(1).png)
 
 ##### UML:
 <img width="1408" height="664" alt="image" src="https://github.com/user-attachments/assets/4e3289dd-3861-4c76-ab3c-9eb55b8b12b7" />
-Die Zutaten sollen im Browser-Cache gespeichert werden.
+
+![UML-Sequenzdiagramm_Zutaten-Eintragen.png](https://github.com/GalacticCodeGambit/LazyCook/blob/0eabc6e46a15b27392564b1048302d814c896cfd/docs/UML/UML-Sequenzdiagramm_Zutaten-Eintragen.png)
+
+Eine Zutat soll aus ihren Namen, ihre Menge und Einheit der Menge bestehen. Die Zutaten sollen im Browser-Cache gespeichert werden. 
 
 ##### Voraussetzungen:
 Der Nutzer muss angemeldet sein und sich auf der Seite befinden für Zutaten eintragen, um die Zutaten eintragen zu können.
@@ -53,12 +56,12 @@ Die eingetragene Zutat werden gespeichert.
 ##### User Story: https://github.com/GalacticCodeGambit/LazyCook/issues/24
 
 ##### UI-Mockup:
-![docs/mockup/Zutateneingabe_Tomate(1).png](https://github.com/GalacticCodeGambit/LazyCook/blob/b8c1b83d1638018a833d4059391ef0811db4aee4/docs/mockup/Zutateneingabe_Tomate(1).png)
-![docs/mockup/Zutateneingabe(1).png](https://github.com/GalacticCodeGambit/LazyCook/blob/b8c1b83d1638018a833d4059391ef0811db4aee4/docs/mockup/Zutateneingabe(1).png)
+![docs/mockup/Zutateneingabe_Tomate(1).png](https://github.com/GalacticCodeGambit/LazyCook/blob/42bdf80060783a341b2a4f4ad1618ae6d92132e1/docs/mockup/Zutateneingabe_Tomate(1).png)
+![docs/mockup/Zutateneingabe(1).png](https://github.com/GalacticCodeGambit/LazyCook/blob/42bdf80060783a341b2a4f4ad1618ae6d92132e1/docs/mockup/Zutateneingabe(1).png)
 
 ##### UML:
 <img width="1404" height="669" alt="image" src="https://github.com/user-attachments/assets/0717ae89-5dc7-4e61-ba25-2e1cb2c69c54" />
-Die Zutaten sollen im Browser-Cache aktualisiert werden.
+Die jeweilige Zutat sollen im Browser-Cache entfernt werden.
 
 ##### Voraussetzungen:
 Der Nutzer muss angemeldet sein und sich auf der Seite befinden für Zutaten eintragen, um die Zutaten eintragen zu können und es muss mindestens eine Zutat bereits eingetragen sein.
@@ -71,10 +74,14 @@ Die gelöschte Zutat wird aus dem Speicher gelöscht.
 ##### User Story: https://github.com/GalacticCodeGambit/LazyCook/issues/25
 
 ##### UI-Mockup:
->`+ Bild`
+![](https://github.com/GalacticCodeGambit/LazyCook/blob/42bdf80060783a341b2a4f4ad1618ae6d92132e1/docs/mockup/Rezepte_Anzeige.png)
 
 ##### UML:
 <img width="1404" height="669" alt="image" src="https://github.com/user-attachments/assets/0fa4f1cc-b792-4dc3-829e-5bc9e7dd2011" />
+
+![UML-Sequenzdiagramm_automatischer-Rezeptvorschlag.png](https://github.com/GalacticCodeGambit/LazyCook/blob/0eabc6e46a15b27392564b1048302d814c896cfd/docs/UML/UML-Sequenzdiagramm_automatischer-Rezeptvorschlag.png)
+
+Die hinzugefügte Zutaten sollen auswirkung auf den Rezeptvorschlag haben und dem Backend zugesendet werden. 
 Die Anzahl der Personen soll hier noch keine Auswirkung auf den automatischen Rezeptvorschlag haben. 
 
 ##### Voraussetzungen:
@@ -88,10 +95,15 @@ n/a
 ##### User Story: https://github.com/GalacticCodeGambit/LazyCook/issues/26
 
 ##### UI-Mockup:
-![docs/mockup/Registrieren(1).png](https://github.com/GalacticCodeGambit/LazyCook/blob/b8c1b83d1638018a833d4059391ef0811db4aee4/docs/mockup/Registrieren(1).png)
+![docs/mockup/Registrieren(1).png](https://github.com/GalacticCodeGambit/LazyCook/blob/42bdf80060783a341b2a4f4ad1618ae6d92132e1/docs/mockup/Registrieren(1).png)
+
 
 ##### UML:
 <img width="1151" height="599" alt="image" src="https://github.com/user-attachments/assets/e9d58164-48cf-4007-a4bd-af42841ef019" />
+
+![UML-Aktivitaetsdiagramm_Registrieren.jpg](https://github.com/GalacticCodeGambit/LazyCook/blob/0eabc6e46a15b27392564b1048302d814c896cfd/docs/UML/UML-Aktivitaetsdiagramm_Registrieren.jpg)
+
+Die Eingabe für die Registrierung soll im Frontend und im Backend Validiert werden, ob sich bei dieser um eine gültige handelt.  
 
 ##### Voraussetzungen:
 Ein Nutzer der LazyCook nutzen will
@@ -104,10 +116,15 @@ n/a
 ##### User Story: https://github.com/GalacticCodeGambit/LazyCook/issues/27
 
 ##### UI-Mockup:
-![docs/mockup/Anmelde_Screen(1).png](https://github.com/GalacticCodeGambit/LazyCook/blob/b8c1b83d1638018a833d4059391ef0811db4aee4/docs/mockup/Anmelde_Screen(1).png)
+![docs/mockup/Anmelde_Screen(1).png](https://github.com/GalacticCodeGambit/LazyCook/blob/42bdf80060783a341b2a4f4ad1618ae6d92132e1/docs/mockup/Anmelde_Screen(1).png)
+
 
 ##### UML:
 <img width="1029" height="491" alt="image" src="https://github.com/user-attachments/assets/31a4661b-3b8f-441f-ba3d-121a4c254923" />
+
+![UML-Aktivitaetsdiagramm_Anmelden.png](https://github.com/GalacticCodeGambit/LazyCook/blob/0eabc6e46a15b27392564b1048302d814c896cfd/docs/UML/UML-Aktivitaetsdiagramm_Anmelden.png)
+
+Als Nutzer soll man sich auf der Webseite Anmelden können um alle Funktionen der Seite nutzen zu können. 
 
 ##### Voraussetzungen:
 Der User muss mit dem Konto bereits registriert sein mit welchen er sich anmelden möchte.
@@ -120,10 +137,12 @@ Der User ist mit dem Konto angemeldet, welches er eingegeben hat.
 ##### User Story: https://github.com/GalacticCodeGambit/LazyCook/issues/28
 
 ##### UI-Mockup:
-![docs/mockup/Abmelde_Screen(1).png](https://github.com/GalacticCodeGambit/LazyCook/blob/b8c1b83d1638018a833d4059391ef0811db4aee4/docs/mockup/Abmelde_Screen(1).png)
+![docs/mockup/Abmelde_Screen(1).png](https://github.com/GalacticCodeGambit/LazyCook/blob/42bdf80060783a341b2a4f4ad1618ae6d92132e1/docs/mockup/Abmelde_Screen(1).png)
 
 ##### UML:
 <img width="1214" height="472" alt="image" src="https://github.com/user-attachments/assets/3be12ace-a6ef-474d-9d39-fc2b879d8638" />
+
+Als Nutzer soll man sich auch abmelden können um sich z.B. auch mit anderen Konten anmelden zu können. 
 
 ##### Voraussetzungen:
 Der Nutzer muss angemeldet sein mit einem Konto.
@@ -136,11 +155,12 @@ Der Nutzer ist nicht angemeldet.
 ##### User Story: https://github.com/GalacticCodeGambit/LazyCook/issues/30
 
 ##### UI-Mockup:
-![docs/mockup/Zutateneingabe(1).png](https://github.com/GalacticCodeGambit/LazyCook/blob/b8c1b83d1638018a833d4059391ef0811db4aee4/docs/mockup/Zutateneingabe(1).png)
+![docs/mockup/Zutateneingabe(1).png](https://github.com/GalacticCodeGambit/LazyCook/blob/42bdf80060783a341b2a4f4ad1618ae6d92132e1/docs/mockup/Zutateneingabe(1).png)
+
 
 ##### UML:
 <img width="1404" height="669" alt="image" src="https://github.com/user-attachments/assets/10cea492-6933-4d3d-9839-5889a14f20f2" />
-Die angegebene Personenanzahl soll sich auf den automatischen Rezeptvorschlag auswirken. 
+Die angegebene Personenanzahl soll sich auf den automatischen Rezeptvorschlag auswirken und auch mit den Zutaten zum Backend gesendet werden. 
 
 ##### Voraussetzungen:
 Der Nutzer muss angemeldet sein und sich auf der Seite befinden für Zutaten eintragen, um die Personenanzahl eintragen zu können.
@@ -153,11 +173,12 @@ Die eingetragene Personenanzahl wir gespeichert. Bei dem automatischen Rezeptvor
 ##### User Story: https://github.com/GalacticCodeGambit/LazyCook/issues/31
 
 ##### UI-Mockup:
-![docs/mockup/Zutateneingabe_Tomate(1).png](https://github.com/GalacticCodeGambit/LazyCook/blob/b8c1b83d1638018a833d4059391ef0811db4aee4/docs/mockup/Zutateneingabe_Tomate(1).png)
+![docs/mockup/Zutateneingabe_Tomate(1).png](https://github.com/GalacticCodeGambit/LazyCook/blob/42bdf80060783a341b2a4f4ad1618ae6d92132e1/docs/mockup/Zutateneingabe_Tomate(1).png)
 
 ##### UML:
 <img width="1404" height="669" alt="image" src="https://github.com/user-attachments/assets/7fd98fa4-d8ca-4d60-ad3c-84e2fb2fd0ae" />
 Beim Eintragen sollen dem Nutzer grundlegende Zutaten empfohlen werden, die er hinzufügen oder auch nicht hinzufügen kann. 
+Dieser Vorschlag soll fest eingestellt sein. 
 
 ##### Voraussetzungen:
 Der Nutzer muss angemeldet sein und sich auf der Seite befinden für Zutaten eintragen.
@@ -170,10 +191,14 @@ Die hinzugefügten Grundzutaten müssen zu den bereits vorhandenen Zutaten hinzu
 ##### User Story: https://github.com/GalacticCodeGambit/LazyCook/issues/33
 
 ##### UI-Mockup:
-![docs/mockup/Rezepte_Anzeige.png](https://github.com/GalacticCodeGambit/LazyCook/blob/b8c1b83d1638018a833d4059391ef0811db4aee4/docs/mockup/Rezepte_Anzeige.png)
+![docs/mockup/Rezepte_Anzeige.png](https://github.com/GalacticCodeGambit/LazyCook/blob/42bdf80060783a341b2a4f4ad1618ae6d92132e1/docs/mockup/Rezepte_Anzeige.png)
 
 ##### UML:
 <img width="1218" height="574" alt="image" src="https://github.com/user-attachments/assets/f75238d5-9e98-4262-8fd1-5d60b26f86a0" />
+
+![UML-Aktivitaetsdiagramm_Rezept-filtern.png](https://github.com/GalacticCodeGambit/LazyCook/blob/72c5aa65cddebc6d879e9e9607d70cd5e8d9f17d/docs/UML/UML-Aktivitaetsdiagramm_Rezept-filtern.png)
+![UML-Sequenzdiagramm_Rezepte-filtern.png](https://github.com/GalacticCodeGambit/LazyCook/blob/d772973d1593eff5b39f49ad2cee79598b3d55dd/docs/UML/UML-Sequenzdiagramm_Rezepte-filtern.png)
+
 Rezepte sollen auch ohne den Eintrag von Zutaten suchbar sein.
 
 ##### Voraussetzungen:
@@ -191,7 +216,7 @@ Das Projekt muss zum Ende des 4. Semesters abgegeben werden, genaueres wird noch
 - Frontend: HTML, CSS, JavaScript/React
 - Backend: Python
 - DB: SQLite
-- IDE: PyCharm
+- IDE: IntelliJ
 - Projekt Management: GitHub Projects
 
 ___
