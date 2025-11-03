@@ -1,3 +1,4 @@
+from Project.Backend.Datenbank import Datenbank
 from Project.Backend.Zutat import Zutat
 
 
@@ -10,6 +11,7 @@ class Rezept:
         self.__dauer = ""
         self.__bewertung = 0
         self.__anzPersonen = 1
+        self.__datenbank = Datenbank()
 
     def speichernInDB(self) -> bool:
         return True
