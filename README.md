@@ -26,9 +26,10 @@ LazyCook soll eine Webanwendung sein. Die es ermöglichen seine vorhanden Zutate
 - IDE: IntelliJ
 - Projekt Management: GitHub Projects 
 
+<!-- 
 - Mockup: Figma
 - UML: UMLet/Drawio
-
+-->
  <!-- ## Installation and Setup -->
 
  <!-- ## How It Works -->

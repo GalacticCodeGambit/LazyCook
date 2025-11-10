@@ -1,0 +1,17 @@
+## 1. Wähle ein Basis-Image (Node.js Version 18)
+#FROM node:18-alpine
+## 2. Setze das Arbeitsverzeichnis im Container
+#WORKDIR /app
+## 3. Kopiere die Datei mit den Abhängigkeiten
+##    Wir kopieren diese zuerst, um Docker's Caching zu nutzen
+#COPY package*.json ./
+## 4. Installiere die Abhängigkeiten
+#RUN npm install
+## 5. Kopiere den Rest deines Quellcodes
+#COPY . .
+## 6. Setze eine Standard-Umgebungsvariable (kann in compose überschrieben werden)
+#ENV PORT=3000
+## 7. Gib an, dass der Container auf Port 3000 lauscht
+#EXPOSE 3000
+## 8. Der Befehl, um die App zu starten
+#CMD ["node", "server.js"]

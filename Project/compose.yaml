@@ -1,0 +1,31 @@
+services:
+
+#  frontend:
+#    build:
+#      context: ./Project/frontend            # erstelle später ./Project/frontend mit React
+#      dockerfile: Dockerfile
+#    container_name: lazycook_frontend
+#    restart: "no"
+#    volumes:
+#      - ./Project/frontend:/app
+#      - /app/node_modules
+#    environment:
+#      - CHOKIDAR_USEPOLLING=true             # nützlich für Live‑Reload auf Windows
+#    ports:
+#      - "3000:3000"
+
+  backend:
+    build: .
+#      context: .
+#      dockerfile: Dockerfile
+    container_name: lazycook_backend
+    restart: 'no'
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./Project/backend:/app
+      - ./data:/data
+    environment:
+            - DATABASE_URL=sqlite:///data/lazycook.db
+
+
