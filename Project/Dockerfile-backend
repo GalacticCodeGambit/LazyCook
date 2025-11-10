@@ -1,0 +1,18 @@
+# File: Project/Dockerfile-backend-test-backend  (Backend)
+FROM python:3.11.10-slim
+WORKDIR /app
+
+COPY Backend/requirements.txt /Project/
+#RUN pip install --no-cache-dir -r requirements.txt && pip install --no-cache-dir gunicorn
+RUN pip install --no-cache-dir -r requirements.txt
+# Ensure you have a .dockerignore file to exclude files not needed in the image (e.g., .git, __pycache__, *.pyc, local config, etc.)
+COPY . /app
+
+ENV PYTHONDONTWRITEBYTECODE=1
+ENV PYTHONUNBUFFERED=1
+
+EXPOSE 8000
+
+CMD ["python", "/app.py"]
+#CMD ["gunicorn", "--bind", "0.0.0.0:8000", "--workers", "4", "--timeout", "120", "app:app"]
+#CMD ["gunicorn", "--chdir", "/app", "--bind", "0.0.0.0:8000", "--workers", "4", "--timeout", "120", "app:app"]

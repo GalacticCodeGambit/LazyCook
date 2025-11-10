@@ -1,0 +1,11 @@
+FROM python:3.11.10-slim
+
+WORKDIR /Project
+
+#     <kopieren> / <zielverzeichnis im container>
+COPY /Backend/requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
+
+COPY /Backend/ .
+
+ENTRYPOINT ["python", "main.py"]

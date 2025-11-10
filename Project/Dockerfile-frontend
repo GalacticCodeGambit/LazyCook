@@ -1,7 +1,7 @@
 ## 1. Wähle ein Basis-Image (Node.js Version 18)
 #FROM node:18-alpine
 ## 2. Setze das Arbeitsverzeichnis im Container
-#WORKDIR /app
+#WORKDIR /Project/Frontend
 ## 3. Kopiere die Datei mit den Abhängigkeiten
 ##    Wir kopieren diese zuerst, um Docker's Caching zu nutzen
 #COPY package*.json ./
