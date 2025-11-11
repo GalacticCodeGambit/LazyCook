@@ -1,1 +1,4 @@
 # Abhängigkeiten für Python
+fastapi[standard]==0.121.1
+uvicorn[standard]==0.38.0
+gunicorn==23.0.0

@@ -2,8 +2,28 @@ services:
 
 #  frontend:
 #    build:
+#      context: .
+#      dockerfile: Dockerfile-frontend
+
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile-backend
+    volumes:
+      - ./Backend:/app
+      - data:/data
+    ports:
+      - "8000:8000"
+
+
+# Daten persistieren für container machen
+volumes:
+  data:
+
+#  frontend:
+#    build:
 #      context: ./Project/frontend            # erstelle später ./Project/frontend mit React
-#      dockerfile: Dockerfile-backend-test-backend
+#      dockerfile: Dockerfile-backend-backend
 #    container_name: lazycook_frontend
 #    restart: "no"
 #    volumes:
@@ -13,26 +33,3 @@ services:
 #      - CHOKIDAR_USEPOLLING=true             # nützlich für Live‑Reload auf Windows
 #    ports:
 #      - "3000:3000"
-
-#  backend:
-#    build: Dockerfile-backend-test-backend
-##      context: .
-##      dockerfile: Dockerfile-backend-test-backend
-#    container_name: lazycook_backend
-#    restart: 'no'
-#    ports:
-#      - "8000:8000"
-##    volumes:
-##      - ./backend:/app  # ./Project/backend:/app
-##      - ./data:/data
-#    environment:
-#            - DATABASE_URL=sqlite:////data/lazycook.db
-
-  backend-test:
-    build: Dockerfile-backend-test
-    volumes:
-      - data:/data
-
-# Daten persistieren für container machen
-volumes:
-  data:
