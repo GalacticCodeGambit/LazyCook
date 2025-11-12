@@ -32,14 +32,15 @@ LazyCook soll eine Webanwendung sein. Die es ermöglichen seine vorhanden Zutate
 -->
 
  ## Installation and Setup
-1. Clone the repository:  
+1. Klonen das Repository:  
    `git clone https://github.com/GalacticCodeGambit/LazyCook.git`
-2. Navigate to the project directory:  
+2. Navigieren zum Projektverzeichnis:  
    `cd LazyCook/Project`
-3. Start the docker containers:  
+3. Starten der Anwendung mit: Docker Compose:
    `docker compose up -d`
 <!--Unterschied zu "docker compose up -d --build"? -->
 Die Anwendung sollte jetzt unter `http://localhost:8000` erreichbar sein.
+
  <!-- ## How It Works -->
 
  <!-- ## Contributing -->

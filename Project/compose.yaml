@@ -32,9 +32,6 @@ services:
       --bind 0.0.0.0:8000
       --workers 4
       main:app
-#docker compose -f compose.yaml up --build --force-recreate -d
-#docker compose exec backend python -c "import uvicorn, sys; print('uvicorn', uvicorn.__version__)"
-#docker compose exec backend pip show uvicorn
 
 # Daten persistieren für container machen
 volumes:
