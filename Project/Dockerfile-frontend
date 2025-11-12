@@ -1,10 +1,10 @@
 ## 1. Wähle ein Basis-Image (Node.js Version 18)
 #FROM node:18-alpine
 ## 2. Setze das Arbeitsverzeichnis im Container
-#WORKDIR /Project/Frontend
+#WORKDIR /app
 ## 3. Kopiere die Datei mit den Abhängigkeiten
 ##    Wir kopieren diese zuerst, um Docker's Caching zu nutzen
-#COPY package*.json ./
+#COPY Frontend/package*.json ./
 ## 4. Installiere die Abhängigkeiten
 #RUN npm install
 ## 5. Kopiere den Rest deines Quellcodes
@@ -15,3 +15,26 @@
 #EXPOSE 3000
 ## 8. Der Befehl, um die App zu starten
 #CMD ["node", "server.js"]
+
+# Use the latest LTS version of Node.js
+FROM node:25-alpine3.21
+
+# Set the working directory inside the container
+WORKDIR /app
+
+# Copy package.json and package-lock.json
+COPY Frontend/lazycook/package*.json ./
+
+# Install dependencies
+RUN npm install
+
+# Copy the rest of your application files
+COPY Frontend/lazycook/ .
+
+ENV PORT=3000
+
+# Expose the port your app runs on
+EXPOSE 3000
+
+# Define the command to run your app
+CMD ["npm", "start"]

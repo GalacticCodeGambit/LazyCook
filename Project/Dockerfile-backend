@@ -15,6 +15,8 @@ WORKDIR /app
 COPY Backend/requirements.txt /app/requirements.txt
 RUN python -m pip install --upgrade pip
 RUN python -m pip install --no-cache-dir -r /app/requirements.txt
+# Sicherstellen, dass uvicorn vorhanden ist, damit Gunicorn den UvicornWorker laden kann
+RUN python -m pip install --no-cache-dir "uvicorn[standard]"
 
 COPY Backend/ /app
 
@@ -23,6 +25,4 @@ ENV PYTHONUNBUFFERED=1
 
 EXPOSE 8000
 
-#CMD ["fastapi", "run", "main.py", "--port", "80"]
-#CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]
 CMD ["gunicorn", "-k", "uvicorn.workers.UvicornWorker", "--bind", "0.0.0.0:8000", "--workers", "4", "main:app"]

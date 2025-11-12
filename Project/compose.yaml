@@ -4,17 +4,37 @@ services:
 #    build:
 #      context: .
 #      dockerfile: Dockerfile-frontend
+#    ports:
+#      - "3000:3000"
+#    volumes:
+#      - .:/app
+#      - ./node_modules:/app/node_modules
+#    environment:
+#      NODE_ENV: development
+#    stdin_open: true
+#    tty: true
+#    command: npm start
 
   backend:
     build:
       context: .
       dockerfile: Dockerfile-backend
+    working_dir: /app
+    environment:
+      - PYTHONUNBUFFERED=1
     volumes:
       - ./Backend:/app
       - data:/data
     ports:
       - "8000:8000"
-
+    command: >
+      gunicorn -k uvicorn.workers.UvicornWorker
+      --bind 0.0.0.0:8000
+      --workers 4
+      main:app
+#docker compose -f compose.yaml up --build --force-recreate -d
+#docker compose exec backend python -c "import uvicorn, sys; print('uvicorn', uvicorn.__version__)"
+#docker compose exec backend pip show uvicorn
 
 # Daten persistieren für container machen
 volumes:
