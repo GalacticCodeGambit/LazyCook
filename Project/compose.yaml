@@ -4,15 +4,9 @@ services:
       context: .
       dockerfile: Dockerfile-frontend
     ports:
-      - "3000:3000"
-    volumes:
-      - .:/app
-      - ./node_modules:/app/node_modules
-    environment:
-      NODE_ENV: development
-    stdin_open: true
-    tty: true
-    command: npm run dev
+      - "8000:8000"
+    depends_on:
+      - backend
 
   backend:
     build:
@@ -25,27 +19,12 @@ services:
       - ./Backend:/app
       - data:/data
     ports:
-      - "8000:8000"
-#    command: >
-#      gunicorn -k uvicorn.workers.UvicornWorker
-#      --bind 0.0.0.0:8000
-#      --workers 4
-#      main:app
+      - "3000:3000"
 
-# Daten persistieren für container machen
+# Persist data for containers
 volumes:
   data:
 
-#  frontend:
-#    build:
-#      context: ./Project/frontend            # erstelle später ./Project/frontend mit React
-#      dockerfile: Dockerfile-backend-backend
-#    container_name: lazycook_frontend
-#    restart: "no"
-#    volumes:
-#      - ./Project/frontend:/app
-#      - /app/node_modules
-#    environment:
-#      - CHOKIDAR_USEPOLLING=true             # nützlich für Live‑Reload auf Windows
-#    ports:
-#      - "3000:3000"
+#networks:
+#  default:
+#    driver: custom-driver
