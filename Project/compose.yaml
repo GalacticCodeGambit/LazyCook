@@ -1,18 +1,18 @@
 services:
-#  frontend:
-#    build:
-#      context: .
-#      dockerfile: Dockerfile-frontend
-#    ports:
-#      - "3000:3000"
-#    volumes:
-#      - .:/app
-#      - ./node_modules:/app/node_modules
-#    environment:
-#      NODE_ENV: development
-#    stdin_open: true
-#    tty: true
-#    command: npm start
+  frontend-dev:
+    build:
+      context: .
+      dockerfile: Dockerfile-frontend
+    ports:
+      - "3000:3000"
+    volumes:
+      - .:/app
+      - ./node_modules:/app/node_modules
+    environment:
+      NODE_ENV: development
+    stdin_open: true
+    tty: true
+    command: npm run dev
 
   backend:
     build:
@@ -26,11 +26,11 @@ services:
       - data:/data
     ports:
       - "8000:8000"
-    command: >
-      gunicorn -k uvicorn.workers.UvicornWorker
-      --bind 0.0.0.0:8000
-      --workers 4
-      main:app
+#    command: >
+#      gunicorn -k uvicorn.workers.UvicornWorker
+#      --bind 0.0.0.0:8000
+#      --workers 4
+#      main:app
 
 # Daten persistieren für container machen
 volumes:

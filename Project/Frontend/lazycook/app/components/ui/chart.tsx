@@ -1,12 +1,20 @@
+// typescript
 "use client";
 
 import React, { useId, useMemo, useContext, createContext } from "react";
 import * as Recharts from "recharts";
 import { cn } from "./utils"; // siehe oben
 
+type ItemConfig = {
+    color?: string;
+    theme?: Record<string, string>;
+};
+
+type ConfigType = Record<string, ItemConfig>;
+
 const THEMES = { light: "", dark: ".dark" };
 
-const ChartContext = createContext(null);
+const ChartContext = createContext<{ config: ConfigType } | null>(null);
 
 function useChart() {
     const ctx = useContext(ChartContext);
@@ -14,7 +22,20 @@ function useChart() {
     return ctx;
 }
 
-export function ChartContainer({ id, className, children, config, ...props }) {
+export function ChartContainer(
+    {
+        id,
+        className,
+        children,
+        config,
+        ...props
+    }: {
+        id?: string;
+        className?: string;
+        children?: React.ReactNode;
+        config: ConfigType;
+    } & React.HTMLAttributes<HTMLDivElement>
+) {
     const uniqueId = useId();
     const chartId = `chart-${id || uniqueId.replace(/:/g, "")}`;
 
@@ -33,10 +54,11 @@ export function ChartContainer({ id, className, children, config, ...props }) {
     );
 }
 
-function ChartStyle({ id, config }) {
+function ChartStyle({ id, config }: { id: string; config: ConfigType }) {
     const colorConfig = Object.entries(config).filter(
         ([, conf]) => conf.theme || conf.color
-    );
+    ) as [string, ItemConfig][];
+
     if (!colorConfig.length) return null;
 
     return (
@@ -51,6 +73,7 @@ function ChartStyle({ id, config }) {
                                     itemConfig.theme?.[theme] || itemConfig.color;
                                 return color ? `  --color-${key}: ${color};` : null;
                             })
+                            .filter(Boolean)
                             .join("\n")}
 }
 `

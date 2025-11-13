@@ -30,6 +30,8 @@ README.md
 .idea
 docs
 
+*.log,
+
 # Frontend
 node_modules
 npm-debug.log*

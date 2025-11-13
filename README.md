@@ -37,8 +37,8 @@ LazyCook soll eine Webanwendung sein. Die es ermöglichen seine vorhanden Zutate
 2. Navigieren zum Projektverzeichnis:  
    `cd LazyCook/Project`
 3. Starten der Anwendung mit: Docker Compose:
-   `docker compose up -d`
-<!--Unterschied zu "docker compose up -d --build"? -->
+   `docker compose up --build -d`
+<!--Unterschied zu "docker compose up -d"? -->
 Die Anwendung sollte jetzt unter `http://localhost:8000` erreichbar sein.
 
  <!-- ## How It Works -->
