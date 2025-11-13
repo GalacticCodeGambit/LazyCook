@@ -1,5 +1,5 @@
-from Project.Backend.Datenbank import Datenbank
-from Project.Backend.Zutat import Zutat
+from project.backend.Datenbank import Datenbank
+from project.backend.Zutat import Zutat
 
 
 class Rezept:
