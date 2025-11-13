@@ -1,5 +1,5 @@
-from Project.Backend.Person import Person
-from Project.Backend.Rezept import Rezept
+from project.backend.Person import Person
+from project.backend.Rezept import Rezept
 
 
 class Benutzer(Person):
