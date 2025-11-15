@@ -2,13 +2,13 @@ FROM node:24-alpine3.20
 WORKDIR /app
 
 # Copy package.json and package-lock.json
-COPY Frontend/lazycook/package*.json ./
+COPY Frontend/package*.json ./
 
 # Install dependencies
 RUN npm install
 
 # Copy the rest of the application files
-COPY Frontend/lazycook/ .
+COPY Frontend/ .
 
 RUN npm run build
 
