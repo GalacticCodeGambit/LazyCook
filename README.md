@@ -26,10 +26,20 @@ LazyCook soll eine Webanwendung sein. Die es ermöglichen seine vorhanden Zutate
 - IDE: IntelliJ
 - Projekt Management: GitHub Projects 
 
+<!-- 
 - Mockup: Figma
 - UML: UMLet/Drawio
+-->
 
- <!-- ## Installation and Setup -->
+ ## Installation and Setup
+1. Klonen das Repository:  
+   `git clone https://github.com/GalacticCodeGambit/LazyCook.git`
+2. Navigieren zum Projektverzeichnis:  
+   `cd LazyCook/Project`
+3. Starten der Anwendung mit: Docker Compose:
+   `docker compose up --build -d`
+<!--Unterschied zu "docker compose up -d"? -->
+Die Anwendung sollte jetzt unter `http://localhost:8000` erreichbar sein.
 
  <!-- ## How It Works -->
 

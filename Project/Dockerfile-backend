@@ -1,0 +1,17 @@
+FROM python:3.11.10-slim
+WORKDIR /app
+
+COPY backend/requirements.txt /app/requirements.txt
+RUN python -m pip install --upgrade pip
+RUN python -m pip install --no-cache-dir -r /app/requirements.txt
+# Sicherstellen, dass uvicorn vorhanden ist, damit Gunicorn den UvicornWorker laden kann
+RUN python -m pip install --no-cache-dir "uvicorn[standard]"
+
+COPY backend/ /app
+
+ENV PYTHONDONTWRITEBYTECODE=1
+ENV PYTHONUNBUFFERED=1
+
+#EXPOSE 3000
+
+CMD ["gunicorn", "-k", "uvicorn.workers.UvicornWorker", "--bind", "0.0.0.0:3000", "--workers", "4", "main:app"]
