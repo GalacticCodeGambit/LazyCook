@@ -93,7 +93,7 @@ export function Anmelden({ isOpen, onClose, onSwitchToRegister }: AnmeldenProps)
         setErrors(newErrors);
     };
 
-    const handleSubmit = (e: { preventDefault: () => void; }) => {
+    const handleSubmit = () => {
         // Alle Felder als berührt markieren
         setTouched({
             email: true,
