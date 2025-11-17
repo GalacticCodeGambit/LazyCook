@@ -1,7 +1,27 @@
+'use client'
+
+
 import { ChefHat, Search, BookOpen, Star, Clock, Smile } from 'lucide-react';
 import { Button } from '../components/ui/button';
+import {Registrieren} from "@/app/homepage/signup";
+import {useState} from "react";
+import {Anmelden} from "@/app/homepage/signin";
 
 export default function Homepage() {
+    const [showRegisterModal, setShowRegisterModal] = useState(false);
+    const [showLoginModal, setShowLoginModal] = useState(false);
+
+    const switchToLogin = () => {
+        setShowRegisterModal(false);
+        setShowLoginModal(true);
+    };
+
+    const switchToRegister = () => {
+        setShowRegisterModal(true);
+        setShowLoginModal(false);
+    }
+
+
     return (
         <div className="min-h-screen bg-white">
             {/* Main Navigation */}
@@ -19,10 +39,10 @@ export default function Homepage() {
                     </nav>
 
                     <div className="flex items-center gap-3">
-                        <Button variant="ghost" className="text-sm">
+                        <Button variant="ghost" className="text-sm" onClick={() => setShowLoginModal(true)}>
                             Anmelden
                         </Button>
-                        <Button className="bg-black text-white hover:bg-black/90 text-sm rounded-md px-4">
+                        <Button className="bg-black text-white hover:bg-black/90 text-sm rounded-md px-4" onClick={() => setShowRegisterModal(true)}>
                             Registrieren
                         </Button>
                     </div>
@@ -45,7 +65,7 @@ export default function Homepage() {
                     erforderlich.
                 </p>
 
-                <Button className="bg-black text-white hover:bg-black/90 px-8 py-5 rounded-md">
+                <Button className="bg-black text-white hover:bg-black/90 px-8 py-5 rounded-md" onClick={() => setShowLoginModal(true)}>
                     Kochen starten
                 </Button>
             </section>
@@ -171,11 +191,27 @@ export default function Homepage() {
                     <p className="text-center text-white mb-5 max-w-3xl mx-auto leading-relaxed">
                         Bereit deine eigener Chefkoch zu sein?
                     </p>
-                    <Button className="bg-white text-black hover:bg-white/90 px-8 py-5 rounded-md ">
+                    <Button className="bg-white text-black hover:bg-white/90 px-8 py-5 rounded-md" onClick={() => setShowLoginModal(true)}>
                         Kochen starten
                     </Button>
                 </div>
             </section>
+
+            {/* Popup */}
+
+            <div>
+                <Registrieren
+                    isOpen={showRegisterModal}
+                    onClose={() => setShowRegisterModal(false)}
+                    onSwitchToLogin={switchToLogin}
+                />
+
+                <Anmelden
+                    isOpen={showLoginModal}
+                    onClose={() => setShowLoginModal(false)}
+                    onSwitchToRegister={switchToRegister}
+                />
+            </div>
         </div>
     );
 }
