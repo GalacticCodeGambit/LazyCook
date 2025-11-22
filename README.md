@@ -41,6 +41,13 @@ LazyCook soll eine Webanwendung sein. Die es ermöglichen seine vorhanden Zutate
 <!--Unterschied zu "docker compose up -d"? -->
 Die Anwendung sollte jetzt unter `http://localhost:8000` erreichbar sein.
 
+## Probleme beim Entwickeln
+
+Problem: Code hinzugefügt/geändert aber Änderungen werden nicht übernommen von Docker 
+```
+docker compose -f compose.yaml up --build --force-recreate -d  
+```
+
  <!-- ## How It Works -->
 
  <!-- ## Contributing -->
