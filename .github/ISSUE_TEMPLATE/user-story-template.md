@@ -2,7 +2,7 @@
 name: User Story template
 about: User Story Erstellung vereinfachen/vereinheitlichen
 title: 'UserStory:'
-labels: UserStory
+labels: ''
 assignees: ''
 
 ---
