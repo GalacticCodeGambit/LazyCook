@@ -1,5 +1,5 @@
-from project.backend.Person import Person
-from project.backend.Rezept import Rezept
+from Project.backend.Person import Person
+from Project.backend.Rezept import Rezept
 
 
 class Admin(Person):
