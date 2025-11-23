@@ -1,6 +1,6 @@
-from project.backend.Benutzer import Benutzer
-from project.backend.Datenbank import Datenbank
-from project.backend.Person import Person
+from Project.backend.Benutzer import Benutzer
+from Project.backend.Datenbank import Datenbank
+from Project.backend.Person import Person
 
 
 class LazyCookVerwaltung:
