@@ -1,4 +1,4 @@
-# Architekturentscheidungen
+# Architekturstil
 
 ## Kontext und Problemstellung
 
