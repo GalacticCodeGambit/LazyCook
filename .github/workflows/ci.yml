@@ -1,7 +1,7 @@
 name: ci
 on: push
-#permissions:
-#  contents: read
+permissions:
+  contents: read
 
 jobs:
   Test:
