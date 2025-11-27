@@ -8,11 +8,17 @@ class Datenbank:
 
     def verbindeDB(self):
         self.con = sqlite3.connect("LazyCookDB")
-        self.con.row_factory = sqlite3.Row  
+        self.con.row_factory = sqlite3.Row
         self.db = self.con.cursor()
         self.db.execute("PRAGMA foreign_keys = ON")
         self.__create_tables_if_not_exist()
-        
+
+    def get_connection(self):
+        """Neue Verbindung für jeden Request"""
+        con = sqlite3.connect("LazyCookDB", check_same_thread=False)
+        con.row_factory = sqlite3.Row
+        return con
+
     def __create_tables_if_not_exist(self):
         try:
             self.db.execute("""
@@ -80,7 +86,8 @@ class Datenbank:
                 CREATE TABLE IF NOT EXISTS Konto (
                     id INTEGER PRIMARY KEY AUTOINCREMENT,
                     email VARCHAR(250) NOT NULL UNIQUE,
-                    passwort TEXT NOT NULL
+                    passwort TEXT NOT NULL,
+                    salt TEXT NOT NULL
                 )
             """
             )
@@ -89,46 +96,50 @@ class Datenbank:
         except Exception as e:
             print(f"Fehler bei Tabellenerstellung: {e}")
             self.con.rollback()
-    def addNutzer(self, email, namen, passwort):
 
-        self.db.execute("""
+    def addNutzer(self, email, salt, passwort):
+        con = self.get_connection()
+
+        db = con.cursor()
+        db.execute("""
                 SELECT email FROM KONTO
             """
         )
-        ergebnis=self.db.fetchall()
+        ergebnis=db.fetchall()
         for row in ergebnis:
             if row["email"]==email:
-                return False
-        self.db.execute(
-                "INSERT INTO KONTO (email, passwort) VALUES (?, ?)",
-            (email, passwort), 
+                return "Email schon in einem Konto registriert"
+        db.execute(
+                "INSERT INTO KONTO (email, passwort, salt) VALUES (?, ?, ?)",
+            (email, passwort, salt),
         )
-        self.db.execute(
+        db.execute(
                 "SELECT id FROM KONTO WHERE email = ?",
                 (email,),
         )
-        kid=self.db.fetchone()
-        self.db.execute(
-                "INSERT INTO Nutzer (name, kid) VALUES (?, ?)",
-            (namen, kid["id"]), 
+        kid=db.fetchone()
+        db.execute(
+                "INSERT INTO Nutzer (kid) VALUES (?)",
+            (kid["id"],),
         )
-        self.con.commit()
-        return True
+        con.commit()
+        return "Registrierung erfolgreich"
 
-    def anmeldenNutzer(self, email, passwort):
-        self.db.execute(
-                "SELECT passwort FROM KONTO WHERE email = ?",
+    def anmeldenNutzer(self, email):
+        con = self.get_connection()
+
+        db = con.cursor()
+
+        db.execute(
+                "SELECT passwort, salt FROM KONTO WHERE email = ?",
                 (email,),
         )
-        row=self.db.fetchone()
+        row=db.fetchone()
         if row is None:
-            return "Email nicht gefunden!"
+            return None
         else:
-            
-            if row["passwort"]!=passwort:
-                return "Passwort ist falsch!"
-            else:
-                return "Anmeldeung erfolgreich"
+
+            return row
         
     def speichernInDB(self, daten: Dict[str, Any]):
         pass

@@ -4,6 +4,7 @@ import {Button} from "@/app/components/ui/button";
 import "./popup.css"
 
 
+
 interface RegistrierenProps {
     isOpen: boolean;
     onClose: () => void;
@@ -11,6 +12,8 @@ interface RegistrierenProps {
 }
 
 export function Registrieren({ isOpen, onClose, onSwitchToLogin }: RegistrierenProps) {
+
+
     const [formData, setFormData] = useState({
         email: '',
         password: '',
@@ -27,7 +30,7 @@ export function Registrieren({ isOpen, onClose, onSwitchToLogin }: RegistrierenP
         password: false,
         confirmPassword: false
     });
-    const [submitted, setSubmitted] = useState(false);
+    const [message, setMessage] = useState('');
 
     const validateEmail = (email: string) => {
         const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -103,7 +106,7 @@ export function Registrieren({ isOpen, onClose, onSwitchToLogin }: RegistrierenP
         setErrors(newErrors);
     };
 
-    const handleSubmit = () => {
+    const handleSubmit = async () => {
         // Alle Felder als berührt markieren
         setTouched({
             email: true,
@@ -116,21 +119,38 @@ export function Registrieren({ isOpen, onClose, onSwitchToLogin }: RegistrierenP
 
         if (!newErrors.email && !newErrors.password && !newErrors.confirmPassword) {
             console.log('Formular erfolgreich validiert:', formData);
-            setSubmitted(true);
 
-            // Hier würdest du normalerweise deine API aufrufen
-            // Nach erfolgreicher API-Antwort kannst du das Modal schließen
-
-            setTimeout(() => {
-                setFormData({
-                    email: '',
-                    password: '',
-                    confirmPassword: ''
+            try {
+                const response = await fetch('http://localhost:3000/api/register', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(formData),
                 });
-                setTouched({confirmPassword: false, email: false, password: false});
-                setSubmitted(false);
-                onClose()
-            }, 2000);
+
+                const data = await response.json();
+
+
+                if (response.ok && data.message.includes('erfolgreich')) {
+                    // Erfolg (Status 200-299)
+                    setMessage(data.message || 'Registrierung erfolgreich');
+                    setFormData({ email: '', password: '', confirmPassword: '' });
+
+                    setTimeout(() => {
+                        setTouched({confirmPassword: false, email: false, password: false});
+                        onClose();
+                        setMessage('');
+                    }, 2000);
+                } else {
+                    // Fehler vom Backend (Status 400-599)
+                    setMessage(data.detail || data.message || 'Registrierung fehlgeschlagen');
+                }
+            } catch (error) {
+                // Netzwerkfehler
+                setMessage('Netzwerkfehler: Backend nicht erreichbar');
+                console.error('Error:', error);
+            }
         }
     };
 
@@ -168,10 +188,13 @@ export function Registrieren({ isOpen, onClose, onSwitchToLogin }: RegistrierenP
                     </p>
                 </div>
 
-                {submitted && (
-                    <div className="mb-6 p-4 bg-green-50 border border-green-200 rounded-lg flex items-center gap-3">
-                        <CheckCircle className="text-green-600" size={20} />
-                        <span className="text-green-800 font-medium">Erfolgreich registriert!</span>
+                {message && (
+                    <div className={`mt-4 p-3 rounded-md ${
+                        message.includes('erfolgreich')
+                            ? 'bg-green-100 text-green-700'
+                            : 'bg-red-100 text-red-700'
+                    }`}>
+                        {message}
                     </div>
                 )}
 
