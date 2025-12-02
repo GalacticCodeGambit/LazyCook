@@ -1,4 +1,4 @@
-name: ci
+name: "CI"
 on: push
 permissions:
   contents: read
@@ -14,10 +14,10 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y docker-compose
       - name: Build the stack
-        run: docker-compose -f Project/compose.yaml build
+        run: docker-compose -f project/compose.yaml build
         # Container starten
       - name: Start services
-        run: docker-compose -f Project/compose.yaml up -d
+        run: docker-compose -f project/compose.yaml up -d
 
       # Healthcheck / Test
       #      - name: Run tests
@@ -41,8 +41,8 @@ jobs:
              sleep $wait_seconds
           done
           echo "service not ready" >&2
-          docker-compose -f Project/compose.yaml ps || true
-          docker-compose -f Project/compose.yaml logs || true
+          docker-compose -f project/compose.yaml ps || true
+          docker-compose -f project/compose.yaml logs || true
           exit 1
 
       - name: Smoke test
