@@ -3,7 +3,7 @@ name: Task template
 about: Task Erstellung vereinfachen/vereinheitlichen
 title: 'Task: '
 labels: ''
-assignees: ''
+assignees: GalacticCodeGambit, Nicoolaus
 
 ---
 
