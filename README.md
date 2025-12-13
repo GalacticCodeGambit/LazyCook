@@ -22,7 +22,7 @@ LazyCook soll eine Webanwendung sein. Die es ermöglichen seine vorhanden Zutate
 - [ ] Passwörter "sicher" in Datenbank Abspeichern als Hash und vom Frontend/Backend "sicher" behandeln 
 
 ## Verwendete Technologien
-- Frontend: HTML, CSS, JavaScript/React
+- Frontend: HTML, CSS, TypeScript/React
 - Backend: Python
 - DB: SQLite
 - IDE: IntelliJ
