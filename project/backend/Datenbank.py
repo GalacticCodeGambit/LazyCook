@@ -28,9 +28,7 @@ class Datenbank:
                     mengenArt VARCHAR(30) NOT NULL
                     
                 )
-            """
-            )
-            
+            """)
             self.db.execute("""
                 CREATE TABLE IF NOT EXISTS Rezept (
                     id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -39,8 +37,7 @@ class Datenbank:
                     FOREIGN KEY (vid) REFERENCES Verfasser (id) ON DELETE CASCADE
                     
                 )
-            """
-            )
+            """)
             self.db.execute("""
                 CREATE TABLE IF NOT EXISTS Besteht_Aus (
                     zid INTEGER NOT NULL,
@@ -51,16 +48,14 @@ class Datenbank:
                     UNIQUE (zid, rid)
                     
                 )
-            """
-            )
+            """)
             self.db.execute("""
                 CREATE TABLE IF NOT EXISTS Verfasser (
                     id INTEGER PRIMARY KEY AUTOINCREMENT,
                     name TEXT UNIQUE NOT NULL
                     
                 )
-            """
-            )
+            """)
             self.db.execute("""
                 CREATE TABLE IF NOT EXISTS Nutzer (
                     id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -68,9 +63,8 @@ class Datenbank:
                     kid INTEGER NOT NULL,
                     FOREIGN KEY (kid) REFERENCES Konto (id) ON DELETE CASCADE
                 )
-            """
-            )
- 
+            """)
+
             self.db.execute("""
                 CREATE TABLE IF NOT EXISTS Besteht_Aus (
                     nid INTEGER NOT NULL,
@@ -78,10 +72,8 @@ class Datenbank:
                     FOREIGN KEY (nid) REFERENCES Zutat (id) ON DELETE CASCADE,
                     FOREIGN KEY (rid) REFERENCES Rezept (id) ON DELETE CASCADE,
                     UNIQUE (nid, rid)
-                    
                 )
-            """
-            )
+            """)
             self.db.execute("""
                 CREATE TABLE IF NOT EXISTS Konto (
                     id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -89,8 +81,7 @@ class Datenbank:
                     passwort TEXT NOT NULL,
                     salt TEXT NOT NULL
                 )
-            """
-            )
+            """)
             self.con.commit()
             print("✅ Datenbank-Tabellen erfolgreich initialisiert")
         except Exception as e:
@@ -102,19 +93,18 @@ class Datenbank:
 
         db = con.cursor()
         db.execute("""
-                SELECT email FROM KONTO
-            """
-        )
+                SELECT email FROM Konto
+            """)
         ergebnis=db.fetchall()
         for row in ergebnis:
             if row["email"]==email:
                 return "Email schon in einem Konto registriert"
         db.execute(
-                "INSERT INTO KONTO (email, passwort, salt) VALUES (?, ?, ?)",
+                "INSERT INTO Konto (email, passwort, salt) VALUES (?, ?, ?)",
             (email, passwort, salt),
         )
         db.execute(
-                "SELECT id FROM KONTO WHERE email = ?",
+                "SELECT id FROM Konto WHERE email = ?",
                 (email,),
         )
         # BUG: Fehlerquelle: da kein name übergeben wird, wird Nutzer nicht korrekt angelegt
@@ -132,21 +122,20 @@ class Datenbank:
         db = con.cursor()
 
         db.execute(
-                "SELECT passwort, salt FROM KONTO WHERE email = ?",
+                "SELECT passwort, salt FROM Konto WHERE email = ?",
                 (email,),
         )
         row=db.fetchone()
         if row is None:
             return None
-        else:
+        return row
 
-            return row
-        
     def speichernInDB(self, daten: Dict[str, Any]):
         pass
 
     def holeDaten(self, tabelle: str) -> list[Dict[str, Any]]:
         pass
+
     def entferneTextSyntax(self, text):
         text = (
             text.replace("(", "")
@@ -157,6 +146,7 @@ class Datenbank:
             .replace(",", "")
         )
         return text
+
     def close(self):
         self.con.close()
 
