@@ -117,11 +117,12 @@ class Datenbank:
                 "SELECT id FROM KONTO WHERE email = ?",
                 (email,),
         )
-        kid=db.fetchone()
-        db.execute(
-                "INSERT INTO Nutzer (kid) VALUES (?)",
-            (kid["id"],),
-        )
+        # BUG: Fehlerquelle: da kein name übergeben wird, wird Nutzer nicht korrekt angelegt
+        # kid=db.fetchone()
+        # db.execute(
+        #         "INSERT INTO Nutzer (kid) VALUES (?)",
+        #     (kid["id"],),
+        # )
         con.commit()
         return "Registrierung erfolgreich"
 
