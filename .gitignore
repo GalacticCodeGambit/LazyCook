@@ -1,0 +1,17 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+
+# Database
+LazyCookDB
+*.db
+*.sqlite
+*.sqlite3
+
+# IDEs
+.vscode/
+*.swp
+*.swo
+*~

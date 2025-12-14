@@ -92,29 +92,25 @@ class Datenbank:
         con = self.get_connection()
 
         db = con.cursor()
-        db.execute("""
-                SELECT email FROM Konto
-            """)
-        ergebnis=db.fetchall()
-        for row in ergebnis:
-            if row["email"]==email:
-                return "Email schon in einem Konto registriert"
-        db.execute(
-                "INSERT INTO Konto (email, passwort, salt) VALUES (?, ?, ?)",
-            (email, passwort, salt),
-        )
-        db.execute(
-                "SELECT id FROM Konto WHERE email = ?",
-                (email,),
-        )
-        # BUG: Fehlerquelle: da kein name übergeben wird, wird Nutzer nicht korrekt angelegt
-        # kid=db.fetchone()
-        # db.execute(
-        #         "INSERT INTO Nutzer (kid) VALUES (?)",
-        #     (kid["id"],),
-        # )
-        con.commit()
-        return "Registrierung erfolgreich"
+        try:
+            db.execute(
+                    "INSERT INTO Konto (email, passwort, salt) VALUES (?, ?, ?)",
+                (email, passwort, salt),
+            )
+            db.execute(
+                    "SELECT id FROM Konto WHERE email = ?",
+                    (email,),
+            )
+            # BUG: Fehlerquelle: da kein name übergeben wird, wird Nutzer nicht korrekt angelegt
+            # kid=db.fetchone()
+            # db.execute(
+            #         "INSERT INTO Nutzer (kid) VALUES (?)",
+            #     (kid["id"],),
+            # )
+            con.commit()
+            return "Registrierung erfolgreich"
+        except sqlite3.IntegrityError:
+            return "Email schon in einem Konto registriert"
 
     def anmeldenNutzer(self, email):
         con = self.get_connection()
