@@ -109,8 +109,12 @@ class Datenbank:
             # )
             con.commit()
             return "Registrierung erfolgreich"
-        except sqlite3.IntegrityError:
-            return "Email schon in einem Konto registriert"
+        except sqlite3.IntegrityError as e:
+            # Check if it's specifically an email uniqueness violation
+            if "email" in str(e).lower() or "unique" in str(e).lower():
+                return "Email schon in einem Konto registriert"
+            # Re-raise if it's a different constraint violation
+            raise
 
     def anmeldenNutzer(self, email):
         con = self.get_connection()
