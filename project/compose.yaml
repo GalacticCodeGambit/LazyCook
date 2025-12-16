@@ -16,7 +16,7 @@ services:
     environment:
       - PYTHONUNBUFFERED=1
     volumes:
-      - ./Backend:/app
+      - ./backend:/app
       - data:/data
     ports:
       - "3000:3000"

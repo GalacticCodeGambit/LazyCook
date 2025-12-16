@@ -1,4 +1,3 @@
-# TODO : Review and update the .dockerignore file to exclude unnecessary files and directories from the Docker build context.
 **/.classpath
 **/.dockerignore
 **/.env

@@ -8,8 +8,8 @@ LazyCook soll eine Webanwendung sein. Die es ermöglichen seine vorhanden Zutate
 - [ ] Zutaten entfernen können  
 - [ ] Rezepte/Gerichte automatisch vorgeschlagen bekommen auf Grundlage der eingetragenen Zutaten
 - [ ] Personenzahl hinzufügen können und vorgeschlagene Rezept/Gericht Größe automatisch anpassen 
-- [ ] Als User mit Konto anmelden können
-- [ ] Als User mit neuem Konto registrieren können
+- [x] Als User mit Konto anmelden können
+- [x] Als User mit neuem Konto registrieren können
 
 ### Optionale Features
 - [ ] KI-basierte Rezeptvorschläge Einbindung
@@ -22,7 +22,7 @@ LazyCook soll eine Webanwendung sein. Die es ermöglichen seine vorhanden Zutate
 - [ ] Passwörter "sicher" in Datenbank Abspeichern als Hash und vom Frontend/Backend "sicher" behandeln 
 
 ## Verwendete Technologien
-- Frontend: HTML, CSS, JavaScript/React
+- Frontend: HTML, CSS, TypeScript/React
 - Backend: Python
 - DB: SQLite
 - IDE: IntelliJ
