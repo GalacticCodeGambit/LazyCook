@@ -20,6 +20,11 @@ class Datenbank:
         return con
 
     def __create_tables_if_not_exist(self):
+        """
+        Create the required SQLite tables for the application's schema if they do not already exist.
+        
+        Executes CREATE TABLE IF NOT EXISTS statements for all application tables and commits the transaction on success. On error, prints the exception message and rolls back the transaction.
+        """
         try:
             self.db.execute("""
                 CREATE TABLE IF NOT EXISTS Zutat (
@@ -89,6 +94,17 @@ class Datenbank:
             self.con.rollback()
 
     def addNutzer(self, email, salt, passwort):
+        """
+        Register a new account by inserting a row into the Konto table if the email is not already registered.
+        
+        Parameters:
+            email (str): The account email address to register.
+            salt (str): The salt value associated with the account password.
+            passwort (str): The account password (expected to be already hashed or prepared).
+        
+        Returns:
+            str: "Registrierung erfolgreich" if a new Konto row was inserted, or "Email schon in einem Konto registriert" if the email already exists.
+        """
         con = self.get_connection()
 
         db = con.cursor()
@@ -117,6 +133,15 @@ class Datenbank:
         return "Registrierung erfolgreich"
 
     def anmeldenNutzer(self, email):
+        """
+        Retrieve stored password hash and salt for the account with the given email.
+        
+        Parameters:
+            email (str): Account email to look up.
+        
+        Returns:
+            sqlite3.Row | None: A row containing `passwort` and `salt` for the matching account, or `None` if no account with the email exists.
+        """
         con = self.get_connection()
 
         db = con.cursor()
@@ -131,12 +156,38 @@ class Datenbank:
         return row
 
     def speichernInDB(self, daten: Dict[str, Any]):
+        """
+        Persist the provided data dictionary into this instance's database.
+        
+        Parameters:
+            daten (Dict[str, Any]): A mapping of column/field names to values representing the record(s) to persist. The exact expected keys and behavior depend on calling context and table targeted by the implementation.
+        """
         pass
 
     def holeDaten(self, tabelle: str) -> list[Dict[str, Any]]:
+        """
+        Retrieve all rows from the specified table as a list of dictionaries.
+        
+        Parameters:
+            tabelle (str): Name of the database table to read from.
+        
+        Returns:
+            list[Dict[str, Any]]: A list where each item is a mapping of column names to their values for a single row; returns an empty list if the table has no rows or does not exist.
+        """
         pass
 
     def entferneTextSyntax(self, text):
+        """
+        Remove common bracket and punctuation characters from a string.
+        
+        This function returns the input string with all parentheses `()`, square brackets `[]`, single quotes `'`, and commas `,` removed.
+        
+        Parameters:
+            text (str): Input string to sanitize.
+        
+        Returns:
+            str: The sanitized string with the specified characters removed.
+        """
         text = (
             text.replace("(", "")
             .replace(")", "")
@@ -148,6 +199,11 @@ class Datenbank:
         return text
 
     def close(self):
+        """
+        Close the instance's open SQLite connection.
+        
+        After calling this method the database connection is closed and the instance should not be used for further database operations.
+        """
         self.con.close()
 
         """Alles Nachfolgende sind Testfunktionen
@@ -229,5 +285,4 @@ class Datenbank:
 
         except Exception as e:
             print(f"Fehler beim Testen der Tabellen: {e}")
-
 
