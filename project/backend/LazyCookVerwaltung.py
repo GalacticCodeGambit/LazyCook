@@ -37,6 +37,17 @@ def hash_password(password: str) -> tuple[str, str]:
     return base64.b64encode(salt).decode(), base64.b64encode(key).decode()
 
 def verify_password(password: str, salt_b64: str, key_b64: str) -> bool:
+    """
+    Validate a plaintext password against a stored salt and derived key.
+    
+    Parameters:
+        password (str): The plaintext password to verify.
+        salt_b64 (str): Base64-encoded salt used when the stored key was derived.
+        key_b64 (str): Base64-encoded derived key (password hash) to compare against.
+    
+    Returns:
+        bool: `True` if the password, when derived with the provided salt, matches the stored key; `False` otherwise.
+    """
     salt = base64.b64decode(salt_b64)
     key_original = base64.b64decode(key_b64)
 
@@ -53,6 +64,19 @@ def verify_password(password: str, salt_b64: str, key_b64: str) -> bool:
 @app.post("/api/login")
 def anmelden(user: UserSignUpIn):
 
+    """
+    Authenticate a user by email and password.
+    
+    Parameters:
+        user (UserSignUpIn): Object containing `email` and `password` for authentication.
+    
+    Returns:
+        dict: A dictionary with a single `"message"` key describing the outcome:
+            - "Anmeldung erfolgreich" if authentication succeeds.
+            - "Falsches Passwort" if the password is incorrect.
+            - "Für diese Email ist kein Konto hinterlegt" if no account exists for the provided email.
+            - "Anmeldung fehlgeschlagen" if an unexpected error occurs.
+    """
     try:
         row = datenbank.anmeldenNutzer(user.email)
 
@@ -107,7 +131,6 @@ def suchenNachRezept(self, name: str):
 
 def zeigeRezepteAn(self):
    pass
-
 
 
 
