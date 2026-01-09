@@ -180,54 +180,80 @@ class Datenbank:
 
         print("\n===== Test abgeschlossen =====")
 
-
-
-
-    def test_print_tables(self):
-        try:
-            cursor = self.con.cursor()
-
-            # Alle Tabellennamen holen
-            cursor.execute("""
-                SELECT name FROM sqlite_master 
-                WHERE type='table' AND name NOT LIKE 'sqlite_%';
-            """)
-            tables = cursor.fetchall()
-
-            if not tables:
-                print("Keine Tabellen gefunden.")
-                return
-
-            for (table_name,) in tables:
-                print(f"\n===== Tabelle: {table_name} =====")
-
-                # Spalteninformationen abfragen
-                cursor.execute(f"PRAGMA table_info({table_name});")
-                columns = cursor.fetchall()
-
-                if columns:
-                    print("Spalten:")
-                    for col in columns:
-                        cid, name, col_type, notnull, dflt_value, pk = col
-                        print(f"  - {name} ({col_type})"
-                            f"{' NOT NULL' if notnull else ''}"
-                            f"{' [PK]' if pk else ''}"
-                            f"{f' DEFAULT {dflt_value}' if dflt_value is not None else ''}")
-                else:
-                    print("  Keine Spalten gefunden (seltsam).")
-
-                # Foreign Keys anzeigen
-                cursor.execute(f"PRAGMA foreign_key_list({table_name});")
-                fks = cursor.fetchall()
-                if fks:
-                    print("Foreign Keys:")
-                    for fk in fks:
-                        id, seq, table, from_col, to_col, on_update, on_delete, match = fk
-                        print(f"  - {from_col} -> {table}({to_col}) ON DELETE {on_delete}")
-                else:
-                    print("Keine Foreign Keys.")
-
-        except Exception as e:
-            print(f"Fehler beim Testen der Tabellen: {e}")
-
-
+#         """Alles Nachfolgende sind Testfunktionen
+#         """
+#     def test_anmelden(self):
+#         print("===== Starte Test: anmeldenNutzer() =====")
+#
+#         # 1. Testnutzer anlegen
+#         email = "test@example.com"
+#         name = "Testuser"
+#         pw = "meinpasswort"
+#
+#         print("Lege Testnutzer an...")
+#         self.addNutzer(email, name, pw)
+#
+#         # 2. Fall 1: richtige Daten
+#         print("\nTest 1: korrekte Anmeldung")
+#         result = self.anmeldenNutzer(email, pw)
+#         print("Erwartet: Anmeldung erfolgreich  |   Ergebnis:", result)
+#
+#         # 3. Fall 2: falsches Passwort
+#         print("\nTest 2: falsches Passwort")
+#         result = self.anmeldenNutzer(email, "falsch123")
+#         print("Erwartet: Passwort ist falsch!   |   Ergebnis:", result)
+#
+#         # 4. Fall 3: E-Mail existiert nicht
+#         print("\nTest 3: Email existiert nicht")
+#         result = self.anmeldenNutzer("nichtda@test.de", pw)
+#         print("Erwartet: Email nicht gefunden!  |   Ergebnis:", result)
+#
+#         print("\n===== Test abgeschlossen =====")
+#
+#
+#     def test_print_tables(self):
+#         try:
+#             cursor = self.con.cursor()
+#
+#             # Alle Tabellennamen holen
+#             cursor.execute("""
+#                 SELECT name FROM sqlite_master
+#                 WHERE type='table' AND name NOT LIKE 'sqlite_%';
+#             """)
+#             tables = cursor.fetchall()
+#
+#             if not tables:
+#                 print("Keine Tabellen gefunden.")
+#                 return
+#
+#             for (table_name,) in tables:
+#                 print(f"\n===== Tabelle: {table_name} =====")
+#
+#                 # Spalteninformationen abfragen
+#                 cursor.execute(f"PRAGMA table_info({table_name});")
+#                 columns = cursor.fetchall()
+#
+#                 if columns:
+#                     print("Spalten:")
+#                     for col in columns:
+#                         cid, name, col_type, notnull, dflt_value, pk = col
+#                         print(f"  - {name} ({col_type})"
+#                             f"{' NOT NULL' if notnull else ''}"
+#                             f"{' [PK]' if pk else ''}"
+#                             f"{f' DEFAULT {dflt_value}' if dflt_value is not None else ''}")
+#                 else:
+#                     print("  Keine Spalten gefunden (seltsam).")
+#
+#                 # Foreign Keys anzeigen
+#                 cursor.execute(f"PRAGMA foreign_key_list({table_name});")
+#                 fks = cursor.fetchall()
+#                 if fks:
+#                     print("Foreign Keys:")
+#                     for fk in fks:
+#                         id, seq, table, from_col, to_col, on_update, on_delete, match = fk
+#                         print(f"  - {from_col} -> {table}({to_col}) ON DELETE {on_delete}")
+#                 else:
+#                     print("Keine Foreign Keys.")
+#
+#         except Exception as e:
+#             print(f"Fehler beim Testen der Tabellen: {e}")
