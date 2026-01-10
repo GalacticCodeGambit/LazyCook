@@ -4,29 +4,31 @@
 LazyCook soll eine Webanwendung sein. Die es ermöglichen seine vorhanden Zutaten einzutragen und darauf soll LazyCook dir mögliche Rezepte/Gerichte vorschlagen die du aus diesen Zutaten gemacht werden können.   
 
 ## Features
-- [ ] Zutaten hinzufügen können 
-- [ ] Zutaten entfernen können  
-- [ ] Rezepte/Gerichte automatisch vorgeschlagen bekommen auf Grundlage der eingetragenen Zutaten
-- [ ] Personenzahl hinzufügen können und vorgeschlagene Rezept/Gericht Größe automatisch anpassen 
-- [x] Als User mit Konto anmelden können
-- [x] Als User mit neuem Konto registrieren können
+- [ ] [#23](https://github.com/GalacticCodeGambit/LazyCook/issues/23) Zutaten hinzufügen können 
+- [ ] [#24](https://github.com/GalacticCodeGambit/LazyCook/issues/24) Zutaten entfernen können  
+- [ ] [#25](https://github.com/GalacticCodeGambit/LazyCook/issues/25) Rezepte/Gerichte automatisch vorgeschlagen bekommen auf Grundlage der eingetragenen Zutaten
+- [ ] [#30](https://github.com/GalacticCodeGambit/LazyCook/issues/30) Personenzahl hinzufügen können und vorgeschlagene Rezept/Gericht Größe automatisch anpassen 
+- [x] [#27](https://github.com/GalacticCodeGambit/LazyCook/issues/27) Als User mit Konto anmelden können
+- [x] [#26](https://github.com/GalacticCodeGambit/LazyCook/issues/26) Als User mit neuem Konto registrieren können
 
 ### Optionale Features
 - [ ] KI-basierte Rezeptvorschläge Einbindung
-- [ ] Alle gespeicherten Zutaten aus der Datenbank, sollen auf einer Seite angezeigt werden und Suchbar sein z.B. nach Gerichtname "Pizza".
+- [ ] [#33](https://github.com/GalacticCodeGambit/LazyCook/issues/33) Alle gespeicherten Zutaten aus der Datenbank, sollen auf einer Seite angezeigt werden und Suchbar sein z.B. nach Gerichtname "Pizza".
 - [ ] Auf der Zutaten-Seite, werden grundlegende Zutaten wie z.B. Tomaten, Mehl, Salz und Milch automatisch vorgeschlagen. Diese sollen hinzufügbar oder ignorierbar sein.
-- [ ] Konto löschen/bearbeiten können
+- [ ] [#46](https://github.com/GalacticCodeGambit/LazyCook/issues/46) Konto löschen/bearbeiten können 
 - [ ] Fehlende Zutaten werden von einem Rezept in einer Einkaufliste aufgelistet
-- [ ] Der Nutzer kann Rezepte in die Datenbank hinzufügen 
-- [ ] Der Nutzer kann bereits hinzugefügte Zutaten bearbeiten, wie z.B. Menge, Einheit
-- [ ] Passwörter "sicher" in Datenbank Abspeichern als Hash und vom Frontend/Backend "sicher" behandeln 
+- [ ] Der Nutzer kann Rezepte in die Datenbank hinzufügen/erstellen 
+- [ ] [#47](https://github.com/GalacticCodeGambit/LazyCook/issues/47) Der Nutzer kann bereits hinzugefügte Zutaten bearbeiten, wie z.B. Menge, Einheit
+- [ ] [#45](https://github.com/GalacticCodeGambit/LazyCook/issues/45) Passwörter "sicher" in Datenbank Abspeichern als Hash und vom Frontend/Backend "sicher" behandeln
 
 ## Verwendete Technologien
 - Frontend: HTML, CSS, TypeScript/React
 - Backend: Python
 - DB: SQLite
-- IDE: IntelliJ
-- Projekt Management: GitHub Projects 
+- Tests: Pytest
+- CI/CD: GitHub Actions
+- Containerization: Docker
+- Projekt Management: GitHub Projects
 
 <!-- 
 - Mockup: Figma
