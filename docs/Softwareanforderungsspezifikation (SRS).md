@@ -3,9 +3,13 @@
 
 ### 1. Einleitung
 
-#### 1.1 Übersicht
+#### 1.1 Projektvision
 
-Schlichtes/modernes Design, einfache Bedienbarkeit, gute Übersicht, viele Rezepte, einfacher Start
+Entwicklung einer Webanwendung mit dem Ziel das tägliche Kochen einfacher und effizienter zu gestalten. 
+Der Nutzer soll hierbei Rezepte suchen können anhand der Zutaten die er zu Hause hat um sich das Einkaufen sparen zu können und um keine Lebensmittel zu verschwenden.
+Ziel ist, dass der Nutzer Zutaten und Personenzahl auf der Webseite eingibt und passende Rezepte aus der Datenbank entsprechend dieser Kriterien angezeigt bekommt. 
+
+Übersicht: Schlichtes/modernes Design, einfache Bedienbarkeit, gute Übersicht, viele Rezepte, einfacher Start.
 
 #### 1.2 Geltungsbereich
 
@@ -219,6 +223,13 @@ Das Projekt muss zum Ende des 4. Semesters abgegeben werden, genaueres wird noch
 - IDE: IntelliJ
 - Projekt Management: GitHub Projects
 
+#### 3.2 Qualitätsmerkmale
+- Wartbarkeit (Änderbarkeit): Neue Feature und Bug-Fixes innerhalb von 2 Tagen
+- Effizient (Zeitverhalten): Rezepte werden in maximal 5 Sekunden nach Klick auf Filtern angezeigt
+- Sicherheit der Nutzerdaten: Passwörter werden gehashed mit Salt in der Datnebnak gespeichert
+- Benutzbarkeit (Bedienbarkeit & Ansehnlichkeit): Anmeldung & Registrierung mit möglichts wenigen Klicks; Rezept vorschläge werden als 3x3 Matrix mit max. 9 Stück auf einer Seite aangezeigt.
+- Kompatibilität (Interoperatibilität): Die Anwendung soll auf unterscheidlihen Browsern fehlerfrei laufen (Chrome, Firefox, Safari)
+  
 ___
 ### 4. Unterstützende Informationen
 Für weitere Informationen können Sie sich an das LazyCook Team wenden oder unseren ([LazyCook-Discussions](https://github.com/GalacticCodeGambit/LazyCook/discussions)) besuchen. 
