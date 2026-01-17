@@ -86,6 +86,8 @@ def anmelden(user: UserSignUpIn):
 async def registrieren(user: UserSignUpIn):
     salt, password = hash_password(user.password)
 
+    # TODO: Validierung machen: Email-Format prüfen, Passwortstärke prüfen
+
     try:
         message = datenbank.addNutzer(user.email, salt, password)
     except Exception as e:
