@@ -1,13 +1,15 @@
 from typing import Dict, Any
 import sqlite3
 
+db_filename = "LazyCookDB.sqlite3"
 
+# TODO: Datenbank Speicherort festlegen (und Docker anpassen)
 class Datenbank:
     def __init__(self):
-        self.verbindeDB()
+        self.connect_db()
 
-    def verbindeDB(self):
-        self.con = sqlite3.connect("LazyCookDB")
+    def connect_db(self):
+        self.con = sqlite3.connect(db_filename)
         self.con.row_factory = sqlite3.Row
         self.db = self.con.cursor()
         self.db.execute("PRAGMA foreign_keys = ON")
@@ -15,8 +17,9 @@ class Datenbank:
 
     def get_connection(self):
         """Neue Verbindung für jeden Request"""
-        con = sqlite3.connect("LazyCookDB", check_same_thread=False)
+        con = sqlite3.connect(db_filename, check_same_thread=False)
         con.row_factory = sqlite3.Row
+        con.execute("PRAGMA foreign_keys = ON")  # TODO: prüfen ob nötig/richtig ist forgeign keys hier zu setzen
         return con
 
     def __create_tables_if_not_exist(self):
@@ -65,6 +68,7 @@ class Datenbank:
                 )
             """)
 
+            # TODO: ist "Besteht_Aus" doppelt definiert? (siehe oben) oder falscher Tabellenname?
             self.db.execute("""
                 CREATE TABLE IF NOT EXISTS Besteht_Aus (
                     nid INTEGER NOT NULL,
@@ -89,43 +93,60 @@ class Datenbank:
             self.con.rollback()
 
     def addNutzer(self, email, salt, passwort):
-        con = self.get_connection()
+        if passwort is None or not str(email).strip():
+            return "Ungültige E-Mail"
+        if salt is None or not str(salt).strip():
+            return "Ungültiger Salt"
+        if passwort is None or not str(passwort).strip():
+            return "Ungültiges Passwort"
 
+        con = self.get_connection()
         db = con.cursor()
-        db.execute("""
-                SELECT email FROM Konto
-            """)
-        ergebnis=db.fetchall()
-        for row in ergebnis:
-            if row["email"]==email:
+        try:
+            # Überprüfen, ob die E-Mail bereits existiert
+            db.execute("SELECT 1 FROM Konto WHERE email = ? LIMIT 1", (email,))
+            if db.fetchone():
                 return "Email schon in einem Konto registriert"
-        db.execute(
+
+            # Konto anlegen
+            db.execute(
                 "INSERT INTO Konto (email, passwort, salt) VALUES (?, ?, ?)",
-            (email, passwort, salt),
-        )
-        db.execute(
-                "SELECT id FROM Konto WHERE email = ?",
-                (email,),
-        )
-        # BUG: Fehlerquelle: da kein name übergeben wird, wird Nutzer nicht korrekt angelegt
-        # kid=db.fetchone()
-        # db.execute(
-        #         "INSERT INTO Nutzer (kid) VALUES (?)",
-        #     (kid["id"],),
-        # )
-        con.commit()
-        return "Registrierung erfolgreich"
+                (email, passwort, salt),
+            )
+
+            # name="Testname"
+            # db.execute(
+            #         "SELECT id FROM Konto WHERE email = ?",
+            #         (email,),
+            # )
+            # # BUG: Fehlerquelle: da kein name-value übergeben wird, wird Nutzer nicht korrekt angelegt
+            # kid=db.fetchone()
+            # db.execute(
+            #         "INSERT INTO Nutzer (kid) VALUES (?)",
+            #     (kid["id"],),
+            # )
+
+            con.commit()
+            return "Registrierung erfolgreich"
+        except sqlite3.IntegrityError as e:
+            con.rollback()
+            con.close()
+            return f"Integritätsfehler bei der Registrierung: {e}"
+        except Exception as e:
+            con.rollback()
+            con.close()
+            return f"Fehler bei der Registrierung: {e}"
+        finally:
+            con.close()
 
     def anmeldenNutzer(self, email):
         con = self.get_connection()
-
         db = con.cursor()
-
         db.execute(
                 "SELECT passwort, salt FROM Konto WHERE email = ?",
                 (email,),
         )
-        row=db.fetchone()
+        row = db.fetchone()
         if row is None:
             return None
         return row
@@ -150,35 +171,6 @@ class Datenbank:
     def close(self):
         self.con.close()
 
-        """Alles Nachfolgende sind Testfunktionen
-        """
-    def test_anmelden(self):
-        print("===== Starte Test: anmeldenNutzer() =====")
-
-        # 1. Testnutzer anlegen
-        email = "test@example.com"
-        name = "Testuser"
-        pw = "meinpasswort"
-
-        print("Lege Testnutzer an...")
-        self.addNutzer(email, name, pw)
-
-        # 2. Fall 1: richtige Daten
-        print("\nTest 1: korrekte Anmeldung")
-        result = self.anmeldenNutzer(email, pw)
-        print("Erwartet: Anmeldung erfolgreich  |   Ergebnis:", result)
-
-        # 3. Fall 2: falsches Passwort
-        print("\nTest 2: falsches Passwort")
-        result = self.anmeldenNutzer(email, "falsch123")
-        print("Erwartet: Passwort ist falsch!   |   Ergebnis:", result)
-
-        # 4. Fall 3: Email existiert nicht
-        print("\nTest 3: Email existiert nicht")
-        result = self.anmeldenNutzer("nichtda@test.de", pw)
-        print("Erwartet: Email nicht gefunden!  |   Ergebnis:", result)
-
-        print("\n===== Test abgeschlossen =====")
 
 #         """Alles Nachfolgende sind Testfunktionen
 #         """

@@ -84,7 +84,6 @@ def anmelden(user: UserSignUpIn):
 
 @app.post("/api/register")
 async def registrieren(user: UserSignUpIn):
-
     salt, password = hash_password(user.password)
 
     try:
