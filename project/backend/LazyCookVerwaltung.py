@@ -49,6 +49,7 @@ def verify_password(password: str, salt_b64: str, key_b64: str) -> bool:
 
     return key_check == key_original
 
+# TODO: production error messages generalisieren - issue #90
 @app.post("/api/login")
 def anmelden(user: UserSignUpIn):
 
@@ -83,8 +84,9 @@ def anmelden(user: UserSignUpIn):
 
 @app.post("/api/register")
 async def registrieren(user: UserSignUpIn):
-
     salt, password = hash_password(user.password)
+
+    # TODO: Validierung machen: Email-Format prüfen, Passwortstärke prüfen
 
     try:
         message = datenbank.addNutzer(user.email, salt, password)
