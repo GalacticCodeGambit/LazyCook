@@ -33,7 +33,7 @@ jobs:
           attempts=30
           wait_seconds=3
           for i in $(seq 1 $attempts); do
-             if curl -fsSL --retry-all-errors --retry 0 "http://localhost:${PORT}/" >/dev/null 2>&1; then
+             if curl -fsSL "http://localhost:${PORT}/" >/dev/null 2>&1; then
                echo "ready"
                exit 0
              fi
@@ -44,6 +44,11 @@ jobs:
           docker-compose -f project/compose.yaml ps || true
           docker-compose -f project/compose.yaml logs || true
           exit 1
+
+      - name: Run backend tests in container
+        run: |
+          # startet einen einmaligen Container für den Service 'backend' und führt Unittests aus
+          docker-compose -f project/compose.yaml run --rm backend sh -c "python -m unittest discover -s tests -v"
 
       - name: Smoke test
         run: curl -fsSL -o /dev/null http://localhost:8000/
