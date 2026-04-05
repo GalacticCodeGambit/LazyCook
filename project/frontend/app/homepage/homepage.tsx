@@ -3,23 +3,18 @@
 
 import { ChefHat, Search, BookOpen, Star, Clock, Smile } from 'lucide-react';
 import { Button } from '../components/ui/button';
-import {Registrieren} from "@/app/homepage/signup";
-import {useState} from "react";
-import {Anmelden} from "@/app/homepage/signin";
+import {useCallback, useState} from "react";
+import Modal from "@/app/components/modal";
+import {useAuth} from "@/lib/auth";
+import LoginForm from "@/app/homepage/signin";
+import RegisterForm from "@/app/homepage/signup";
+
+
 
 export default function Homepage() {
-    const [showRegisterModal, setShowRegisterModal] = useState(false);
-    const [showLoginModal, setShowLoginModal] = useState(false);
-
-    const switchToLogin = () => {
-        setShowRegisterModal(false);
-        setShowLoginModal(true);
-    };
-
-    const switchToRegister = () => {
-        setShowRegisterModal(true);
-        setShowLoginModal(false);
-    }
+    const { user, loading, logout } = useAuth();
+    const [modal, setModal] = useState<"login" | "register" | null>(null);
+    const close = useCallback(() => setModal(null), []);
 
 
     return (
@@ -33,16 +28,15 @@ export default function Homepage() {
                     </div>
 
                     <nav className="hidden md:flex items-center gap-6">
-                        <a href="#" className="text-gray-700 hover:text-black">Home</a>
-                        <a href="#" className="text-gray-700 hover:text-black">Recipe Finder</a>
+                        <a href="#" className="text-gray-700 hover:text-black">Datenschutz</a>
                         <a href="#" className="text-gray-700 hover:text-black">Impressum</a>
                     </nav>
 
                     <div className="flex items-center gap-3">
-                        <Button variant="ghost" className="text-sm" onClick={() => setShowLoginModal(true)}>
+                        <Button variant="ghost" className="text-sm" onClick={() => setModal("login")}>
                             Anmelden
                         </Button>
-                        <Button className="bg-black text-white hover:bg-black/90 text-sm rounded-md px-4" onClick={() => setShowRegisterModal(true)}>
+                        <Button className="bg-black text-white hover:bg-black/90 text-sm rounded-md px-4" onClick={() => setModal("register")}>
                             Registrieren
                         </Button>
                     </div>
@@ -65,7 +59,7 @@ export default function Homepage() {
                     erforderlich.
                 </p>
 
-                <Button className="bg-black text-white hover:bg-black/90 px-8 py-5 rounded-md" onClick={() => setShowLoginModal(true)}>
+                <Button className="bg-black text-white hover:bg-black/90 px-8 py-5 rounded-md" onClick={() => setModal("login")}>
                     Kochen starten
                 </Button>
             </section>
@@ -191,27 +185,20 @@ export default function Homepage() {
                     <p className="text-center text-white mb-5 max-w-3xl mx-auto leading-relaxed">
                         Bereit deine eigener Chefkoch zu sein?
                     </p>
-                    <Button className="bg-white text-black hover:bg-white/90 px-8 py-5 rounded-md" onClick={() => setShowLoginModal(true)}>
+                    <Button className="bg-white text-black hover:bg-white/90 px-8 py-5 rounded-md" onClick={() => setModal("login")}>
                         Kochen starten
                     </Button>
                 </div>
             </section>
 
-            {/* Popup */}
+            {/* ── Modals ──────────────────────────────────────────── */}
+            <Modal open={modal === "login"} onCloseAction={close}>
+                <LoginForm onClose={close} onSwitch={() => setModal("register")} />
+            </Modal>
 
-            <div>
-                <Registrieren
-                    isOpen={showRegisterModal}
-                    onClose={() => setShowRegisterModal(false)}
-                    onSwitchToLogin={switchToLogin}
-                />
-
-                <Anmelden
-                    isOpen={showLoginModal}
-                    onClose={() => setShowLoginModal(false)}
-                    onSwitchToRegister={switchToRegister}
-                />
-            </div>
+            <Modal open={modal === "register"} onCloseAction={close}>
+                <RegisterForm onClose={close} onSwitch={() => setModal("login")} />
+            </Modal>
         </div>
     );
 }

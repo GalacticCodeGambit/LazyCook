@@ -1,15 +1,15 @@
 from pydantic import BaseModel, EmailStr
 from datetime import datetime
 
-# Pydantic Models
-class UserSignUpIn(BaseModel):
-    email: EmailStr
+class Token(BaseModel):
+    access_token: str
+    token_type: str
+
+class User(BaseModel):
+    email: str
+    name: str
+
+class UserCreate(BaseModel):
+    email: str
+    name: str
     password: str
-
-class UserResponse(BaseModel):
-    email: EmailStr
-
-class SessionResponse(BaseModel):
-    session_token: str
-    user: UserResponse
-    expires_at: datetime
