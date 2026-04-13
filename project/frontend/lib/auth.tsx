@@ -1,3 +1,6 @@
+// lib/auth.ts – Auth-Kontext mit Access + Refresh Token
+// ──────────────────────────────────────────────────────
+
 "use client";
 
 import {
@@ -152,11 +155,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         const refreshToken = getRefreshToken();
 
         if (accessToken) {
-            // Versuche mit Access Token
             apiGetMe(accessToken)
                 .then(setUser)
                 .catch(async () => {
-                    // Access Token abgelaufen → mit Refresh Token erneuern
                     if (refreshToken) {
                         try {
                             const tokens = await apiRefreshTokens(refreshToken);
@@ -172,7 +173,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
                 })
                 .finally(() => setLoading(false));
         } else if (refreshToken) {
-            // Kein Access Token aber Refresh Token vorhanden → erneuern
             apiRefreshTokens(refreshToken)
                 .then(async (tokens) => {
                     saveTokens(tokens.access_token, tokens.refresh_token);
@@ -184,6 +184,19 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         } else {
             setLoading(false);
         }
+    }, []);
+
+    // Cross-Tab Sync: Wenn ein anderer Tab den Refresh Token löscht → hier auch ausloggen
+    useEffect(() => {
+        const handleStorageChange = (e: StorageEvent) => {
+            if (e.key === "refresh_token" && e.newValue === null) {
+                // Refresh Token wurde in einem anderen Tab gelöscht → ausloggen
+                sessionStorage.removeItem("access_token");
+                setUser(null);
+            }
+        };
+        window.addEventListener("storage", handleStorageChange);
+        return () => window.removeEventListener("storage", handleStorageChange);
     }, []);
 
     const login = useCallback(async (email: string, password: string) => {

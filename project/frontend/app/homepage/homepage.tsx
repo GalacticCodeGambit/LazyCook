@@ -5,15 +5,13 @@ import { ChefHat, Search, BookOpen, Star, Clock, Smile } from 'lucide-react';
 import { Button } from '../components/ui/button';
 import {useCallback, useState} from "react";
 import Modal from "@/app/components/modal";
-import {useAuth} from "@/lib/auth";
 import LoginForm from "@/app/homepage/signin";
 import RegisterForm from "@/app/homepage/signup";
 
 
 
 export default function Homepage() {
-    const { user, loading, logout } = useAuth();
-    const [modal, setModal] = useState<"login" | "register" | null>(null);
+     const [modal, setModal] = useState<"login" | "register" | null>(null);
     const close = useCallback(() => setModal(null), []);
 
 
