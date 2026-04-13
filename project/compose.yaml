@@ -17,13 +17,13 @@ services:
       - PYTHONUNBUFFERED=1
     volumes:
       - ./backend:/app
-      - data:/data
+      - ./data:/data
     ports:
       - "3000:3000"
 
 # Persist data for containers
-volumes:
-  data:
+#volumes:
+#  data:
 
 #networks:
 #  default:
