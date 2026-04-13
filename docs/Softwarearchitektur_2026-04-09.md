@@ -197,7 +197,7 @@ Die Zerlegung folgt dem schichtbasierten Architekturstil (ADR04). Das Frontend i
 | Name | Verantwortung |
 |------|---------------|
 | Frontend (Next.js/React) | Benutzeroberfläche, Zutateneingabe, Rezeptanzeige, Login/Registrierung |
-| Backend (FastAPI) | REST-API-Endpunkte, Authentifizierung, Rezeptfilterung, Geschäftslogik |
+| Backend (FastAPI/Python) | REST-API-Endpunkte, Authentifizierung, Rezeptfilterung, Geschäftslogik |
 | Datenbank (SQLite) | Persistente Speicherung von Nutzerkonten, Rezepten und Zutaten |
 
 **Wichtige Schnittstellen:**
