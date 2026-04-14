@@ -214,21 +214,32 @@ Der Nutzer muss angemeldet sein und sich auf der Seite befinden für Zutaten ein
 
 ___
 ### 3. Nicht-funktionale Anforderungen
-Das Projekt muss zum Ende des 4. Semesters abgegeben werden, genaueres wird noch bekannt gegeben. Es muss sich um eine webbasierte Anwendung handeln. LazyCook soll für die Benutzung/Bedingung am Laptop oder am Computer optimiert sein.
+Das Projekt muss zum Ende des 4. Semesters abgegeben werden, genaueres wird noch bekannt gegeben. <br>
+Sollte die Zeit nicht ausreichen, um alle geplanten Features zu implementieren, sollen die Kernfunktionen (Zutaten hinzufügen/entfernen, Rezeptsuche und Rezeptvorschläge) Priorität haben.
+#### 3.1 Technische Einschränkungen
+- **TE-1 (Architektur):** Das System muss als Web-Applikation realisiert werden. Eine native Installation auf dem Endgerät des Nutzers ist nicht vorgesehen.
+- **TE-2 (Laufzeitumgebung/Browser):** Die Anwendung muss auf den aktuellsten stabilen Versionen der Browser Google Chrome, Mozilla Firefox und Safari lauffähig sein. Eine Optimierung für veraltete Browser (z.B. Internet Explorer) oder Browser-Versionen erfolgt nicht.
+- **TE-3 (Zielplattform):** Das Interface ist ausschließlich für die Nutzung an Desktop-Systemen (Laptops/PCs) mit Maus- und Tastatureingabe zu optimieren. Eine Smartphone-Optimierung ist im Rahmen dieses Projekts nicht gefordert.
+- **TE-4 (Persistenz):** Zur Datenspeicherung ist eine lokale SQLite-Datenbank zu verwenden. Dies schließt den Einsatz von Cloud-Datenbanken oder extern verwalteten DBMS aus.
+- **TE-5 (Sicherheit/Verschlüsselung):** Passwörter dürfen unter keinen Umständen im Klartext gespeichert werden. Es ist zwingend ein modernes Hashing-Verfahren (z.B. Argon2 oder bcrypt) mit Salt-Zusatz zu verwenden.
+- **TE-6 (Entwicklungsumgebung):** Das Projekt muss unter Verwendung der IDE IntelliJ und der Versionsverwaltung GitHub entwickelt werden.
 
-#### 3.1 Verwendete Technologien
-- Frontend: HTML, CSS, JavaScript/React
-- Backend: Python
-- DB: SQLite
-- IDE: IntelliJ
-- Projekt Management: GitHub Projects
+#### 3.2 Verwendete Technologien
+- **Frontend:** HTML, CSS, React/JavaScript
+- **Backend:** Python mit FastAPI
+- **DB:** SQLite
+- **Containerization:** Docker
+- **Tests:** Pytest/unittest
+- **CI/CD:** GitHub Actions
+- **IDE:** IntelliJ
+- **Projekt Management:** GitHub Projects
 
-#### 3.2 Qualitätsmerkmale
-- Wartbarkeit (Änderbarkeit): Neue Feature und Bug-Fixes innerhalb von 2 Tagen
-- Effizient (Zeitverhalten): Rezepte werden in maximal 5 Sekunden nach Klick auf Filtern angezeigt
-- Sicherheit der Nutzerdaten: Passwörter werden gehashed mit Salt in der Datnebnak gespeichert
-- Benutzbarkeit (Bedienbarkeit & Ansehnlichkeit): Anmeldung & Registrierung mit möglichts wenigen Klicks; Rezept vorschläge werden als 3x3 Matrix mit max. 9 Stück auf einer Seite aangezeigt.
-- Kompatibilität (Interoperatibilität): Die Anwendung soll auf unterscheidlihen Browsern fehlerfrei laufen (Chrome, Firefox, Safari)
+#### 3.3 Qualitätsmerkmale
+- **Wartbarkeit (Änderbarkeit):** Neue Feature und Bug-Fixes innerhalb von 2 Tagen auf GitHub bereitstellen.
+- **Effizient (Zeitverhalten):** Rezepte werden in maximal 5 Sekunden nach Klick auf Filtern angezeigt.
+- **Sicherheit der Nutzerdaten:** Passwörter werden gehasht mit Salt in der Datenbank gespeichert.
+- **Benutzbarkeit (Bedienbarkeit & Ansehnlichkeit):** Anmeldung & Registrierung mit möglichst wenigen Klicks; Rezept vorschläge werden als 3x3 Matrix mit max. 9 Stück auf einer Seite angezeigt.
+- **Kompatibilität (Interoperabilität):** Die Anwendung soll auf unterschiedlichen Browsern fehlerfrei laufen (Chrome, Firefox, Safari).
   
 ___
 ### 4. Unterstützende Informationen
