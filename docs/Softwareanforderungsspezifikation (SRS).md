@@ -53,7 +53,8 @@ Eine Zutat soll aus ihren Namen, ihre Menge und Einheit der Menge bestehen. Die 
 Der Nutzer muss angemeldet sein und sich auf der Seite befinden für Zutaten eintragen, um die Zutaten eintragen zu können.
 ##### Nachbedingungen:
 Die eingetragene Zutat werden gespeichert.
-##### Geschätzter Aufwand: mittel/hoch
+##### Geschätzter Aufwand: 
+mittel/hoch
 
 
 #### 2.03 Zutaten entfernen können
@@ -71,7 +72,8 @@ Die jeweilige Zutat sollen im Browser-Cache entfernt werden.
 Der Nutzer muss angemeldet sein und sich auf der Seite befinden für Zutaten eintragen, um die Zutaten eintragen zu können und es muss mindestens eine Zutat bereits eingetragen sein.
 ##### Nachbedingungen:
 Die gelöschte Zutat wird aus dem Speicher gelöscht.
-##### Geschätzter Aufwand: niedrig
+##### Geschätzter Aufwand: 
+niedrig
 
 
 #### 2.04 Automatischer Rezeptvorschlag auf Grundlage der eingetragenen Zutaten
@@ -92,7 +94,8 @@ Die Anzahl der Personen soll hier noch keine Auswirkung auf den automatischen Re
 Der Nutzer muss angemeldet sein und Zutaten, die er vorrätig hat, eingetragen haben.
 ##### Nachbedingungen:
 n/a
-##### Geschätzter Aufwand: hoch
+##### Geschätzter Aufwand: 
+hoch
 
 
 #### 2.05 Als Kunde mit neuem Konto registrieren können
@@ -113,7 +116,8 @@ Die Eingabe für die Registrierung soll im Frontend und im Backend Validiert wer
 Ein Nutzer der LazyCook nutzen will
 ##### Nachbedingungen:
 n/a
-##### Geschätzter Aufwand: mittel
+##### Geschätzter Aufwand: 
+mittel
 
 
 #### 2.06 Als Kunde mit Konto anmelden können
@@ -134,7 +138,8 @@ Als Nutzer soll man sich auf der Webseite Anmelden können um alle Funktionen de
 Der User muss mit dem Konto bereits registriert sein mit welchen er sich anmelden möchte.
 ##### Nachbedingungen:
 Der User ist mit dem Konto angemeldet, welches er eingegeben hat.
-##### Geschätzter Aufwand: mittel
+##### Geschätzter Aufwand: 
+mittel
 
 
 #### 2.07 Als Kunde mit Konto abmelden können
@@ -152,7 +157,8 @@ Als Nutzer soll man sich auch abmelden können um sich z.B. auch mit anderen Kon
 Der Nutzer muss angemeldet sein mit einem Konto.
 ##### Nachbedingungen:
 Der Nutzer ist nicht angemeldet.
-##### Geschätzter Aufwand: niedrig
+##### Geschätzter Aufwand: 
+niedrig
 
 
 #### 2.08 Personenanzahl angegeben bei Zutaten eintragen
@@ -170,7 +176,8 @@ Die angegebene Personenanzahl soll sich auf den automatischen Rezeptvorschlag au
 Der Nutzer muss angemeldet sein und sich auf der Seite befinden für Zutaten eintragen, um die Personenanzahl eintragen zu können.
 ##### Nachbedingungen:
 Die eingetragene Personenanzahl wir gespeichert. Bei dem automatischen Rezeptvorschlag wird die Personenanzahl berücksichtigt und passt entsprechend angepasst.
-##### Geschätzter Aufwand: mittel
+##### Geschätzter Aufwand: 
+mittel
 
 
 #### 2.09 Grundlegende Zutaten werden beim Eintragen empfohlen 
@@ -188,7 +195,8 @@ Dieser Vorschlag soll fest eingestellt sein.
 Der Nutzer muss angemeldet sein und sich auf der Seite befinden für Zutaten eintragen.
 ##### Nachbedingungen:
 Die hinzugefügten Grundzutaten müssen zu den bereits vorhandenen Zutaten hinzugefügt werden. 
-##### Geschätzter Aufwand: mittel
+##### Geschätzter Aufwand: 
+mittel
 
 
 #### 2.10 Rezepte Suchen können ohne eingetragene Zutaten
@@ -209,7 +217,8 @@ Rezepte sollen auch ohne den Eintrag von Zutaten suchbar sein.
 Der Nutzer muss angemeldet sein und sich auf der Seite befinden für Zutaten eintragen.
 ##### Nachbedingungen:
 
-##### Geschätzter Aufwand: niedrig
+##### Geschätzter Aufwand: 
+niedrig
 
 
 ___
