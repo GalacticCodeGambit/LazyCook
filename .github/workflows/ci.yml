@@ -78,7 +78,7 @@ jobs:
 
       - name: Run backend tests
         run: |
-          docker-compose -f project/compose.yaml run --rm backend-dev sh -c "python -m unittest discover -s tests -v"
+          docker-compose -f project/compose.yaml exec -T backend-dev sh -c "python -m unittest discover -s tests -v"
 
 #  lint:
 #    runs-on: ubuntu-latest
