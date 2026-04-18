@@ -23,6 +23,7 @@ from Datenbank import (
     get_konto_by_email,
     delete_refresh_token,
     delete_all_refresh_tokens,
+    delete_konto,
 )
 
 router = APIRouter()
@@ -94,3 +95,9 @@ async def logout(body: LogoutRequest):
 async def read_current_user(current_user: Annotated[User, Depends(get_current_user)]):
     """Nur mit gültigem Access Token erreichbar."""
     return current_user
+
+
+@router.delete("/users/me", status_code=status.HTTP_204_NO_CONTENT)
+async def delete_current_user(current_user: Annotated[User, Depends(get_current_user)]):
+    """Löscht das eigene Konto inkl. aller Refresh Tokens (CASCADE)."""
+    delete_konto(current_user.email)
