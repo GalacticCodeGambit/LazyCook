@@ -121,7 +121,7 @@ def createKonto(email: str, name: str, hashed_password: str) -> dict | None:
 
 def getKontoByEmail(email: str) -> dict | None:
     """Gibt Konto-Daten inkl. hashed_password zurück, oder None."""
-    con = get_connection()
+    con = getConnection()
     try:
         cur = con.cursor()
         cur.execute(
