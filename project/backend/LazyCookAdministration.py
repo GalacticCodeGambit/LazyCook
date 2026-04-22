@@ -3,7 +3,7 @@ from contextlib import asynccontextmanager
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from Datenbank import init_db
+from project.backend.Database import init_db
 from routes import router
 
 

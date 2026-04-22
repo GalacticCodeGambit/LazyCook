@@ -5,7 +5,7 @@ from pathlib import Path
 DB_PATH = Path("/data/LazyCookDB.sqlite3")
 
 
-def get_connection() -> sqlite3.Connection:
+def getConnection() -> sqlite3.Connection:
     """Erstellt eine neue SQLite-Connection mit Row-Factory."""
     con = sqlite3.connect(str(DB_PATH), check_same_thread=False)
     con.row_factory = sqlite3.Row
@@ -15,9 +15,9 @@ def get_connection() -> sqlite3.Connection:
 
 
 @contextmanager
-def get_db():
+def getDB():
     """Context-Manager: öffnet Connection, committed bei Erfolg, rollt bei Fehler zurück."""
-    con = get_connection()
+    con = getConnection()
     try:
         yield con
         con.commit()
@@ -28,9 +28,9 @@ def get_db():
         con.close()
 
 
-def init_db():
+def initDB():
     """Erstellt alle Tabellen, falls sie noch nicht existieren."""
-    with get_db() as con:
+    with getDB() as con:
         cur = con.cursor()
 
         cur.execute("""
@@ -105,9 +105,9 @@ def init_db():
 
 # ── Konto-Operationen ──────────────────────────────────────────
 
-def create_konto(email: str, name: str, hashed_password: str) -> dict | None:
+def createKonto(email: str, name: str, hashed_password: str) -> dict | None:
     """Legt ein neues Konto an. Gibt die Konto-Daten zurück oder None bei Duplikat."""
-    with get_db() as con:
+    with getDB() as con:
         cur = con.cursor()
         cur.execute("SELECT 1 FROM Konto WHERE email = ? LIMIT 1", (email,))
         if cur.fetchone():
@@ -119,7 +119,7 @@ def create_konto(email: str, name: str, hashed_password: str) -> dict | None:
         return {"id": cur.lastrowid, "email": email, "name": name}
 
 
-def get_konto_by_email(email: str) -> dict | None:
+def getKontoByEmail(email: str) -> dict | None:
     """Gibt Konto-Daten inkl. hashed_password zurück, oder None."""
     con = get_connection()
     try:
@@ -136,9 +136,9 @@ def get_konto_by_email(email: str) -> dict | None:
 
 # ── Refresh-Token-Operationen ──────────────────────────────────
 
-def save_refresh_token(konto_id: int, token: str, expires_at: str) -> None:
+def saveRefreshToken(konto_id: int, token: str, expires_at: str) -> None:
     """Speichert einen neuen Refresh Token in der Datenbank."""
-    with get_db() as con:
+    with getDB() as con:
         cur = con.cursor()
         cur.execute(
             "INSERT INTO RefreshToken (konto_id, token, expires_at) VALUES (?, ?, ?)",
@@ -146,9 +146,9 @@ def save_refresh_token(konto_id: int, token: str, expires_at: str) -> None:
         )
 
 
-def get_refresh_token(token: str) -> dict | None:
+def getRefreshToken(token: str) -> dict | None:
     """Gibt den Refresh-Token-Eintrag zurück, oder None."""
-    con = get_connection()
+    con = getConnection()
     try:
         cur = con.cursor()
         cur.execute(
@@ -163,30 +163,30 @@ def get_refresh_token(token: str) -> dict | None:
         con.close()
 
 
-def delete_refresh_token(token: str) -> None:
+def deleteRefreshToken(token: str) -> None:
     """Löscht einen einzelnen Refresh Token (Logout)."""
-    with get_db() as con:
+    with getDB() as con:
         cur = con.cursor()
         cur.execute("DELETE FROM RefreshToken WHERE token = ?", (token,))
 
 
-def delete_all_refresh_tokens(konto_id: int) -> None:
+def deleteAllRefreshTokens(konto_id: int) -> None:
     """Löscht alle Refresh Tokens eines Kontos (Logout von allen Geräten)."""
-    with get_db() as con:
+    with getDB() as con:
         cur = con.cursor()
         cur.execute("DELETE FROM RefreshToken WHERE konto_id = ?", (konto_id,))
 
 
-def delete_konto(email: str) -> bool:
+def deleteKonto(email: str) -> bool:
     """Löscht ein Konto anhand der E-Mail. Refresh Tokens werden via CASCADE mitgelöscht."""
-    with get_db() as con:
+    with getDB() as con:
         cur = con.cursor()
         cur.execute("DELETE FROM Konto WHERE email = ?", (email,))
         return cur.rowcount > 0
 
 
-def cleanup_expired_tokens() -> None:
+def cleanupExpiredTokens() -> None:
     """Löscht alle abgelaufenen Refresh Tokens."""
-    with get_db() as con:
+    with getDB() as con:
         cur = con.cursor()
         cur.execute("DELETE FROM RefreshToken WHERE expires_at < datetime('now')")
