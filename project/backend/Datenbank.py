@@ -2,7 +2,7 @@ import sqlite3
 from contextlib import contextmanager
 from pathlib import Path
 
-DB_PATH = Path("LazyCookDB.sqlite3")
+DB_PATH = Path("/data/LazyCookDB.sqlite3")
 
 
 def get_connection() -> sqlite3.Connection:
