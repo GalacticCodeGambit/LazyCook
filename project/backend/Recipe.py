@@ -5,7 +5,7 @@ from project.backend.Ingridient import Ingridient
 class Recipe:
     def __init__(self, name: str, ingridients: list[Ingridient], description: str):
         self.__name = name
-        self.__zutaten = ingridients
+        self.__Ingridienten = ingridients
         self.__description = description
         self.__original = ""
         self.__duration = ""
@@ -46,9 +46,9 @@ class Recipe:
     def setDuration(self, duration: str):
         self.duration = duration
 
-    def getIngridient(self) -> list[Zutat]:
+    def getIngridient(self) -> list[Ingridient]:
         return self.ingridients
 
-    def setIngridient(self, ingridients: list[Zutat]):
+    def setIngridient(self, ingridients: list[Ingridient]):
         self.ingridients = ingridients
 
