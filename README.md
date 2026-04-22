@@ -4,8 +4,8 @@
 LazyCook soll eine Webanwendung sein. Die es ermöglichen seine vorhanden Zutaten einzutragen und darauf soll LazyCook dir mögliche Rezepte/Gerichte vorschlagen die du aus diesen Zutaten gemacht werden können.   
 
 ## Features
-- [ ] [#23](https://github.com/GalacticCodeGambit/LazyCook/issues/23) Zutaten hinzufügen können 
-- [ ] [#24](https://github.com/GalacticCodeGambit/LazyCook/issues/24) Zutaten entfernen können  
+- [x] [#23](https://github.com/GalacticCodeGambit/LazyCook/issues/23) Zutaten hinzufügen können 
+- [x] [#24](https://github.com/GalacticCodeGambit/LazyCook/issues/24) Zutaten entfernen können  
 - [ ] [#25](https://github.com/GalacticCodeGambit/LazyCook/issues/25) Rezepte/Gerichte automatisch vorgeschlagen bekommen auf Grundlage der eingetragenen Zutaten
 - [ ] [#30](https://github.com/GalacticCodeGambit/LazyCook/issues/30) Personenzahl hinzufügen können und vorgeschlagene Rezept/Gericht Größe automatisch anpassen 
 - [x] [#27](https://github.com/GalacticCodeGambit/LazyCook/issues/27) Als User mit Konto anmelden können
@@ -19,7 +19,7 @@ LazyCook soll eine Webanwendung sein. Die es ermöglichen seine vorhanden Zutate
 - [ ] Fehlende Zutaten werden von einem Rezept in einer Einkaufliste aufgelistet
 - [ ] Der Nutzer kann Rezepte in die Datenbank hinzufügen/erstellen 
 - [ ] [#47](https://github.com/GalacticCodeGambit/LazyCook/issues/47) Der Nutzer kann bereits hinzugefügte Zutaten bearbeiten, wie z.B. Menge, Einheit
-- [ ] [#45](https://github.com/GalacticCodeGambit/LazyCook/issues/45) Passwörter "sicher" in Datenbank Abspeichern als Hash und vom Frontend/Backend "sicher" behandeln
+- [x] [#45](https://github.com/GalacticCodeGambit/LazyCook/issues/45) Passwörter "sicher" in Datenbank Abspeichern als Hash und vom Frontend/Backend "sicher" behandeln
 
 ## Verwendete Technologien
 - Frontend: HTML, CSS, TypeScript/React
