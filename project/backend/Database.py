@@ -38,7 +38,7 @@ def initDB():
                                                          id INTEGER PRIMARY KEY AUTOINCREMENT,
                                                          email VARCHAR(250) NOT NULL UNIQUE,
                         name TEXT NOT NULL,
-                        hashed_password TEXT NOT NULL,
+                        hashedPassword TEXT NOT NULL,
                         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
                         )
                     """)
@@ -47,11 +47,11 @@ def initDB():
         cur.execute("""
                     CREATE TABLE IF NOT EXISTS RefreshToken (
                                                                 id INTEGER PRIMARY KEY AUTOINCREMENT,
-                                                                konto_id INTEGER NOT NULL,
+                                                                kontoID INTEGER NOT NULL,
                                                                 token TEXT NOT NULL UNIQUE,
                                                                 expires_at TIMESTAMP NOT NULL,
                                                                 created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                                                                FOREIGN KEY (konto_id) REFERENCES Konto (id) ON DELETE CASCADE
+                                                                FOREIGN KEY (kontoID) REFERENCES Konto (id) ON DELETE CASCADE
                         )
                     """)
 
@@ -92,11 +92,11 @@ def initDB():
 
         cur.execute("""
                     CREATE TABLE IF NOT EXISTS Favoriten (
-                                                             konto_id INTEGER NOT NULL,
+                                                             kontoID INTEGER NOT NULL,
                                                              rid INTEGER NOT NULL,
-                                                             FOREIGN KEY (konto_id) REFERENCES Konto (id) ON DELETE CASCADE,
+                                                             FOREIGN KEY (kontoID) REFERENCES Konto (id) ON DELETE CASCADE,
                         FOREIGN KEY (rid) REFERENCES Rezept (id) ON DELETE CASCADE,
-                        UNIQUE (konto_id, rid)
+                        UNIQUE (kontoID, rid)
                         )
                     """)
 
@@ -105,7 +105,7 @@ def initDB():
 
 # ── Konto-Operationen ──────────────────────────────────────────
 
-def createKonto(email: str, name: str, hashed_password: str) -> dict | None:
+def createKonto(email: str, name: str, hashedPassword: str) -> dict | None:
     """Legt ein neues Konto an. Gibt die Konto-Daten zurück oder None bei Duplikat."""
     with getDB() as con:
         cur = con.cursor()
@@ -113,19 +113,19 @@ def createKonto(email: str, name: str, hashed_password: str) -> dict | None:
         if cur.fetchone():
             return None
         cur.execute(
-            "INSERT INTO Konto (email, name, hashed_password) VALUES (?, ?, ?)",
-            (email, name, hashed_password),
+            "INSERT INTO Konto (email, name, hashedPassword) VALUES (?, ?, ?)",
+            (email, name, hashedPassword),
         )
         return {"id": cur.lastrowid, "email": email, "name": name}
 
 
 def getKontoByEmail(email: str) -> dict | None:
-    """Gibt Konto-Daten inkl. hashed_password zurück, oder None."""
+    """Gibt Konto-Daten inkl. hashedPassword zurück, oder None."""
     con = getConnection()
     try:
         cur = con.cursor()
         cur.execute(
-            "SELECT id, email, name, hashed_password FROM Konto WHERE email = ?",
+            "SELECT id, email, name, hashedPassword FROM Konto WHERE email = ?",
             (email,),
         )
         row = cur.fetchone()
@@ -136,13 +136,13 @@ def getKontoByEmail(email: str) -> dict | None:
 
 # ── Refresh-Token-Operationen ──────────────────────────────────
 
-def saveRefreshToken(konto_id: int, token: str, expires_at: str) -> None:
+def saveRefreshToken(kontoID: int, token: str, expires_at: str) -> None:
     """Speichert einen neuen Refresh Token in der Datenbank."""
     with getDB() as con:
         cur = con.cursor()
         cur.execute(
-            "INSERT INTO RefreshToken (konto_id, token, expires_at) VALUES (?, ?, ?)",
-            (konto_id, token, expires_at),
+            "INSERT INTO RefreshToken (kontoID, token, expires_at) VALUES (?, ?, ?)",
+            (kontoID, token, expires_at),
         )
 
 
@@ -152,8 +152,8 @@ def getRefreshToken(token: str) -> dict | None:
     try:
         cur = con.cursor()
         cur.execute(
-            "SELECT rt.id, rt.konto_id, rt.token, rt.expires_at, k.email, k.name "
-            "FROM RefreshToken rt JOIN Konto k ON rt.konto_id = k.id "
+            "SELECT rt.id, rt.kontoID, rt.token, rt.expires_at, k.email, k.name "
+            "FROM RefreshToken rt JOIN Konto k ON rt.kontoID = k.id "
             "WHERE rt.token = ?",
             (token,),
         )
@@ -170,11 +170,11 @@ def deleteRefreshToken(token: str) -> None:
         cur.execute("DELETE FROM RefreshToken WHERE token = ?", (token,))
 
 
-def deleteAllRefreshTokens(konto_id: int) -> None:
+def deleteAllRefreshTokens(kontoID: int) -> None:
     """Löscht alle Refresh Tokens eines Kontos (Logout von allen Geräten)."""
     with getDB() as con:
         cur = con.cursor()
-        cur.execute("DELETE FROM RefreshToken WHERE konto_id = ?", (konto_id,))
+        cur.execute("DELETE FROM RefreshToken WHERE kontoID = ?", (kontoID,))
 
 
 def deleteKonto(email: str) -> bool:

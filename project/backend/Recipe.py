@@ -10,8 +10,8 @@ class Recipe:
         self.__original = ""
         self.__duration = ""
         self.__rating = 0
-        self.__anzPersonen = 1
-        self.__datenbank = Database()
+        self.__countPersons = 1
+        self.__database = Database()
 
     def saveInDB(self) -> bool:
         return True
