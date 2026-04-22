@@ -4,11 +4,6 @@ from fastapi import APIRouter, Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordRequestForm
 
 from auth import (
-    Token,
-    User,
-    UserCreate,
-    RefreshRequest,
-    LogoutRequest,
     create_token_pair,
     get_current_user,
     hash_password,
@@ -16,15 +11,15 @@ from auth import (
     validate_password,
     validate_refresh_token,
     verify_password,
-    create_access_token,
 )
 from Datenbank import (
     create_konto,
     get_konto_by_email,
     delete_refresh_token,
-    delete_all_refresh_tokens,
     delete_konto,
 )
+
+from models import Token, User, RefreshRequest, LogoutRequest, UserCreate
 
 router = APIRouter()
 
@@ -101,3 +96,7 @@ async def read_current_user(current_user: Annotated[User, Depends(get_current_us
 async def delete_current_user(current_user: Annotated[User, Depends(get_current_user)]):
     """Löscht das eigene Konto inkl. aller Refresh Tokens (CASCADE)."""
     delete_konto(current_user.email)
+
+@router.post("/recipes/search")
+async def searchFittingRecipes(current_user: Annotated[User, Depends(get_current_user)]):
+    pass

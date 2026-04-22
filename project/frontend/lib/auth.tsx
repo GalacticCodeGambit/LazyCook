@@ -49,6 +49,7 @@ function saveTokens(accessToken: string, refreshToken: string) {
 function clearTokens() {
     sessionStorage.removeItem("access_token");
     localStorage.removeItem("refresh_token");
+    localStorage.removeItem("ingredients");
 }
 
 // ── API-Aufrufe ───────────────────────────────────────────────
@@ -125,7 +126,7 @@ async function fetchWithAuth(url: string, options: RequestInit = {}): Promise<Re
             saveTokens(tokens.access_token, tokens.refresh_token);
 
             // Erneuter Versuch mit neuem Access Token
-            res = await fetch(url, {
+            res = await fetch(API_URL+url, {
                 ...options,
                 headers: {
                     ...options.headers,
