@@ -1,4 +1,4 @@
-from project.backend.Database import Datenbank
+from project.backend.Database import Database
 from project.backend.Ingridient import Ingridient
 
 
@@ -11,7 +11,7 @@ class Recipe:
         self.__duration = ""
         self.__rating = 0
         self.__anzPersonen = 1
-        self.__datenbank = Datenbank()
+        self.__datenbank = Database()
 
     def saveInDB(self) -> bool:
         return True
