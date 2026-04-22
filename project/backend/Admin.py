@@ -1,5 +1,5 @@
 from project.backend.Person import Person
-from project.backend.Recipe import Rezept
+from project.backend.Recipe import Recipe
 
 
 class Admin(Person):
@@ -8,6 +8,6 @@ class Admin(Person):
         self.__ricepes = []
         super().setRole("Admin")
 
-    def addRecipe(self, recipe: Rezept):
+    def addRecipe(self, recipe: Recipe):
         self.__ricepes.append(recipe)
         
