@@ -1,9 +1,9 @@
 from typing import List, Dict, Any
 
 class Ingridient:
-    def __init__(self, name: str, quantity: float):
+    def __init__(self, name: str, amount: float):
         self.__name = name
-        self.__quantity = quantity
+        self.__amount = amount
 
     def getName(self) -> str:
         return self.__name
@@ -11,9 +11,9 @@ class Ingridient:
     def setName(self, name: str):
         self.__name = name
 
-    def getquantity(self) -> float:
-        return self.__quantity
+    def getAmount(self) -> float:
+        return self.__amount
 
-    def setquantity(self, quantity: float):
-        self.__quantity = quantity
+    def setAmount(self, amount: float):
+        self.__amount = amount
 
