@@ -1,0 +1,74 @@
+.account-menu {
+    position: relative;
+    display: inline-block;
+}
+
+.account-menu__trigger {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 6px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background-color 0.15s ease;
+}
+
+.account-menu__trigger:hover {
+    background-color: #f3f4f6;
+}
+
+.account-menu__trigger:focus-visible {
+    outline: 2px solid #3b82f6;
+    outline-offset: 2px;
+}
+
+.account-menu__dropdown {
+    position: absolute;
+    right: 0;
+    top: calc(100% + 6px);
+    background: #ffffff;
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    min-width: 180px;
+    z-index: 100;
+    overflow: hidden;
+    animation: account-menu-fade-in 0.12s ease-out;
+}
+
+.account-menu__item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    width: 100%;
+    padding: 10px 14px;
+    background: none;
+    border: none;
+    text-align: left;
+    cursor: pointer;
+    font-size: 14px;
+    color: #111827;
+    transition: background-color 0.1s ease;
+}
+
+.account-menu__item:hover {
+    background-color: #f3f4f6;
+}
+
+.account-menu__item:focus-visible {
+    outline: none;
+    background-color: #eff6ff;
+}
+
+@keyframes account-menu-fade-in {
+    from {
+        opacity: 0;
+        transform: translateY(-4px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}

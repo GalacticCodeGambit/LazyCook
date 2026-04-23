@@ -2,7 +2,7 @@ import sqlite3
 from contextlib import contextmanager
 from pathlib import Path
 
-DB_PATH = Path("LazyCookDB.sqlite3")
+DB_PATH = Path("/data/LazyCookDB.sqlite3")
 
 
 def get_connection() -> sqlite3.Connection:
@@ -10,7 +10,7 @@ def get_connection() -> sqlite3.Connection:
     con = sqlite3.connect(str(DB_PATH), check_same_thread=False)
     con.row_factory = sqlite3.Row
     con.execute("PRAGMA foreign_keys = ON")
-    con.execute("PRAGMA journal_mode = WAL")
+    #con.execute("PRAGMA journal_mode = WAL")
     return con
 
 
@@ -175,6 +175,14 @@ def delete_all_refresh_tokens(konto_id: int) -> None:
     with get_db() as con:
         cur = con.cursor()
         cur.execute("DELETE FROM RefreshToken WHERE konto_id = ?", (konto_id,))
+
+
+def delete_konto(email: str) -> bool:
+    """Löscht ein Konto anhand der E-Mail. Refresh Tokens werden via CASCADE mitgelöscht."""
+    with get_db() as con:
+        cur = con.cursor()
+        cur.execute("DELETE FROM Konto WHERE email = ?", (email,))
+        return cur.rowcount > 0
 
 
 def cleanup_expired_tokens() -> None:
