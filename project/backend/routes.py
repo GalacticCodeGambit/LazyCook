@@ -1,7 +1,9 @@
 from typing import Annotated
-
 from fastapi import APIRouter, Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordRequestForm
+from email_service import send_password_changed_email
+
+
 
 from auth import (
     Token,
@@ -24,6 +26,7 @@ from Datenbank import (
     delete_refresh_token,
     delete_all_refresh_tokens,
     delete_konto,
+    update_konto,
 )
 
 router = APIRouter()
@@ -101,3 +104,44 @@ async def read_current_user(current_user: Annotated[User, Depends(get_current_us
 async def delete_current_user(current_user: Annotated[User, Depends(get_current_user)]):
     """Löscht das eigene Konto inkl. aller Refresh Tokens (CASCADE)."""
     delete_konto(current_user.email)
+
+    # ── Konto aktualisieren ────────────────────────────────────────
+
+from pydantic import BaseModel as _BaseModel
+
+class UpdateUser(_BaseModel):
+    email: str | None = None
+    currentPassword: str | None = None
+    newPassword: str | None = None
+
+@router.patch("/users/me")
+async def update_current_user(
+        data: UpdateUser,
+        current_user: Annotated[User, Depends(get_current_user)]
+):
+    konto = get_konto_by_email(current_user.email)
+
+    # E-Mail ändern
+    if data.email:
+        fehler = validate_email(data.email)
+        if fehler:
+            raise HTTPException(status_code=400, detail=fehler)
+        update_konto(konto["id"], email=data.email)
+
+    # Passwort ändern
+    if data.currentPassword and data.newPassword:
+        if not verify_password(data.currentPassword, konto["hashed_password"]):
+            raise HTTPException(status_code=401, detail="Falsches Passwort")
+
+        fehler = validate_password(data.newPassword)
+        if fehler:
+            raise HTTPException(status_code=400, detail=fehler)
+
+        neuer_hash = hash_password(data.newPassword)
+        update_konto(konto["id"], password_hash=neuer_hash)
+
+        # NEU
+        empfaenger_email = data.email if data.email else konto["email"]
+        send_password_changed_email(empfaenger_email, konto["name"])
+
+    return {"success": True}
