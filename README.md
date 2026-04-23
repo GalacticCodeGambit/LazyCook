@@ -18,7 +18,7 @@ LazyCook soll eine Webanwendung sein. Die es ermöglichen seine vorhanden Zutate
 - [ ] [#46](https://github.com/GalacticCodeGambit/LazyCook/issues/46) Konto löschen/bearbeiten können 
 - [ ] Fehlende Zutaten werden von einem Rezept in einer Einkaufliste aufgelistet
 - [ ] Der Nutzer kann Rezepte in die Datenbank hinzufügen/erstellen 
-- [ ] [#47](https://github.com/GalacticCodeGambit/LazyCook/issues/47) Der Nutzer kann bereits hinzugefügte Zutaten bearbeiten, wie z.B. Menge, Einheit
+- [x] [#47](https://github.com/GalacticCodeGambit/LazyCook/issues/47) Der Nutzer kann bereits hinzugefügte Zutaten bearbeiten, wie z.B. Menge, Einheit
 - [x] [#45](https://github.com/GalacticCodeGambit/LazyCook/issues/45) Passwörter "sicher" in Datenbank Abspeichern als Hash und vom Frontend/Backend "sicher" behandeln
 
 ## Verwendete Technologien
