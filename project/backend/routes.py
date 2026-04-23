@@ -1,9 +1,16 @@
 from typing import Annotated
-
 from fastapi import APIRouter, Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordRequestForm
+from EmailService import send_password_changed_email
+from pydantic import BaseModel as _BaseModel
+
 
 from auth import (
+    Token,
+    User,
+    UserCreate,
+    RefreshRequest,
+    LogoutRequest,
     create_token_pair,
     get_current_user,
     hash_password,
@@ -11,15 +18,16 @@ from auth import (
     validate_password,
     validate_refresh_token,
     verify_password,
+    create_access_token,
 )
 from Datenbank import (
     create_konto,
     get_konto_by_email,
     delete_refresh_token,
+    delete_all_refresh_tokens,
     delete_konto,
+    update_konto,
 )
-
-from models import Token, User, RefreshRequest, LogoutRequest, UserCreate
 
 router = APIRouter()
 
@@ -97,6 +105,44 @@ async def delete_current_user(current_user: Annotated[User, Depends(get_current_
     """Löscht das eigene Konto inkl. aller Refresh Tokens (CASCADE)."""
     delete_konto(current_user.email)
 
-@router.post("/recipes/search")
-async def searchFittingRecipes(current_user: Annotated[User, Depends(get_current_user)]):
-    pass
+    # ── Konto aktualisieren ────────────────────────────────────────
+
+class UpdateUser(_BaseModel):
+    email: str | None = None
+    currentPassword: str | None = None
+    newPassword: str | None = None
+
+@router.patch("/users/me")
+async def updateCurrentUser(
+        data: UpdateUser,
+        current_user: Annotated[User, Depends(get_current_user)]
+):
+    konto = get_konto_by_email(current_user.email)
+
+    # E-Mail ändern
+    if data.email:
+        fehler = validate_email(data.email)
+        if fehler:
+            raise HTTPException(status_code=400, detail=fehler)
+        update_konto(konto["id"], email=data.email)
+
+    # Passwort ändern
+    if data.currentPassword and data.newPassword:
+        if not verify_password(data.currentPassword, konto["hashed_password"]):
+            raise HTTPException(status_code=401, detail="Falsches Passwort")
+
+        fehler = validate_password(data.newPassword)
+        if fehler:
+            raise HTTPException(status_code=400, detail=fehler)
+
+        neuer_hash = hash_password(data.newPassword)
+        update_konto(konto["id"], password_hash=neuer_hash)
+
+        # NEU: try/catch um echten Fehler zu sehen
+        empfaenger_email = data.email if data.email else konto["email"]
+        try:
+            send_password_changed_email(empfaenger_email, konto["name"])
+        except Exception as e:
+            print(f"E-Mail konnte nicht gesendet werden: {e}")
+
+    return {"success": True}
