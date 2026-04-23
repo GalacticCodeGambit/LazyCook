@@ -13,7 +13,7 @@ from jose import JWTError, jwt
 import bcrypt
 from pydantic import BaseModel
 
-from Database import getKontoByEmail, saveRefreshToken, getRefreshToken
+from Database import getAccountByEmail, saveRefreshToken, getRefreshToken
 
 # ── Konfiguration ──────────────────────────────────────────────
 SECRET_KEY = "dein-geheimer-schlüssel-hier-ändern"  # In Produktion: aus Umgebungsvariable laden!
@@ -128,7 +128,7 @@ async def getCurrentUser(token: Annotated[str, Depends(oauth2_scheme)]) -> User:
     if email is None:
         raise credentials_exception
 
-    konto = getKontoByEmail(email)
+    konto = getAccountByEmail(email)
     if konto is None:
         raise credentials_exception
 

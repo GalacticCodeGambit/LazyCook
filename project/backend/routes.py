@@ -3,7 +3,7 @@ from typing import Annotated
 from fastapi import APIRouter, Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordRequestForm
 
-from auth import (
+from Auth import (
     Token,
     User,
     UserCreate,
@@ -19,14 +19,14 @@ from auth import (
     createAccessToken,
 )
 from Database import (
-    createKonto,
-    getKontoByEmail,
+    createAccount,
+    getAccountByEmail,
     deleteRefreshToken,
     deleteAllRefreshTokens,
-    deleteKonto,
+    deleteAccount,
 )
 
-from models import User, Token, UserCreate
+from Models import User, Token, UserCreate
 
 router = APIRouter()
 
@@ -44,7 +44,7 @@ async def register(user: UserCreate):
     if pwError:
         raise HTTPException(status_code=400, detail=pwError)
 
-    konto = createKonto(
+    konto = createAccount(
         email=user.email,
         name=user.name,
         hashedPassword=hashPassword(user.password),
@@ -57,7 +57,7 @@ async def register(user: UserCreate):
 
 @router.post("/auth/login", response_model=Token)
 async def login(formData: Annotated[OAuth2PasswordRequestForm, Depends()]):
-    konto = getKontoByEmail(formData.username)
+    konto = getAccountByEmail(formData.username)
     if not konto or not verifyPassword(formData.password, konto["hashedPassword"]):
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
@@ -102,4 +102,4 @@ async def readCurrentUser(currentUser: Annotated[User, Depends(getCurrentUser)])
 @router.delete("/users/me", status_code=status.HTTP_204_NO_CONTENT)
 async def deleteCurrentUser(currentUser: Annotated[User, Depends(getCurrentUser)]):
     """Löscht das eigene Konto inkl. aller Refresh Tokens (CASCADE)."""
-    deleteKonto(currentUser.email)
+    deleteAccount(currentUser.email)

@@ -4,7 +4,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from Database import initDB
-from routes import router
+from Routes import router
 
 
 @asynccontextmanager
