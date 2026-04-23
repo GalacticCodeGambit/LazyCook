@@ -390,3 +390,87 @@
     color: #ef4444;
     border-color: #ef4444;
 }
+.finder-sidebar__ingredient-right {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.finder-sidebar__ingredient-amount {
+    color: #6b7280;
+    font-size: 12px;
+    cursor: pointer;
+    padding: 2px 6px;
+    border-radius: 4px;
+    transition: background 0.1s;
+}
+
+.finder-sidebar__ingredient-amount:hover {
+    background: #e5e7eb;
+    color: #111;
+}
+
+.finder-sidebar__ingredient-edit {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.finder-sidebar__edit-input {
+    width: 52px;
+    padding: 3px 6px;
+    border: 1px solid #d1d5db;
+    border-radius: 6px;
+    font-size: 12px;
+    font-family: system-ui;
+    outline: none;
+}
+
+.finder-sidebar__edit-input:focus {
+    border-color: #030213;
+}
+
+.finder-sidebar__edit-select {
+    padding: 3px 4px;
+    border: 1px solid #d1d5db;
+    border-radius: 6px;
+    font-size: 12px;
+    font-family: system-ui;
+    background: #fff;
+    outline: none;
+}
+
+.finder-sidebar__edit-select:focus {
+    border-color: #030213;
+}
+
+.finder-sidebar__edit-save {
+    background: #030213;
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    padding: 3px 7px;
+    font-size: 12px;
+    cursor: pointer;
+    transition: background 0.15s;
+}
+
+.finder-sidebar__edit-save:hover {
+    background: rgba(3, 2, 19, 0.8);
+}
+
+.finder-sidebar__edit-cancel {
+    background: none;
+    color: #9ca3af;
+    border: 1px solid #e5e7eb;
+    border-radius: 6px;
+    padding: 3px 7px;
+    font-size: 12px;
+    cursor: pointer;
+    transition: color 0.1s;
+}
+
+.finder-sidebar__edit-cancel:hover {
+    color: #ef4444;
+    border-color: #ef4444;
+}

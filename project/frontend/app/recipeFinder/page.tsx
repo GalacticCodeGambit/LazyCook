@@ -9,6 +9,8 @@ import {Button} from "@/app/components/ui/button";
 import Modal from "@/app/components/modal";
 import AddIngredientsPopup from "@/app/recipeFinder/popup";
 
+const EINHEITEN = ["Stück", "g", "kg", "ml", "l", "EL", "TL", "Prise"];
+
 interface IngredientInput {
     name: string;
     amount: number;
@@ -35,6 +37,10 @@ export default function RecipeFinder() {
 
     const [searching, setSearching] = useState(false);
     const [results, setResults] = useState<any[] | null>(null);
+
+    const [editingIngredient, setEditingIngredient] = useState<string | null>(null);
+    const [editAmount, setEditAmount] = useState("");
+    const [editUnit, setEditUnit] = useState("Stück");
 
     const [searchError, setSearchError] = useState("");
 
@@ -87,6 +93,21 @@ export default function RecipeFinder() {
     const handleRemoveIngredient = (name: string) => {
         setIngredients(prev => prev.filter(z => z.name !== name));
     }
+
+    const handleEditSave = (name: string) => {
+        const amountNum = parseFloat(editAmount);
+        if (!editAmount || isNaN(amountNum) || amountNum <= 0) return;
+        setIngredients(prev => prev.map(i =>
+            i.name === name ? { ...i, amount: amountNum, unit: editUnit } : i
+        ));
+        setEditingIngredient(null);
+    };
+
+    const handleEditStart = (i: IngredientInput) => {
+        setEditingIngredient(i.name);
+        setEditAmount(String(i.amount));
+        setEditUnit(i.unit);
+    };
 
     const handleSearch = async () => {
         if (ingredients.length === 0) {
@@ -183,10 +204,44 @@ export default function RecipeFinder() {
                                 {ingredients.map(i => (
                                     <div key={i.name} className="finder-sidebar__ingredient">
                                         <span className="finder-sidebar__ingredient-name">{i.name}</span>
-                                        <span className="finder-sidebar__ingredient-amount">{i.amount} {i.unit}</span>
-                                        <button onClick={() => handleRemoveIngredient(i.name)} className="finder-sidebar__ingredient-remove">
-                                            <X size={14} />
-                                        </button>
+
+                                        {editingIngredient === i.name ? (
+                                            // Bearbeitungsmodus
+                                            <div className="finder-sidebar__ingredient-edit">
+                                                <input
+                                                    type="number"
+                                                    value={editAmount}
+                                                    onChange={e => setEditAmount(e.target.value)}
+                                                    onKeyDown={e => e.key === "Enter" && handleEditSave(i.name)}
+                                                    min={0}
+                                                    className="finder-sidebar__edit-input"
+                                                    autoFocus
+                                                />
+                                                <select
+                                                    value={editUnit}
+                                                    onChange={e => setEditUnit(e.target.value)}
+                                                    className="finder-sidebar__edit-select"
+                                                >
+                                                    {EINHEITEN.map(e => <option key={e} value={e}>{e}</option>)}
+                                                </select>
+                                                <button onClick={() => handleEditSave(i.name)} className="finder-sidebar__edit-save">✓</button>
+                                                <button onClick={() => setEditingIngredient(null)} className="finder-sidebar__edit-cancel">✕</button>
+                                            </div>
+                                        ) : (
+                                            // Anzeigemodus — klickbar
+                                            <div className="finder-sidebar__ingredient-right">
+                                                <span
+                                                    onClick={() => handleEditStart(i)}
+                                                    className="finder-sidebar__ingredient-amount"
+                                                    title="Klicken zum Bearbeiten"
+                                                >
+                                                    {i.amount} {i.unit}
+                                                </span>
+                                                <button onClick={() => handleRemoveIngredient(i.name)} className="finder-sidebar__ingredient-remove">
+                                                    <X size={14} />
+                                                </button>
+                                            </div>
+                                        )}
                                     </div>
                                 ))}
                             </div>
