@@ -1,5 +1,5 @@
-from project.backend.Database import Database
-from project.backend.Ingridient import Ingridient
+from Database import Database
+from Ingridient import Ingridient
 
 
 class Recipe:

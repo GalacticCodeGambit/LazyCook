@@ -13,13 +13,13 @@ from jose import JWTError, jwt
 import bcrypt
 from pydantic import BaseModel
 
-from project.backend.Database import getKontoByEmail, saveRefreshToken, getRefreshToken
+from Database import getKontoByEmail, saveRefreshToken, getRefreshToken
 
 # ── Konfiguration ──────────────────────────────────────────────
 SECRET_KEY = "dein-geheimer-schlüssel-hier-ändern"  # In Produktion: aus Umgebungsvariable laden!
 ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = 10       # kurze Laufzeit für Access Token
-REFRESH_TOKEN_EXPIRE_DAYS = 7          # lange Laufzeit für Refresh Token
+refreshToken_EXPIRE_DAYS = 7          # lange Laufzeit für Refresh Token
 
 # ── Modelle ────────────────────────────────────────────────────
 class Token(BaseModel):
@@ -51,10 +51,10 @@ def verifyPassword(plain: str, hashed: str) -> bool:
 
 # ── Access Token (JWT) ─────────────────────────────────────────
 def createAccessToken(data: dict, expires_delta: timedelta | None = None) -> str:
-    to_encode = data.copy()
+    toEncode = data.copy()
     expire = datetime.now(timezone.utc) + (expires_delta or timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES))
-    to_encode.update({"exp": expire})
-    return jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
+    toEncode.update({"exp": expire})
+    return jwt.encode(toEncode, SECRET_KEY, algorithm=ALGORITHM)
 
 def decodeToken(token: str) -> str | None:
     """Dekodiert ein JWT und gibt die E-Mail (sub) zurück, oder None."""
@@ -68,8 +68,8 @@ def decodeToken(token: str) -> str | None:
 def createRefreshToken(konto_id: int) -> str:
     """Erstellt einen kryptografisch sicheren Refresh Token und speichert ihn in der DB."""
     token = secrets.token_urlsafe(64)
-    expires_at = datetime.now(timezone.utc) + timedelta(days=REFRESH_TOKEN_EXPIRE_DAYS)
-    saveRefreshToken(konto_id, token, expires_at.isoformat())
+    expiresAt = datetime.now(timezone.utc) + timedelta(days=refreshToken_EXPIRE_DAYS)
+    saveRefreshToken(konto_id, token, expiresAt.isoformat())
     return token
 
 def validateRefreshToken(token: str) -> dict | None:
@@ -77,10 +77,10 @@ def validateRefreshToken(token: str) -> dict | None:
     entry = getRefreshToken(token)
     if entry is None:
         return None
-    expires_at = datetime.fromisoformat(entry["expires_at"])
-    if expires_at.tzinfo is None:
-        expires_at = expires_at.replace(tzinfo=timezone.utc)
-    if expires_at < datetime.now(timezone.utc):
+    expiresAt = datetime.fromisoformat(entry["expiresAt"])
+    if expiresAt.tzinfo is None:
+        expiresAt = expiresAt.replace(tzinfo=timezone.utc)
+    if expiresAt < datetime.now(timezone.utc):
         return None
     return entry
 
@@ -91,8 +91,8 @@ def createTokenPair(konto: dict) -> Token:
         data={"sub": konto["email"]},
         expires_delta=timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES),
     )
-    refresh_token = createRefreshToken(konto["id"])
-    return Token(access_token=access_token, refresh_token=refresh_token, token_type="bearer")
+    refreshToken = createRefreshToken(konto["id"])
+    return Token(access_token=access_token, refresh_token=refreshToken, token_type="bearer")
 
 # ── Validierung ────────────────────────────────────────────────
 EMAIL_RE = re.compile(r"^[^\s@]+@[^\s@]+\.[^\s@]+$")
