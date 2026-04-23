@@ -11,7 +11,7 @@ import RegisterForm from "@/app/homepage/signup";
 
 
 export default function Homepage() {
-    const [modal, setModal] = useState<"login" | "register" | null>(null);
+     const [modal, setModal] = useState<"login" | "register" | null>(null);
     const close = useCallback(() => setModal(null), []);
 
 

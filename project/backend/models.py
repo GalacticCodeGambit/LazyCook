@@ -13,9 +13,3 @@ class UserCreate(BaseModel):
     email: str
     name: str
     password: str
-
-class RefreshRequest(BaseModel):
-    refresh_token: str
-
-class LogoutRequest(BaseModel):
-    refresh_token: str

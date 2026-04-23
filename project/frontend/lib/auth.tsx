@@ -1,3 +1,6 @@
+// lib/auth.ts – Auth-Kontext mit Access + Refresh Token
+// ──────────────────────────────────────────────────────
+
 "use client";
 
 import {
@@ -10,7 +13,7 @@ import {
     type ReactNode,
 } from "react";
 
-const API_URL = "http://localhost:3000";
+const API_URL = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:3000";
 
 // ── Typen ─────────────────────────────────────────────────────
 export interface User {
@@ -46,7 +49,6 @@ function saveTokens(accessToken: string, refreshToken: string) {
 function clearTokens() {
     sessionStorage.removeItem("access_token");
     localStorage.removeItem("refresh_token");
-    localStorage.removeItem("ingredients");
 }
 
 // ── API-Aufrufe ───────────────────────────────────────────────
@@ -123,7 +125,7 @@ async function fetchWithAuth(url: string, options: RequestInit = {}): Promise<Re
             saveTokens(tokens.access_token, tokens.refresh_token);
 
             // Erneuter Versuch mit neuem Access Token
-            res = await fetch(API_URL+url, {
+            res = await fetch(url, {
                 ...options,
                 headers: {
                     ...options.headers,
