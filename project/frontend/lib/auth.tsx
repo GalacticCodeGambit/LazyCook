@@ -1,6 +1,3 @@
-// lib/auth.ts – Auth-Kontext mit Access + Refresh Token
-// ──────────────────────────────────────────────────────
-
 "use client";
 
 import {
@@ -13,7 +10,7 @@ import {
     type ReactNode,
 } from "react";
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:3000";
+const API_URL = "http://localhost:3000";
 
 // ── Typen ─────────────────────────────────────────────────────
 export interface User {
