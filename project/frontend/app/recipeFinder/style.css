@@ -1,0 +1,476 @@
+.account-menu {
+    position: relative;
+    display: inline-block;
+}
+
+.account-menu__trigger {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 6px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background-color 0.15s ease;
+}
+
+.account-menu__trigger:hover {
+    background-color: #f3f4f6;
+}
+
+.account-menu__trigger:focus-visible {
+    outline: 2px solid #3b82f6;
+    outline-offset: 2px;
+}
+
+.account-menu__dropdown {
+    position: absolute;
+    right: 0;
+    top: calc(100% + 6px);
+    background: #ffffff;
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    min-width: 180px;
+    z-index: 100;
+    overflow: hidden;
+    animation: account-menu-fade-in 0.12s ease-out;
+}
+
+.account-menu__item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    width: 100%;
+    padding: 10px 14px;
+    background: none;
+    border: none;
+    text-align: left;
+    cursor: pointer;
+    font-size: 14px;
+    color: #111827;
+    transition: background-color 0.1s ease;
+}
+
+.account-menu__item:hover {
+    background-color: #f3f4f6;
+}
+
+.account-menu__item:focus-visible {
+    outline: none;
+    background-color: #eff6ff;
+}
+
+@keyframes account-menu-fade-in {
+    from {
+        opacity: 0;
+        transform: translateY(-4px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* ── AddIngredientsPopup ───────────────────────────────────── */
+.popup {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.popup__title {
+    font-size: 20px;
+    font-weight: 600;
+    color: #111;
+    font-family: system-ui;
+    text-align: center;
+    margin: 0;
+}
+
+.popup__fields {
+    display: flex;
+    gap: 10px;
+}
+
+.popup__input {
+    flex: 1;
+    padding: 10px 12px;
+    border-radius: 6px;
+    border: 1px solid #ddd;
+    font-size: 14px;
+    font-family: system-ui;
+    outline: none;
+    transition: border-color 0.15s;
+    background: #f3f3f5;
+    box-sizing: border-box;
+}
+
+.popup__input:focus {
+    border-color: #030213;
+    background: #fff;
+}
+
+.popup__input--amount {
+    flex: 0 0 90px;
+    width: 90px;
+    min-width: 0;
+}
+
+.popup__select {
+    padding: 10px 12px;
+    border-radius: 6px;
+    border: 1px solid #ddd;
+    font-size: 14px;
+    font-family: system-ui;
+    outline: none;
+    background: #f3f3f5;
+    cursor: pointer;
+    transition: border-color 0.15s;
+}
+
+.popup__select:focus {
+    border-color: #030213;
+    background: #fff;
+}
+
+.popup__error {
+    font-size: 13px;
+    color: #b91c1c;
+    font-family: system-ui;
+    text-align: center;
+    margin: 0;
+}
+
+.popup__btn {
+    display: block;
+    margin: 0 auto;
+    padding: 10px 32px;
+    background: #030213;
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    font-size: 14px;
+    font-family: system-ui;
+    cursor: pointer;
+    transition: background-color 0.15s;
+}
+
+.popup__btn:hover {
+    background: rgba(3, 2, 19, 0.85);
+}
+
+/* ── RecipeFinder Layout ───────────────────────────────────── */
+.finder-layout {
+    display: flex;
+    height: calc(100vh - 57px);
+}
+
+.finder-sidebar {
+    width: 300px;
+    flex-shrink: 0;
+    border-right: 1px solid #e5e7eb;
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    overflow-y: auto;
+    background: #fff;
+}
+
+.finder-sidebar__section {
+    padding: 20px;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+.finder-sidebar__title {
+    font-size: 13px;
+    font-weight: 600;
+    color: #6b7280;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin: 0 0 12px 0;
+    font-family: system-ui;
+}
+
+.finder-sidebar__add-btn {
+    flex: 1;
+    padding: 10px;
+    background: #030213;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    font-size: 14px;
+    font-family: system-ui;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    transition: background 0.15s;
+}
+
+.finder-sidebar__add-btn:hover {
+    background: rgba(3, 2, 19, 0.85);
+}
+
+.finder-sidebar__ingredient-list {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    margin-top: 12px;
+}
+
+.finder-sidebar__ingredient {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 8px 10px;
+    background: #f3f3f5;
+    border-radius: 8px;
+    font-size: 13px;
+    font-family: system-ui;
+}
+
+.finder-sidebar__ingredient-name {
+    font-weight: 500;
+    color: #111;
+}
+
+.finder-sidebar__ingredient-amount {
+    color: #6b7280;
+    font-size: 12px;
+}
+
+.finder-sidebar__ingredient-remove {
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: #9ca3af;
+    display: flex;
+    align-items: center;
+    padding: 0;
+    transition: color 0.1s;
+}
+
+.finder-sidebar__ingredient-remove:hover {
+    color: #ef4444;
+}
+
+.finder-sidebar__empty {
+    font-size: 13px;
+    color: #9ca3af;
+    font-family: system-ui;
+    margin: 8px 0 0 0;
+}
+
+/* Personenanzahl */
+.finder-sidebar__persons {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.finder-sidebar__persons-btn {
+    width: 32px;
+    height: 32px;
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    background: #fff;
+    font-size: 16px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.1s;
+}
+
+.finder-sidebar__persons-btn:hover {
+    background: #f3f4f6;
+}
+
+.finder-sidebar__persons-count {
+    font-size: 22px;
+    font-weight: 600;
+    font-family: system-ui;
+    color: #111;
+    min-width: 24px;
+    text-align: center;
+}
+
+.finder-sidebar__persons-label {
+    font-size: 12px;
+    color: #6b7280;
+    font-family: system-ui;
+}
+
+/* Suchen Button */
+.finder-sidebar__search-btn {
+    width: 100%;
+    padding: 12px;
+    background: #030213;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    font-family: system-ui;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    transition: background 0.15s;
+}
+
+.finder-sidebar__search-btn:hover:not(:disabled) {
+    background: rgba(3, 2, 19, 0.85);
+}
+
+.finder-sidebar__search-btn:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+}
+
+/* Rezepte Bereich */
+.finder-content {
+    flex: 1;
+    overflow-y: auto;
+    padding: 24px;
+    background: #fafafa;
+}
+
+.finder-content__empty {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    color: #9ca3af;
+    font-size: 14px;
+    font-family: system-ui;
+}
+
+.finder-content__grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 16px;
+}
+
+.finder-content__card {
+    background: #fff;
+    border: 1px solid #e5e7eb;
+    border-radius: 12px;
+    padding: 16px;
+    font-family: system-ui;
+}
+
+.finder-content__card-name {
+    font-size: 15px;
+    font-weight: 600;
+    color: #111;
+    margin: 0;
+}
+
+.finder-sidebar__clear-btn {
+    flex-shrink: 0;
+    padding: 10px;
+    background: #fff;
+    color: #6b7280;
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.15s, color 0.15s;
+}
+
+.finder-sidebar__clear-btn:hover {
+    background: #fef2f2;
+    color: #ef4444;
+    border-color: #ef4444;
+}
+.finder-sidebar__ingredient-right {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.finder-sidebar__ingredient-amount {
+    color: #6b7280;
+    font-size: 12px;
+    cursor: pointer;
+    padding: 2px 6px;
+    border-radius: 4px;
+    transition: background 0.1s;
+}
+
+.finder-sidebar__ingredient-amount:hover {
+    background: #e5e7eb;
+    color: #111;
+}
+
+.finder-sidebar__ingredient-edit {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.finder-sidebar__edit-input {
+    width: 52px;
+    padding: 3px 6px;
+    border: 1px solid #d1d5db;
+    border-radius: 6px;
+    font-size: 12px;
+    font-family: system-ui;
+    outline: none;
+}
+
+.finder-sidebar__edit-input:focus {
+    border-color: #030213;
+}
+
+.finder-sidebar__edit-select {
+    padding: 3px 4px;
+    border: 1px solid #d1d5db;
+    border-radius: 6px;
+    font-size: 12px;
+    font-family: system-ui;
+    background: #fff;
+    outline: none;
+}
+
+.finder-sidebar__edit-select:focus {
+    border-color: #030213;
+}
+
+.finder-sidebar__edit-save {
+    background: #030213;
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    padding: 3px 7px;
+    font-size: 12px;
+    cursor: pointer;
+    transition: background 0.15s;
+}
+
+.finder-sidebar__edit-save:hover {
+    background: rgba(3, 2, 19, 0.8);
+}
+
+.finder-sidebar__edit-cancel {
+    background: none;
+    color: #9ca3af;
+    border: 1px solid #e5e7eb;
+    border-radius: 6px;
+    padding: 3px 7px;
+    font-size: 12px;
+    cursor: pointer;
+    transition: color 0.1s;
+}
+
+.finder-sidebar__edit-cancel:hover {
+    color: #ef4444;
+    border-color: #ef4444;
+}
