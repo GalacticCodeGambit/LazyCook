@@ -16,7 +16,7 @@ interface Props {
     onServingsChange: (s: number) => void;
 }
 
-export default function AddIngredientsPopup({ ingredients, onAdd, servings, onServingsChange }: Props) {
+export default function AddIngredientsPopup({ ingredients, onAdd}: Props) {
     const [ingredientName, setIngredientName] = useState("");
     const [ingredientAmount, setIngredientAmount] = useState("");
     const [ingredientUnit, setIngredientUnit] = useState("Stück");
