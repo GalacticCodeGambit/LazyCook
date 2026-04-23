@@ -2,10 +2,20 @@
 
 import {useEffect, useRef, useState} from "react";
 import { useRouter } from "next/navigation";
-import { useAuth } from "@/lib/auth";
-import {ChefHat, LogOut} from "lucide-react";
-import { User, UserCircle } from "lucide-react";
+import {fetchWithAuth, useAuth} from "@/lib/auth";
+import {ChefHat, LogOut, X, User, UserCircle, Search, Plus} from "lucide-react";
 import "./style.css"
+import {Button} from "@/app/components/ui/button";
+import Modal from "@/app/components/modal";
+import AddIngredientsPopup from "@/app/recipeFinder/popup";
+
+const EINHEITEN = ["Stück", "g", "kg", "ml", "l", "EL", "TL", "Prise"];
+
+interface IngredientInput {
+    name: string;
+    amount: number;
+    unit: string;
+}
 
 export default function RecipeFinder() {
     const { user, loading, logout } = useAuth();
@@ -14,7 +24,28 @@ export default function RecipeFinder() {
     const [open, setOpen] = useState(false);
     const menuRef = useRef<HTMLDivElement>(null);
 
-    // Nicht eingeloggt → zurück zur Startseite
+    const [ingredients, setIngredients] = useState<IngredientInput[]>(() => {
+        try {
+            const saved = localStorage.getItem("ingredients");
+            return saved ? JSON.parse(saved) : [];
+        } catch {
+            return [];
+        }
+    });
+
+    const [servings, setServings] = useState(1);
+
+    const [searching, setSearching] = useState(false);
+    const [results, setResults] = useState<any[] | null>(null);
+
+    const [editingIngredient, setEditingIngredient] = useState<string | null>(null);
+    const [editAmount, setEditAmount] = useState("");
+    const [editUnit, setEditUnit] = useState("Stück");
+
+    const [searchError, setSearchError] = useState("");
+
+    const [modalOpen, setModalOpen] = useState(false);
+
     useEffect(() => {
         if (!loading && !user) {
             router.replace("/");
@@ -31,6 +62,10 @@ export default function RecipeFinder() {
         return () => document.removeEventListener("mousedown", handleClickOutside);
     }, []);
 
+    useEffect(() => {
+        localStorage.setItem("ingredients", JSON.stringify(ingredients));
+    }, [ingredients]);
+
     if (loading) {
         return (
             <div className="min-h-screen flex items-center justify-center">
@@ -41,10 +76,59 @@ export default function RecipeFinder() {
 
     if (!user) return null;
 
+    const handleLogout = () => {
+        logout();
+        router.replace("/");
+    }
     const handleProfil = () => {
         setOpen(false);
         console.log("Profil ansehen");
         router.push("/profile");
+    };
+
+    const handleAdd = (ingredient: IngredientInput) => {
+        setIngredients(prev => [...prev, ingredient]);
+    };
+
+    const handleRemoveIngredient = (name: string) => {
+        setIngredients(prev => prev.filter(z => z.name !== name));
+    }
+
+    const handleEditSave = (name: string) => {
+        const amountNum = parseFloat(editAmount);
+        if (!editAmount || isNaN(amountNum) || amountNum <= 0) return;
+        setIngredients(prev => prev.map(i =>
+            i.name === name ? { ...i, amount: amountNum, unit: editUnit } : i
+        ));
+        setEditingIngredient(null);
+    };
+
+    const handleEditStart = (i: IngredientInput) => {
+        setEditingIngredient(i.name);
+        setEditAmount(String(i.amount));
+        setEditUnit(i.unit);
+    };
+
+    const handleSearch = async () => {
+        if (ingredients.length === 0) {
+            setSearchError("Bitte mindestens eine Zutat hinzufügen.");
+            return;
+        }
+        setSearchError("");
+        setSearching(true);
+        try {
+            const res = await fetchWithAuth('/recipes/search', {
+                method: "POST",
+                headers: {"Content-Type": "application/json"},
+                body: JSON.stringify({zutaten: ingredients, servings}),
+            });
+            const data = await res.json();
+            setResults(data.rezepte ?? []);
+        } catch {
+            setSearchError("Suche fehlgeschlagen.");
+        } finally {
+            setSearching(false);
+        }
     };
 
     return (
@@ -58,9 +142,7 @@ export default function RecipeFinder() {
                     </div>
 
                     <nav className="hidden md:flex items-center gap-6">
-                        <a href="#" className="text-gray-700 hover:text-black">RecipeFinder</a>
                         <a href="#" className="text-gray-700 hover:text-black">Favoriten</a>
-                        <a href="#" className="text-gray-700 hover:text-black">Neues Rezept</a>
                     </nav>
 
                     <div className="flex items-center gap-3">
@@ -85,7 +167,7 @@ export default function RecipeFinder() {
                                         <span>Profil ansehen</span>
                                     </button>
                                     <button
-                                        onClick={() => { logout(); router.replace("/"); }}
+                                        onClick={ handleLogout }
                                         className="account-menu__item"
                                         role="menuitem"
                                     >
@@ -99,18 +181,107 @@ export default function RecipeFinder() {
                 </div>
             </header>
 
-            {/* Dashboard Content */}
-            <main className="max-w-4xl mx-auto px-6 py-12">
-                <h1 className="text-3xl font-semibold mb-2">Dashboard</h1>
-                <p className="text-gray-600 mb-8">Willkommen zurück, {user.name}!</p>
+            <div className="finder-layout">
+                {/* Sidebar */}
+                <aside className="finder-sidebar">
 
-                <div className="grid md:grid-cols-2 gap-6">
-                    <div className="border rounded-lg p-6">
-                        <h3 className="font-semibold mb-3">Favoriten</h3>
-                        <p className="text-sm text-gray-600">Du hast noch keine Rezepte gespeichert.</p>
+                    {/* Zutaten hinzufügen */}
+                    <div className="finder-sidebar__section">
+                        <p className="finder-sidebar__title">Zutaten</p>
+                        <div style={{ display: "flex", gap: 8 }}>
+                            <Button onClick={() => setModalOpen(true)} className="finder-sidebar__add-btn">
+                                <Plus size={15} />
+                                Zutat hinzufügen
+                            </Button>
+                            <Button onClick={() => setIngredients([])} className="finder-sidebar__clear-btn">
+                                Alle entfernen
+                            </Button>
+                        </div>
+
+
+                        {ingredients.length > 0 ? (
+                            <div className="finder-sidebar__ingredient-list">
+                                {ingredients.map(i => (
+                                    <div key={i.name} className="finder-sidebar__ingredient">
+                                        <span className="finder-sidebar__ingredient-name">{i.name}</span>
+
+                                        {editingIngredient === i.name ? (
+                                            // Bearbeitungsmodus
+                                            <div className="finder-sidebar__ingredient-edit">
+                                                <input
+                                                    type="number"
+                                                    value={editAmount}
+                                                    onChange={e => setEditAmount(e.target.value)}
+                                                    onKeyDown={e => e.key === "Enter" && handleEditSave(i.name)}
+                                                    min={0}
+                                                    className="finder-sidebar__edit-input"
+                                                    autoFocus
+                                                />
+                                                <select
+                                                    value={editUnit}
+                                                    onChange={e => setEditUnit(e.target.value)}
+                                                    className="finder-sidebar__edit-select"
+                                                >
+                                                    {EINHEITEN.map(e => <option key={e} value={e}>{e}</option>)}
+                                                </select>
+                                                <button onClick={() => handleEditSave(i.name)} className="finder-sidebar__edit-save">✓</button>
+                                                <button onClick={() => setEditingIngredient(null)} className="finder-sidebar__edit-cancel">✕</button>
+                                            </div>
+                                        ) : (
+                                            // Anzeigemodus — klickbar
+                                            <div className="finder-sidebar__ingredient-right">
+                                                <span
+                                                    onClick={() => handleEditStart(i)}
+                                                    className="finder-sidebar__ingredient-amount"
+                                                    title="Klicken zum Bearbeiten"
+                                                >
+                                                    {i.amount} {i.unit}
+                                                </span>
+                                                <button onClick={() => handleRemoveIngredient(i.name)} className="finder-sidebar__ingredient-remove">
+                                                    <X size={14} />
+                                                </button>
+                                            </div>
+                                        )}
+                                    </div>
+                                ))}
+                            </div>
+                        ) : (
+                            <p className="finder-sidebar__empty">Noch keine Zutaten.</p>
+                        )}
                     </div>
-                </div>
-            </main>
+
+                    {/* Personenanzahl */}
+                    <div className="finder-sidebar__section">
+                        <p className="finder-sidebar__title">Personen</p>
+                        <div className="finder-sidebar__persons">
+                            <button onClick={() => setServings(Math.max(1, servings - 1))} className="finder-sidebar__persons-btn">−</button>
+                            <div>
+                                <div className="finder-sidebar__persons-count">{servings}</div>
+                                <div className="finder-sidebar__persons-label">Personen</div>
+                            </div>
+                            <button onClick={() => setServings(servings + 1)} className="finder-sidebar__persons-btn">+</button>
+                        </div>
+                    </div>
+
+                    {/* Suche starten */}
+                    <div className="finder-sidebar__section">
+                        {searchError && <p style={{ color: '#b91c1c', fontSize: 13, fontFamily: 'system-ui', marginBottom: 8 }}>{searchError}</p>}
+                        <button onClick={handleSearch} disabled={searching || ingredients.length === 0} className="finder-sidebar__search-btn">
+                            <Search size={15} />
+                            {searching ? "Suche läuft…" : "Rezepte suchen"}
+                        </button>
+                    </div>
+                </aside>
+
+                <Modal open={modalOpen} onCloseAction={() => setModalOpen(false)}>
+                    <AddIngredientsPopup
+                        ingredients={ingredients}
+                        onAdd={handleAdd}
+                        servings={servings}
+                        onServingsChange={setServings}
+                    />
+                </Modal>
+            </div>
         </div>
     );
 }
