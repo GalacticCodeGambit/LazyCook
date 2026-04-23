@@ -53,8 +53,7 @@ Eine Zutat soll aus ihren Namen, ihre Menge und Einheit der Menge bestehen. Die 
 Der Nutzer muss angemeldet sein und sich auf der Seite befinden für Zutaten eintragen, um die Zutaten eintragen zu können.
 ##### Nachbedingungen:
 Die eingetragene Zutat werden gespeichert.
-##### Geschätzter Aufwand: 
-mittel/hoch
+##### Geschätzter Aufwand: mittel/hoch
 
 
 #### 2.03 Zutaten entfernen können
@@ -72,8 +71,7 @@ Die jeweilige Zutat sollen im Browser-Cache entfernt werden.
 Der Nutzer muss angemeldet sein und sich auf der Seite befinden für Zutaten eintragen, um die Zutaten eintragen zu können und es muss mindestens eine Zutat bereits eingetragen sein.
 ##### Nachbedingungen:
 Die gelöschte Zutat wird aus dem Speicher gelöscht.
-##### Geschätzter Aufwand: 
-niedrig
+##### Geschätzter Aufwand: niedrig
 
 
 #### 2.04 Automatischer Rezeptvorschlag auf Grundlage der eingetragenen Zutaten
@@ -94,8 +92,7 @@ Die Anzahl der Personen soll hier noch keine Auswirkung auf den automatischen Re
 Der Nutzer muss angemeldet sein und Zutaten, die er vorrätig hat, eingetragen haben.
 ##### Nachbedingungen:
 n/a
-##### Geschätzter Aufwand: 
-hoch
+##### Geschätzter Aufwand: hoch
 
 
 #### 2.05 Als Kunde mit neuem Konto registrieren können
@@ -116,8 +113,7 @@ Die Eingabe für die Registrierung soll im Frontend und im Backend Validiert wer
 Ein Nutzer der LazyCook nutzen will
 ##### Nachbedingungen:
 n/a
-##### Geschätzter Aufwand: 
-mittel
+##### Geschätzter Aufwand: mittel
 
 
 #### 2.06 Als Kunde mit Konto anmelden können
@@ -138,8 +134,7 @@ Als Nutzer soll man sich auf der Webseite Anmelden können um alle Funktionen de
 Der User muss mit dem Konto bereits registriert sein mit welchen er sich anmelden möchte.
 ##### Nachbedingungen:
 Der User ist mit dem Konto angemeldet, welches er eingegeben hat.
-##### Geschätzter Aufwand: 
-mittel
+##### Geschätzter Aufwand: mittel
 
 
 #### 2.07 Als Kunde mit Konto abmelden können
@@ -157,8 +152,7 @@ Als Nutzer soll man sich auch abmelden können um sich z.B. auch mit anderen Kon
 Der Nutzer muss angemeldet sein mit einem Konto.
 ##### Nachbedingungen:
 Der Nutzer ist nicht angemeldet.
-##### Geschätzter Aufwand: 
-niedrig
+##### Geschätzter Aufwand: niedrig
 
 
 #### 2.08 Personenanzahl angegeben bei Zutaten eintragen
@@ -176,8 +170,7 @@ Die angegebene Personenanzahl soll sich auf den automatischen Rezeptvorschlag au
 Der Nutzer muss angemeldet sein und sich auf der Seite befinden für Zutaten eintragen, um die Personenanzahl eintragen zu können.
 ##### Nachbedingungen:
 Die eingetragene Personenanzahl wir gespeichert. Bei dem automatischen Rezeptvorschlag wird die Personenanzahl berücksichtigt und passt entsprechend angepasst.
-##### Geschätzter Aufwand: 
-mittel
+##### Geschätzter Aufwand: mittel
 
 
 #### 2.09 Grundlegende Zutaten werden beim Eintragen empfohlen 
@@ -195,8 +188,7 @@ Dieser Vorschlag soll fest eingestellt sein.
 Der Nutzer muss angemeldet sein und sich auf der Seite befinden für Zutaten eintragen.
 ##### Nachbedingungen:
 Die hinzugefügten Grundzutaten müssen zu den bereits vorhandenen Zutaten hinzugefügt werden. 
-##### Geschätzter Aufwand: 
-mittel
+##### Geschätzter Aufwand: mittel
 
 
 #### 2.10 Rezepte Suchen können ohne eingetragene Zutaten
@@ -217,38 +209,26 @@ Rezepte sollen auch ohne den Eintrag von Zutaten suchbar sein.
 Der Nutzer muss angemeldet sein und sich auf der Seite befinden für Zutaten eintragen.
 ##### Nachbedingungen:
 
-##### Geschätzter Aufwand: 
-niedrig
+##### Geschätzter Aufwand: niedrig
 
 
 ___
 ### 3. Nicht-funktionale Anforderungen
-Das Projekt muss zum Ende des 4. Semesters abgegeben werden, genaueres wird noch bekannt gegeben. <br>
-Sollte die Zeit nicht ausreichen, um alle geplanten Features zu implementieren, sollen die Kernfunktionen (Zutaten hinzufügen/entfernen, Rezeptsuche und Rezeptvorschläge) Priorität haben.
-#### 3.1 Technische Einschränkungen
-- **TE-1 (Architektur):** Das System muss als Web-Applikation realisiert werden. Eine native Installation auf dem Endgerät des Nutzers ist nicht vorgesehen.
-- **TE-2 (Laufzeitumgebung/Browser):** Die Anwendung muss auf den aktuellsten stabilen Versionen der Browser Google Chrome, Mozilla Firefox und Safari lauffähig sein. Eine Optimierung für veraltete Browser (z.B. Internet Explorer) oder Browser-Versionen erfolgt nicht.
-- **TE-3 (Zielplattform):** Das Interface ist ausschließlich für die Nutzung an Desktop-Systemen (Laptops/PCs) mit Maus- und Tastatureingabe zu optimieren. Eine Smartphone-Optimierung ist im Rahmen dieses Projekts nicht gefordert.
-- **TE-4 (Persistenz):** Zur Datenspeicherung ist eine lokale SQLite-Datenbank zu verwenden. Dies schließt den Einsatz von Cloud-Datenbanken oder extern verwalteten DBMS aus.
-- **TE-5 (Sicherheit/Verschlüsselung):** Passwörter dürfen unter keinen Umständen im Klartext gespeichert werden. Es ist zwingend ein modernes Hashing-Verfahren (z.B. Argon2 oder bcrypt) mit Salt-Zusatz zu verwenden.
-- **TE-6 (Entwicklungsumgebung):** Das Projekt muss unter Verwendung der IDE IntelliJ und der Versionsverwaltung GitHub entwickelt werden.
+Das Projekt muss zum Ende des 4. Semesters abgegeben werden, genaueres wird noch bekannt gegeben. Es muss sich um eine webbasierte Anwendung handeln. LazyCook soll für die Benutzung/Bedingung am Laptop oder am Computer optimiert sein.
 
-#### 3.2 Verwendete Technologien
-- **Frontend:** HTML, CSS, React/JavaScript
-- **Backend:** Python mit FastAPI
-- **DB:** SQLite
-- **Containerization:** Docker
-- **Tests:** Pytest/unittest
-- **CI/CD:** GitHub Actions
-- **IDE:** IntelliJ
-- **Projekt Management:** GitHub Projects
+#### 3.1 Verwendete Technologien
+- Frontend: HTML, CSS, JavaScript/React
+- Backend: Python
+- DB: SQLite
+- IDE: IntelliJ
+- Projekt Management: GitHub Projects
 
-#### 3.3 Qualitätsmerkmale
-- **Wartbarkeit (Änderbarkeit):** Neue Feature und Bug-Fixes innerhalb von 2 Tagen auf GitHub bereitstellen.
-- **Effizient (Zeitverhalten):** Rezepte werden in maximal 5 Sekunden nach Klick auf Filtern angezeigt.
-- **Sicherheit der Nutzerdaten:** Passwörter werden gehasht mit Salt in der Datenbank gespeichert.
-- **Benutzbarkeit (Bedienbarkeit & Ansehnlichkeit):** Anmeldung & Registrierung mit möglichst wenigen Klicks; Rezept vorschläge werden als 3x3 Matrix mit max. 9 Stück auf einer Seite angezeigt.
-- **Kompatibilität (Interoperabilität):** Die Anwendung soll auf unterschiedlichen Browsern fehlerfrei laufen (Chrome, Firefox, Safari).
+#### 3.2 Qualitätsmerkmale
+- Wartbarkeit (Änderbarkeit): Neue Feature und Bug-Fixes innerhalb von 2 Tagen
+- Effizient (Zeitverhalten): Rezepte werden in maximal 5 Sekunden nach Klick auf Filtern angezeigt
+- Sicherheit der Nutzerdaten: Passwörter werden gehashed mit Salt in der Datnebnak gespeichert
+- Benutzbarkeit (Bedienbarkeit & Ansehnlichkeit): Anmeldung & Registrierung mit möglichts wenigen Klicks; Rezept vorschläge werden als 3x3 Matrix mit max. 9 Stück auf einer Seite aangezeigt.
+- Kompatibilität (Interoperatibilität): Die Anwendung soll auf unterscheidlihen Browsern fehlerfrei laufen (Chrome, Firefox, Safari)
   
 ___
 ### 4. Unterstützende Informationen

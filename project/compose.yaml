@@ -6,9 +6,9 @@ services:
     ports:
       - "8000:8000"
     depends_on:
-      - backend-dev
+      - backend
 
-  backend-dev:
+  backend:
     build:
       context: .
       dockerfile: Dockerfile-backend
@@ -16,13 +16,14 @@ services:
     environment:
       - PYTHONUNBUFFERED=1
     volumes:
-      - ./data:/data
+      - ./backend:/app
+      - data:/data
     ports:
       - "3000:3000"
 
 # Persist data for containers
-#volumes:
-#  data:
+volumes:
+  data:
 
 #networks:
 #  default:

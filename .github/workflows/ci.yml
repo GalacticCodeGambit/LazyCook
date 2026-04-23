@@ -1,38 +1,37 @@
-name: "CI/CD Pipeline"
-on:
-  pull_request:
-    branches: [main, 'blatt*']
-  push:
-    branches: [main, 'blatt*']
+name: "CI"
+on: push
 permissions:
   contents: read
 
 jobs:
-  build:
+  Test:
     runs-on: ubuntu-latest
+
     steps:
       - uses: actions/checkout@v4
-
-      - name: Install Docker Compose (build job)
+      - name: Install Docker Compose
         run: |
           sudo apt-get update
           sudo apt-get install -y docker-compose
-
       - name: Build the stack
         run: docker-compose -f project/compose.yaml build
-
+        # Container starten
       - name: Start services
-        run: |
-          # remove stale containers/volumes from previous runs that can cause compose to read invalid metadata
-          docker-compose -f project/compose.yaml down --remove-orphans --volumes || true
-          docker-compose -f project/compose.yaml up -d
+        run: docker-compose -f project/compose.yaml up -d
+
+      # Healthcheck / Test
+      #      - name: Run tests
+      #        run: |
+      #          docker ps
+      #          curl -s --retry 10 --retry-connrefused http://localhost:8000/
+      #      - name: Test
+      #        run: docker run --network container:webapp-frontend appropriate/curl -s --retry 10 --retry-connrefused http://localhost:5000/
 
       - name: Wait for frontend on :8000
         run: |
           PORT=8000
           attempts=30
-          wait_seconds=1
-          echo "Waiting for frontend..."
+          wait_seconds=3
           for i in $(seq 1 $attempts); do
              if curl -fsSL "http://localhost:${PORT}/" >/dev/null 2>&1; then
                echo "ready"
@@ -45,62 +44,11 @@ jobs:
           docker-compose -f project/compose.yaml ps || true
           docker-compose -f project/compose.yaml logs || true
           exit 1
-      - name: Run smoke test frontend
+
+      - name: Run backend tests in container
+        run: |
+          # startet einen einmaligen Container für den Service 'backend' und führt Unittests aus
+          docker-compose -f project/compose.yaml run --rm backend sh -c "python -m unittest discover -s tests -v"
+
+      - name: Smoke test
         run: curl -fsSL -o /dev/null http://localhost:8000/
-
-  tests:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Install Docker Compose (tests job)
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y docker-compose
-
-      - name: Pull images (if available) or build
-        run: |
-          # Versuche remote images zu ziehen; falls nicht vorhanden, baue lokal neu.
-          docker-compose -f project/compose.yaml pull || docker-compose -f project/compose.yaml build
-
-      - name: Start services
-        run: |
-          docker-compose -f project/compose.yaml down --remove-orphans --volumes || true
-          docker-compose -f project/compose.yaml up -d backend-dev
-
-      - name: Wait for backend to be ready
-        run: |
-          for i in $(seq 1 20); do
-            docker-compose -f project/compose.yaml exec -T backend-dev sh -c "python -c 'print(\"ok\")'" >/dev/null 2>&1 && break
-            sleep 1
-          done
-
-      - name: Run backend tests
-        run: |
-          docker-compose -f project/compose.yaml exec -T backend-dev sh -c "python -m unittest discover -s tests -v"
-
-#  lint:
-#    runs-on: ubuntu-latest
-#    needs: build
-#    steps:
-#      - name: Wait for frontend on :8000
-#        run: |
-#          PORT=8000
-#          attempts=30
-#          wait_seconds=3
-#          for i in $(seq 1 $attempts); do
-#             if curl -fsSL "http://localhost:${PORT}/" >/dev/null 2>&1; then
-#               echo "ready"
-#               exit 0
-#             fi
-#             echo "waiting... ($i)"
-#             sleep $wait_seconds
-#          done
-#          echo "service not ready" >&2
-#          docker-compose -f project/compose.yaml ps || true
-#          docker-compose -f project/compose.yaml logs || true
-#          exit 1
-#      - name: Run linting tests
-#        run: |
-#          # startet einen einmaligen Container für den Service 'backend' und führt Linting-Tests aus (z.B. mit flake8)
-#          docker-compose -f project/compose.yaml run --rm backend sh -c "flake8 ."
