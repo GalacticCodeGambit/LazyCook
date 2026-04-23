@@ -1,8 +1,8 @@
 from typing import Annotated
 from fastapi import APIRouter, Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordRequestForm
-from email_service import send_password_changed_email
-
+from EmailService import send_password_changed_email
+from pydantic import BaseModel as _BaseModel
 
 
 from auth import (
@@ -107,15 +107,13 @@ async def delete_current_user(current_user: Annotated[User, Depends(get_current_
 
     # ── Konto aktualisieren ────────────────────────────────────────
 
-from pydantic import BaseModel as _BaseModel
-
 class UpdateUser(_BaseModel):
     email: str | None = None
     currentPassword: str | None = None
     newPassword: str | None = None
 
 @router.patch("/users/me")
-async def update_current_user(
+async def updateCurrentUser(
         data: UpdateUser,
         current_user: Annotated[User, Depends(get_current_user)]
 ):
@@ -140,8 +138,11 @@ async def update_current_user(
         neuer_hash = hash_password(data.newPassword)
         update_konto(konto["id"], password_hash=neuer_hash)
 
-        # NEU
+        # NEU: try/catch um echten Fehler zu sehen
         empfaenger_email = data.email if data.email else konto["email"]
-        send_password_changed_email(empfaenger_email, konto["name"])
+        try:
+            send_password_changed_email(empfaenger_email, konto["name"])
+        except Exception as e:
+            print(f"E-Mail konnte nicht gesendet werden: {e}")
 
     return {"success": True}

@@ -15,8 +15,8 @@ services:
     working_dir: /app
     environment:
       - PYTHONUNBUFFERED=1
-      - GMAIL_USER=lazycook.noreply@gmail.com
-      - GMAIL_PASSWORD= xavo fypu grhh sbur
+      - GMAIL_USER=${GMAIL_USER}
+      - GMAIL_PASSWORD=${GMAIL_PASSWORD}
     volumes:
       - ./data:/data
     ports:

@@ -184,7 +184,7 @@ def delete_konto(email: str) -> bool:
         cur.execute("DELETE FROM Konto WHERE email = ?", (email,))
         return cur.rowcount > 0
 
-def update_konto(konto_id: int, email: str = None, password_hash: str = None) -> None:
+def updateKonto(konto_id: int, email: str = None, password_hash: str = None) -> None:
     """Aktualisiert E-Mail und/oder Passwort eines Kontos."""
     with get_db() as con:
         cur = con.cursor()
