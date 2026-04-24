@@ -48,3 +48,5 @@ pnpm-debug.log*
 Thumbs.db
 Desktop.ini
 
+# IDE configuration
+.idea/
