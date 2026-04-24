@@ -1,13 +1,13 @@
-from project.backend.Person import Person
-from project.backend.Rezept import Rezept
+from Person import Person
+from Recipe import Recipe
 
 
 class Admin(Person):
-    def __init__(self, name: str, email: str, passwort: str):
-        super().__init__(name, email, passwort)
-        self.__rezepte = []
+    def __init__(self, name: str, email: str, password: str):
+        super().__init__(name, email, password)
+        self.__ricepes = []
         super().setRole("Admin")
 
-    def fuegeRezeptHinzu(self, rezept: Rezept):
-        self.__rezepte.append(rezept)
-        print(f"Rezept '{rezept.getName()}' wurde zu Benutzer '{self.name}' hinzugefügt.")
+    def addRecipe(self, recipe: Recipe):
+        self.__ricepes.append(recipe)
+        

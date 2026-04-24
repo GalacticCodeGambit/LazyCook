@@ -5,29 +5,31 @@ from EmailService import sendPasswordChangedEmail
 from pydantic import BaseModel as _BaseModel
 
 
-from auth import (
+from Auth import (
     Token,
     User,
     UserCreate,
     RefreshRequest,
     LogoutRequest,
-    create_token_pair,
-    get_current_user,
-    hash_password,
-    validate_email,
-    validate_password,
-    validate_refresh_token,
-    verify_password,
-    create_access_token,
+    createTokenPair,
+    getCurrentUser,
+    hashPassword,
+    validateEmail,
+    validatePassword,
+    validateRefreshToken,
+    verifyPassword,
+    createAccessToken,
 )
-from Datenbank import (
-    create_konto,
-    get_konto_by_email,
-    delete_refresh_token,
-    delete_all_refresh_tokens,
-    delete_konto,
-    updateKonto,
+from Database import (
+    createAccount,
+    getAccountByEmail,
+    deleteRefreshToken,
+    deleteAllRefreshTokens,
+    deleteAccount,
+    updateAccount,
 )
+
+from Models import User, Token, UserCreate
 
 router = APIRouter()
 
@@ -38,17 +40,17 @@ router = APIRouter()
 async def register(user: UserCreate):
     if not user.name.strip():
         raise HTTPException(status_code=400, detail="Name darf nicht leer sein.")
-    email_error = validate_email(user.email)
-    if email_error:
-        raise HTTPException(status_code=400, detail=email_error)
-    pw_error = validate_password(user.password)
-    if pw_error:
-        raise HTTPException(status_code=400, detail=pw_error)
+    emailError = validateEmail(user.email)
+    if emailError:
+        raise HTTPException(status_code=400, detail=emailError)
+    pwError = validatePassword(user.password)
+    if pwError:
+        raise HTTPException(status_code=400, detail=pwError)
 
-    konto = create_konto(
+    konto = createAccount(
         email=user.email,
         name=user.name,
-        hashed_password=hash_password(user.password),
+        hashedPassword=hashPassword(user.password),
     )
     if konto is None:
         raise HTTPException(status_code=400, detail="E-Mail bereits registriert")
@@ -57,20 +59,20 @@ async def register(user: UserCreate):
 
 
 @router.post("/auth/login", response_model=Token)
-async def login(form_data: Annotated[OAuth2PasswordRequestForm, Depends()]):
-    konto = get_konto_by_email(form_data.username)
-    if not konto or not verify_password(form_data.password, konto["hashed_password"]):
+async def login(formData: Annotated[OAuth2PasswordRequestForm, Depends()]):
+    konto = getAccountByEmail(formData.username)
+    if not konto or not verifyPassword(formData.password, konto["hashedPassword"]):
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="E-Mail oder Passwort falsch",
         )
-    return create_token_pair(konto)
+    return createTokenPair(konto)
 
 
 @router.post("/auth/refresh", response_model=Token)
 async def refresh(body: RefreshRequest):
     """Tauscht einen gültigen Refresh Token gegen ein neues Token-Paar."""
-    entry = validate_refresh_token(body.refresh_token)
+    entry = validateRefreshToken(body.refresh_token)
     if entry is None:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
@@ -78,32 +80,32 @@ async def refresh(body: RefreshRequest):
         )
 
     # Alten Refresh Token löschen (Rotation – jeder Token ist nur einmal verwendbar)
-    delete_refresh_token(body.refresh_token)
+    deleteRefreshToken(body.refresh_token)
 
     # Konto-Daten für neues Token-Paar zusammenstellen
     konto = {"id": entry["konto_id"], "email": entry["email"]}
-    return create_token_pair(konto)
+    return createTokenPair(konto)
 
 
 @router.post("/auth/logout")
 async def logout(body: LogoutRequest):
     """Löscht den Refresh Token serverseitig → Token wird ungültig."""
-    delete_refresh_token(body.refresh_token)
+    deleteRefreshToken(body.refresh_token)
     return {"detail": "Erfolgreich abgemeldet"}
 
 
 # ── Geschützte Endpunkte ───────────────────────────────────────
 
 @router.get("/users/me", response_model=User)
-async def read_current_user(current_user: Annotated[User, Depends(get_current_user)]):
+async def readCurrentUser(currentUser: Annotated[User, Depends(getCurrentUser)]):
     """Nur mit gültigem Access Token erreichbar."""
-    return current_user
+    return currentUser
 
 
 @router.delete("/users/me", status_code=status.HTTP_204_NO_CONTENT)
-async def delete_current_user(current_user: Annotated[User, Depends(get_current_user)]):
+async def deleteCurrentUser(currentUser: Annotated[User, Depends(getCurrentUser)]):
     """Löscht das eigene Konto inkl. aller Refresh Tokens (CASCADE)."""
-    delete_konto(current_user.email)
+    deleteAccount(currentUser.email)
 
     # ── Konto aktualisieren ────────────────────────────────────────
 
@@ -115,28 +117,28 @@ class UpdateUser(_BaseModel):
 @router.patch("/users/me")
 async def updateCurrentUser(
         data: UpdateUser,
-        current_user: Annotated[User, Depends(get_current_user)]
+        current_user: Annotated[User, Depends(getCurrentUser)]
 ):
-    konto = get_konto_by_email(current_user.email)
+    konto = getAccountByEmail(current_user.email)
 
     # E-Mail ändern
     if data.email:
-        fehler = validate_email(data.email)
+        fehler = validateEmail(data.email)
         if fehler:
             raise HTTPException(status_code=400, detail=fehler)
-        updateKonto(konto["id"], email=data.email)
+        updateAccount(konto["id"], email=data.email)
 
     # Passwort ändern
     if data.currentPassword and data.newPassword:
-        if not verify_password(data.currentPassword, konto["hashed_password"]):
+        if not verifyPassword(data.currentPassword, konto["hashed_password"]):
             raise HTTPException(status_code=401, detail="Falsches Passwort")
 
-        fehler = validate_password(data.newPassword)
+        fehler = validatePassword(data.newPassword)
         if fehler:
             raise HTTPException(status_code=400, detail=fehler)
 
-        neuer_hash = hash_password(data.newPassword)
-        updateKonto(konto["id"], password_hash=neuer_hash)
+        neuer_hash = hashPassword(data.newPassword)
+        updateAccount(konto["id"], password_hash=neuer_hash)
 
         # NEU: try/catch um echten Fehler zu sehen
         empfaenger_email = data.email if data.email else konto["email"]
