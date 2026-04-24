@@ -13,7 +13,7 @@ from jose import JWTError, jwt
 import bcrypt
 from pydantic import BaseModel
 
-from models import Token, User
+from Models import Token, User
 
 from Database import getAccountByEmail, saveRefreshToken, getRefreshToken
 

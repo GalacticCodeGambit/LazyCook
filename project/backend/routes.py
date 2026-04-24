@@ -47,26 +47,26 @@ async def register(user: UserCreate):
     if pwError:
         raise HTTPException(status_code=400, detail=pwError)
 
-    konto = createAccount(
+    Account = createAccount(
         email=user.email,
         name=user.name,
         hashedPassword=hashPassword(user.password),
     )
-    if konto is None:
+    if Account is None:
         raise HTTPException(status_code=400, detail="E-Mail bereits registriert")
 
-    return User(email=konto["email"], name=konto["name"])
+    return User(email=Account["email"], name=Account["name"])
 
 
 @router.post("/auth/login", response_model=Token)
 async def login(formData: Annotated[OAuth2PasswordRequestForm, Depends()]):
-    konto = getAccountByEmail(formData.username)
-    if not konto or not verifyPassword(formData.password, konto["hashedPassword"]):
+    Account = getAccountByEmail(formData.username)
+    if not Account or not verifyPassword(formData.password, Account["hashedPassword"]):
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="E-Mail oder Passwort falsch",
         )
-    return createTokenPair(konto)
+    return createTokenPair(Account)
 
 
 @router.post("/auth/refresh", response_model=Token)
@@ -82,9 +82,9 @@ async def refresh(body: RefreshRequest):
     # Alten Refresh Token löschen (Rotation – jeder Token ist nur einmal verwendbar)
     deleteRefreshToken(body.refresh_token)
 
-    # Konto-Daten für neues Token-Paar zusammenstellen
-    konto = {"id": entry["konto_id"], "email": entry["email"]}
-    return createTokenPair(konto)
+    # Account-Daten für neues Token-Paar zusammenstellen
+    Account = {"id": entry["konto_id"], "email": entry["email"]}
+    return createTokenPair(Account)
 
 
 @router.post("/auth/logout")
@@ -104,10 +104,10 @@ async def readCurrentUser(currentUser: Annotated[User, Depends(getCurrentUser)])
 
 @router.delete("/users/me", status_code=status.HTTP_204_NO_CONTENT)
 async def deleteCurrentUser(currentUser: Annotated[User, Depends(getCurrentUser)]):
-    """Löscht das eigene Konto inkl. aller Refresh Tokens (CASCADE)."""
+    """Löscht das eigene Account inkl. aller Refresh Tokens (CASCADE)."""
     deleteAccount(currentUser.email)
 
-    # ── Konto aktualisieren ────────────────────────────────────────
+    # ── Account aktualisieren ────────────────────────────────────────
 
 class UpdateUser(_BaseModel):
     email: str | None = None
@@ -119,18 +119,18 @@ async def updateCurrentUser(
         data: UpdateUser,
         current_user: Annotated[User, Depends(getCurrentUser)]
 ):
-    konto = getAccountByEmail(current_user.email)
+    Account = getAccountByEmail(current_user.email)
 
     # E-Mail ändern
     if data.email:
         fehler = validateEmail(data.email)
         if fehler:
             raise HTTPException(status_code=400, detail=fehler)
-        updateAccount(konto["id"], email=data.email)
+        updateAccount(Account["id"], email=data.email)
 
     # Passwort ändern
     if data.currentPassword and data.newPassword:
-        if not verifyPassword(data.currentPassword, konto["hashed_password"]):
+        if not verifyPassword(data.currentPassword, Account["hashedPassword"]):
             raise HTTPException(status_code=401, detail="Falsches Passwort")
 
         fehler = validatePassword(data.newPassword)
@@ -138,12 +138,12 @@ async def updateCurrentUser(
             raise HTTPException(status_code=400, detail=fehler)
 
         neuer_hash = hashPassword(data.newPassword)
-        updateAccount(konto["id"], password_hash=neuer_hash)
+        updateAccount(Account["id"], password_hash=neuer_hash)
 
         # NEU: try/catch um echten Fehler zu sehen
-        empfaenger_email = data.email if data.email else konto["email"]
+        empfaenger_email = data.email if data.email else Account["email"]
         try:
-            sendPasswordChangedEmail(empfaenger_email, konto["name"])
+            sendPasswordChangedEmail(empfaenger_email, Account["name"])
         except Exception as e:
             print(f"E-Mail konnte nicht gesendet werden: {e}")
 

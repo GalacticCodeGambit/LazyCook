@@ -184,18 +184,18 @@ def deleteAccount(email: str) -> bool:
         cur.execute("DELETE FROM Account WHERE email = ?", (email,))
         return cur.rowcount > 0
 
-def updateKonto(konto_id: int, email: str = None, password_hash: str = None) -> None:
-    """Aktualisiert E-Mail und/oder Passwort eines Kontos."""
-    with get_db() as con:
+def updateAccount(konto_id: int, email: str = None, password_hash: str = None) -> None:
+    """Aktualisiert E-Mail und/oder Passwort eines Accounts."""
+    with getDB() as con:
         cur = con.cursor()
         if email:
             cur.execute(
-                "UPDATE Konto SET email = ? WHERE id = ?",
+                "UPDATE Account SET email = ? WHERE id = ?",
                 (email, konto_id)
             )
         if password_hash:
             cur.execute(
-                "UPDATE Konto SET hashed_password = ? WHERE id = ?",
+                "UPDATE Account SET hashedPassword = ? WHERE id = ?",
                 (password_hash, konto_id)
             )
 
