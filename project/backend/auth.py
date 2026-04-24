@@ -23,8 +23,26 @@ ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = 10       # kurze Laufzeit für Access Token
 REFRESH_TOKEN_EXPIRE_DAYS = 7          # lange Laufzeit für Refresh Token
 
+# ── Modelle ────────────────────────────────────────────────────
+class Token(BaseModel):
+    access_token: str
+    refresh_token: str
+    token_type: str
 
+class User(BaseModel):
+    email: str
+    name: str
 
+class UserCreate(BaseModel):
+    email: str
+    name: str
+    password: str
+
+class RefreshRequest(BaseModel):
+    refresh_token: str
+
+class LogoutRequest(BaseModel):
+    refresh_token: str
 
 # ── Passwort-Hashing ──────────────────────────────────────────
 def hash_password(password: str) -> str:
