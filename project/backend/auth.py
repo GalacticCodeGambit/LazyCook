@@ -13,13 +13,15 @@ from jose import JWTError, jwt
 import bcrypt
 from pydantic import BaseModel
 
-from Datenbank import get_konto_by_email, save_refresh_token, get_refresh_token
+from Models import Token, User
+
+from Database import getAccountByEmail, saveRefreshToken, getRefreshToken
 
 # ── Konfiguration ──────────────────────────────────────────────
 SECRET_KEY = "dein-geheimer-schlüssel-hier-ändern"  # In Produktion: aus Umgebungsvariable laden!
 ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = 10       # kurze Laufzeit für Access Token
-REFRESH_TOKEN_EXPIRE_DAYS = 7          # lange Laufzeit für Refresh Token
+refreshToken_EXPIRE_DAYS = 7          # lange Laufzeit für Refresh Token
 
 # ── Modelle ────────────────────────────────────────────────────
 class Token(BaseModel):
@@ -43,20 +45,20 @@ class LogoutRequest(BaseModel):
     refresh_token: str
 
 # ── Passwort-Hashing ──────────────────────────────────────────
-def hash_password(password: str) -> str:
+def hashPassword(password: str) -> str:
     return bcrypt.hashpw(password.encode(), bcrypt.gensalt()).decode()
 
-def verify_password(plain: str, hashed: str) -> bool:
+def verifyPassword(plain: str, hashed: str) -> bool:
     return bcrypt.checkpw(plain.encode(), hashed.encode())
 
 # ── Access Token (JWT) ─────────────────────────────────────────
-def create_access_token(data: dict, expires_delta: timedelta | None = None) -> str:
-    to_encode = data.copy()
+def createAccessToken(data: dict, expires_delta: timedelta | None = None) -> str:
+    toEncode = data.copy()
     expire = datetime.now(timezone.utc) + (expires_delta or timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES))
-    to_encode.update({"exp": expire})
-    return jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
+    toEncode.update({"exp": expire})
+    return jwt.encode(toEncode, SECRET_KEY, algorithm=ALGORITHM)
 
-def decode_token(token: str) -> str | None:
+def decodeToken(token: str) -> str | None:
     """Dekodiert ein JWT und gibt die E-Mail (sub) zurück, oder None."""
     try:
         payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
@@ -65,44 +67,44 @@ def decode_token(token: str) -> str | None:
         return None
 
 # ── Refresh Token ──────────────────────────────────────────────
-def create_refresh_token(konto_id: int) -> str:
+def createRefreshToken(konto_id: int) -> str:
     """Erstellt einen kryptografisch sicheren Refresh Token und speichert ihn in der DB."""
     token = secrets.token_urlsafe(64)
-    expires_at = datetime.now(timezone.utc) + timedelta(days=REFRESH_TOKEN_EXPIRE_DAYS)
-    save_refresh_token(konto_id, token, expires_at.isoformat())
+    expiresAt = datetime.now(timezone.utc) + timedelta(days=refreshToken_EXPIRE_DAYS)
+    saveRefreshToken(konto_id, token, expiresAt.isoformat())
     return token
 
-def validate_refresh_token(token: str) -> dict | None:
+def validateRefreshToken(token: str) -> dict | None:
     """Prüft ob ein Refresh Token gültig und nicht abgelaufen ist. Gibt Konto-Daten zurück."""
-    entry = get_refresh_token(token)
+    entry = getRefreshToken(token)
     if entry is None:
         return None
-    expires_at = datetime.fromisoformat(entry["expires_at"])
-    if expires_at.tzinfo is None:
-        expires_at = expires_at.replace(tzinfo=timezone.utc)
-    if expires_at < datetime.now(timezone.utc):
+    expiresAt = datetime.fromisoformat(entry["expiresAt"])
+    if expiresAt.tzinfo is None:
+        expiresAt = expiresAt.replace(tzinfo=timezone.utc)
+    if expiresAt < datetime.now(timezone.utc):
         return None
     return entry
 
 # ── Token-Paar erstellen ──────────────────────────────────────
-def create_token_pair(konto: dict) -> Token:
+def createTokenPair(konto: dict) -> Token:
     """Erstellt ein Access + Refresh Token-Paar für ein Konto."""
-    access_token = create_access_token(
+    access_token = createAccessToken(
         data={"sub": konto["email"]},
         expires_delta=timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES),
     )
-    refresh_token = create_refresh_token(konto["id"])
-    return Token(access_token=access_token, refresh_token=refresh_token, token_type="bearer")
+    refreshToken = createRefreshToken(konto["id"])
+    return Token(access_token=access_token, refresh_token=refreshToken, token_type="bearer")
 
 # ── Validierung ────────────────────────────────────────────────
 EMAIL_RE = re.compile(r"^[^\s@]+@[^\s@]+\.[^\s@]+$")
 
-def validate_email(email: str) -> str | None:
+def validateEmail(email: str) -> str | None:
     if not EMAIL_RE.match(email):
         return "Ungültige E-Mail-Adresse."
     return None
 
-def validate_password(pw: str) -> str | None:
+def validatePassword(pw: str) -> str | None:
     if len(pw) < 8:
         return "Passwort muss mindestens 8 Zeichen lang sein."
     if not re.search(r"[A-Z]", pw):
@@ -118,17 +120,17 @@ def validate_password(pw: str) -> str | None:
 # ── Auth-Dependency ────────────────────────────────────────────
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="auth/login")
 
-async def get_current_user(token: Annotated[str, Depends(oauth2_scheme)]) -> User:
+async def getCurrentUser(token: Annotated[str, Depends(oauth2_scheme)]) -> User:
     credentials_exception = HTTPException(
         status_code=status.HTTP_401_UNAUTHORIZED,
         detail="Ungültige Anmeldedaten",
         headers={"WWW-Authenticate": "Bearer"},
     )
-    email = decode_token(token)
+    email = decodeToken(token)
     if email is None:
         raise credentials_exception
 
-    konto = get_konto_by_email(email)
+    konto = getAccountByEmail(email)
     if konto is None:
         raise credentials_exception
 

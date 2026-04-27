@@ -1,0 +1,52 @@
+# LazyCook root ignore rules
+
+# Python
+__pycache__/
+*.py[cod]
+*.pyd
+*.pyo
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+
+# Virtual environments
+.venv/
+venv/
+env/
+
+# Environment files
+**/.env
+**/.env.*
+
+# Node / frontend artifacts
+node_modules/
+.next/
+out/
+coverage/
+*.tsbuildinfo
+
+# Build / packaging artifacts
+dist/
+build/
+
+# Project data / local databases
+project/data/*.sqlite3
+project/data/*.sqlite
+project/data/*.db
+
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# OS-specific files
+.DS_Store
+Thumbs.db
+Desktop.ini
+
+# IDE configuration
+.idea/

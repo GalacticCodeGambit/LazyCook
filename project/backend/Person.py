@@ -1,11 +1,11 @@
 class Person:
-    def __init__(self, name: str, email: str, passwort: str):
+    def __init__(self, name: str, email: str, password: str):
         self.__name = name
         self.__email = email
-        self.__passwort = passwort
+        self.__password = password
         self.__role = "User"
 
-    def speichernInDB(self) -> bool:
+    def saveInDB(self) -> bool:
         return True
 
     def getName(self) -> str:
@@ -20,11 +20,11 @@ class Person:
     def setEmail(self, email: str):
         self.__email = email
 
-    def getPasswort(self) -> str:
-        return self.__passwort
+    def getPassword(self) -> str:
+        return self.__password
 
-    def setPasswort(self, passwort: str):
-        self.__passwort = passwort
+    def setPassword(self, password: str):
+        self.__password = password
 
     def getRole(self) -> str:
         return self.__role

@@ -48,36 +48,40 @@ jobs:
       - name: Run smoke test frontend
         run: curl -fsSL -o /dev/null http://localhost:8000/
 
-  tests:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Install Docker Compose (tests job)
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y docker-compose
-
-      - name: Pull images (if available) or build
-        run: |
-          # Versuche remote images zu ziehen; falls nicht vorhanden, baue lokal neu.
-          docker-compose -f project/compose.yaml pull || docker-compose -f project/compose.yaml build
-
-      - name: Start services
-        run: |
-          docker-compose -f project/compose.yaml down --remove-orphans --volumes || true
-          docker-compose -f project/compose.yaml up -d backend-dev
-
-      - name: Wait for backend to be ready
-        run: |
-          for i in $(seq 1 20); do
-            docker-compose -f project/compose.yaml exec -T backend-dev sh -c "python -c 'print(\"ok\")'" >/dev/null 2>&1 && break
-            sleep 1
-          done
-
       - name: Run backend tests
         run: |
           docker-compose -f project/compose.yaml exec -T backend-dev sh -c "python -m unittest discover -s tests -v"
+
+#  tests:
+#    runs-on: ubuntu-latest
+#    steps:
+#      - uses: actions/checkout@v4
+#
+#      - name: Install Docker Compose (tests job)
+#        run: |
+#          sudo apt-get update
+#          sudo apt-get install -y docker-compose
+#
+#      - name: Pull images (if available) or build
+#        run: |
+#          # Versuche remote images zu ziehen; falls nicht vorhanden, baue lokal neu.
+#          docker-compose -f project/compose.yaml pull || docker-compose -f project/compose.yaml build
+#
+#      - name: Start services
+#        run: |
+#          docker-compose -f project/compose.yaml down --remove-orphans --volumes || true
+#          docker-compose -f project/compose.yaml up -d backend-dev
+#
+#      - name: Wait for backend to be ready
+#        run: |
+#          for i in $(seq 1 20); do
+#            docker-compose -f project/compose.yaml exec -T backend-dev sh -c "python -c 'print(\"ok\")'" >/dev/null 2>&1 && break
+#            sleep 1
+#          done
+#
+#      - name: Run backend tests
+#        run: |
+#          docker-compose -f project/compose.yaml exec -T backend-dev sh -c "python -m unittest discover -s tests -v"
 
 #  lint:
 #    runs-on: ubuntu-latest
