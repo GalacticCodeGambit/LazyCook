@@ -1,14 +1,17 @@
 "use client";
 
-import { useState } from "react";
+import {useEffect, useRef, useState} from "react";
 import { useAuth, fetchWithAuth } from "@/lib/auth";
 import { useRouter } from "next/navigation";
-import { ChefHat } from "lucide-react";
+import {ChefHat, LogOut, User, UserCircle} from "lucide-react";
 import { Button } from '../components/ui/button';
+import ProfileDropdown from "@/app/components/profile_dropdown";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:3000";
 
 export default function Profile() {
+
+    const menuRef = useRef<HTMLDivElement>(null);
     const { user, logout } = useAuth();
     const router = useRouter();
     const [showConfirm, setShowConfirm] = useState(false);
@@ -84,13 +87,11 @@ export default function Profile() {
                     <nav className="hidden md:flex items-center gap-6">
                         <a href="/recipeFinder" className="text-gray-700 hover:text-black">RecipeFinder</a>
                     </nav>
-                    <Button
-                        className="bg-red-600 text-white hover:bg-red-700 text-sm font-medium"
-                        onClick={() => setShowConfirm(true)}
-                    >
-                        Konto löschen
-                    </Button>
-                </div>
+
+                    <ProfileDropdown>
+                    </ProfileDropdown>
+
+                    </div>
             </header>
 
             {/* Inhalt */}
@@ -147,6 +148,12 @@ export default function Profile() {
                     </Button>
                     {passwordMsg && <p className="text-sm">{passwordMsg}</p>}
                 </div>
+                <Button
+                    className="bg-red-600 text-white hover:bg-red-700 text-sm font-medium"
+                    onClick={() => setShowConfirm(true)}
+                >
+                    Konto löschen
+                </Button>
 
             </div>
 

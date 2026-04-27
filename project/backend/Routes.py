@@ -6,11 +6,6 @@ from pydantic import BaseModel as _BaseModel
 
 
 from Auth import (
-    Token,
-    User,
-    UserCreate,
-    RefreshRequest,
-    LogoutRequest,
     createTokenPair,
     getCurrentUser,
     hashPassword,
@@ -29,7 +24,7 @@ from Database import (
     updateAccount,
 )
 
-from Models import User, Token, UserCreate
+from Models import User, Token, UserCreate, RefreshRequest, LogoutRequest
 
 router = APIRouter()
 
