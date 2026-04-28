@@ -13,6 +13,9 @@ export default function Profile() {
     const router = useRouter();
     const [showConfirm, setShowConfirm] = useState(false);
 
+    const [showEmailModal, setShowEmailModal] = useState(false);
+    const [showPasswordModal, setShowPasswordModal] = useState(false);
+
     // E-Mail ändern
     const [newEmail, setNewEmail] = useState("");
     const [emailMsg, setEmailMsg] = useState("");
@@ -94,88 +97,109 @@ export default function Profile() {
             </header>
 
             {/* Inhalt */}
-            <div className="max-w-7xl mx-auto px-6 py-8 grid md:grid-cols-2 gap-6">
+            <div className="max-w-7xl mx-auto px-6 py-8 flex flex-col items-center gap-6">
 
                 {/* Profil-Anzeige */}
-                <div className="border rounded-lg p-6">
+                <div className="border rounded-lg p-6 w-full max-w-sm">
                     <h3 className="font-semibold mb-3">Profil</h3>
                     <p className="text-sm text-gray-600">E-Mail: {user.email}</p>
                     <p className="text-sm text-gray-600">Name: {user.name}</p>
                 </div>
 
-                {/* E-Mail ändern */}
-                <div className="border rounded-lg p-6 flex flex-col gap-3">
-                    <h3 className="font-semibold">E-Mail ändern</h3>
-                    <input
-                        type="email"
-                        placeholder="Neue E-Mail-Adresse"
-                        value={newEmail}
-                        onChange={(e) => setNewEmail(e.target.value)}
-                        className="border rounded-lg px-3 py-2 text-sm w-full"
-                    />
+                {/* Buttons */}
+                <div className="border rounded-lg p-6 flex flex-col gap-3 w-full max-w-sm">
+                    <h3 className="font-semibold">Einstellungen</h3>
                     <Button
-                        onClick={handleEmailChange}
-                        className="bg-black text-white hover:bg-gray-800 text-sm"
+                        onClick={() => { setShowEmailModal(true); setEmailMsg(""); }}
+                        className="bg-black text-white hover:bg-gray-800 text-sm w-full"
                     >
-                        E-Mail speichern
+                        E-Mail ändern
                     </Button>
-                    {emailMsg && <p className="text-sm">{emailMsg}</p>}
-                </div>
-
-                {/* Passwort ändern */}
-                <div className="border rounded-lg p-6 flex flex-col gap-3">
-                    <h3 className="font-semibold">Passwort ändern</h3>
-                    <input
-                        type="password"
-                        placeholder="Aktuelles Passwort"
-                        value={currentPassword}
-                        onChange={(e) => setCurrentPassword(e.target.value)}
-                        className="border rounded-lg px-3 py-2 text-sm w-full"
-                    />
-                    <input
-                        type="password"
-                        placeholder="Neues Passwort"
-                        value={newPassword}
-                        onChange={(e) => setNewPassword(e.target.value)}
-                        className="border rounded-lg px-3 py-2 text-sm w-full"
-                    />
                     <Button
-                        onClick={handlePasswordChange}
-                        className="bg-black text-white hover:bg-gray-800 text-sm"
+                        onClick={() => { setShowPasswordModal(true); setPasswordMsg(""); }}
+                        className="bg-black text-white hover:bg-gray-800 text-sm w-full"
                     >
-                        Passwort speichern
+                        Passwort ändern
                     </Button>
-                    {passwordMsg && <p className="text-sm">{passwordMsg}</p>}
                 </div>
 
             </div>
 
-            {/* Bestätigungs-Modal */}
-            {showConfirm && (
+            {/* E-Mail Modal */}
+            {showEmailModal && (
                 <div
                     className="fixed inset-0 z-50 flex items-center justify-center bg-black/50"
-                    onClick={() => setShowConfirm(false)}
+                    onClick={() => setShowEmailModal(false)}
                 >
                     <div
                         className="bg-white rounded-2xl shadow-xl p-8 w-full max-w-sm mx-4 flex flex-col gap-4"
                         onClick={(e) => e.stopPropagation()}
                     >
-                        <h2 className="text-lg font-semibold text-gray-900">Konto löschen</h2>
-                        <p className="text-sm text-gray-600">
-                            Möchtest du dein Konto wirklich löschen? Diese Aktion kann nicht rückgängig gemacht werden.
-                        </p>
-                        <div className="flex gap-3 justify-end mt-2">
+                        <h2 className="text-lg font-semibold text-gray-900">E-Mail ändern</h2>
+                        <input
+                            type="email"
+                            placeholder="Neue E-Mail-Adresse"
+                            value={newEmail}
+                            onChange={(e) => setNewEmail(e.target.value)}
+                            className="border rounded-lg px-3 py-2 text-sm w-full"
+                        />
+                        {emailMsg && <p className="text-sm">{emailMsg}</p>}
+                        <div className="flex gap-3 justify-end">
                             <Button
                                 className="px-4 py-2 rounded-lg border bg-gray-50 border-gray-300 text-gray-700 hover:bg-gray-300 text-sm font-medium"
-                                onClick={() => setShowConfirm(false)}
+                                onClick={() => setShowEmailModal(false)}
                             >
                                 Abbrechen
                             </Button>
                             <Button
-                                className="px-4 py-2 rounded-lg bg-red-600 text-white hover:bg-red-700 text-sm font-medium"
-                                onClick={handleAccountDeletion}
+                                className="px-4 py-2 rounded-lg bg-black text-white hover:bg-gray-800 text-sm font-medium"
+                                onClick={handleEmailChange}
                             >
-                                Konto löschen
+                                Speichern
+                            </Button>
+                        </div>
+                    </div>
+                </div>
+            )}
+
+            {/* Passwort Modal */}
+            {showPasswordModal && (
+                <div
+                    className="fixed inset-0 z-50 flex items-center justify-center bg-black/50"
+                    onClick={() => setShowPasswordModal(false)}
+                >
+                    <div
+                        className="bg-white rounded-2xl shadow-xl p-8 w-full max-w-sm mx-4 flex flex-col gap-4"
+                        onClick={(e) => e.stopPropagation()}
+                    >
+                        <h2 className="text-lg font-semibold text-gray-900">Passwort ändern</h2>
+                        <input
+                            type="password"
+                            placeholder="Aktuelles Passwort"
+                            value={currentPassword}
+                            onChange={(e) => setCurrentPassword(e.target.value)}
+                            className="border rounded-lg px-3 py-2 text-sm w-full"
+                        />
+                        <input
+                            type="password"
+                            placeholder="Neues Passwort"
+                            value={newPassword}
+                            onChange={(e) => setNewPassword(e.target.value)}
+                            className="border rounded-lg px-3 py-2 text-sm w-full"
+                        />
+                        {passwordMsg && <p className="text-sm">{passwordMsg}</p>}
+                        <div className="flex gap-3 justify-end">
+                            <Button
+                                className="px-4 py-2 rounded-lg border bg-gray-50 border-gray-300 text-gray-700 hover:bg-gray-300 text-sm font-medium"
+                                onClick={() => setShowPasswordModal(false)}
+                            >
+                                Abbrechen
+                            </Button>
+                            <Button
+                                className="px-4 py-2 rounded-lg bg-black text-white hover:bg-gray-800 text-sm font-medium"
+                                onClick={handlePasswordChange}
+                            >
+                                Speichern
                             </Button>
                         </div>
                     </div>
