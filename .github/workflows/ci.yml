@@ -1,9 +1,11 @@
 name: "CI/CD Pipeline"
+
 on:
   pull_request:
     branches: [main, 'blatt*']
   push:
     branches: [main, 'blatt*']
+
 permissions:
   contents: read
 
