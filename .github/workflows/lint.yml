@@ -2,9 +2,9 @@ name: "Super Linter"
 
 on:
   pull_request:
-    branches: [main, 'blatt*']
+    branches: [main, 'blatt*', 'feat/ci*']
   push:
-    branches: [main, 'blatt*']
+    branches: [main, 'blatt*', 'feat/ci*']
 
 permissions:
   contents: read
