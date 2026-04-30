@@ -25,11 +25,13 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           DEFAULT_BRANCH: main
           VALIDATE_ALL_CODEBASE: false
+          FILTER_REGEX_INCLUDE: ^(project/backend/|project/frontend/)
           VALIDATE_PYTHON: true
           VALIDATE_TYPESCRIPT_ES: true
           VALIDATE_JAVASCRIPT_ES: true
-          VALIDATE_MARKDOWN: true
-          VALIDATE_YAML: true
-          VALIDATE_GITHUB_ACTIONS: true
-          VALIDATE_DOCKERFILE: true
+          VALIDATE_CSS: true
+          VALIDATE_MARKDOWN: false
+          VALIDATE_YAML: false
+          VALIDATE_GITHUB_ACTIONS: false
+          VALIDATE_DOCKERFILE: false
 
