@@ -30,8 +30,3 @@ jobs:
           VALIDATE_TYPESCRIPT_ES: true
           VALIDATE_JAVASCRIPT_ES: true
           VALIDATE_CSS: true
-          VALIDATE_MARKDOWN: false
-          VALIDATE_YAML: false
-          VALIDATE_GITHUB_ACTIONS: false
-          VALIDATE_DOCKERFILE: false
-
