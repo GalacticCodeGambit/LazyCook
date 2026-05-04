@@ -3,14 +3,14 @@ import os
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 
-GMAIL_USER = os.environ.get("GMAIL_USER")
-GMAIL_PASSWORD = os.environ.get("GMAIL_PASSWORD")
+gmailUser = os.environ.get("GMAIL_USER")
+gmailPassword = os.environ.get("GMAIL_PASSWORD")
 
 def sendPasswordChangedEmail(to_email: str, name: str) -> None:
     try:
         msg = MIMEMultipart("alternative")
         msg["Subject"] = "Dein Passwort wurde geändert"
-        msg["From"] = GMAIL_USER
+        msg["From"] = gmailUser
         msg["To"] = to_email
 
         html = f"""
@@ -25,8 +25,8 @@ def sendPasswordChangedEmail(to_email: str, name: str) -> None:
         msg.attach(MIMEText(html, "html"))
 
         with smtplib.SMTP_SSL("smtp.gmail.com", 465) as server:
-            server.login(GMAIL_USER, GMAIL_PASSWORD)
-            server.sendmail(GMAIL_USER, to_email, msg.as_string())
+            server.login(gmailUser, gmailPassword)
+            server.sendmail(gmailUser, to_email, msg.as_string())
 
     except Exception as e:
         print(f"E-Mail Fehler: {e}")

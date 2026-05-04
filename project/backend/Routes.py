@@ -112,15 +112,15 @@ class UpdateUser(_BaseModel):
 @router.patch("/users/me")
 async def updateCurrentUser(
         data: UpdateUser,
-        current_user: Annotated[User, Depends(getCurrentUser)]
+        currentUser: Annotated[User, Depends(getCurrentUser)]
 ):
-    Account = getAccountByEmail(current_user.email)
+    Account = getAccountByEmail(currentUser.email)
 
     # E-Mail ändern
     if data.email:
-        fehler = validateEmail(data.email)
-        if fehler:
-            raise HTTPException(status_code=400, detail=fehler)
+        error = validateEmail(data.email)
+        if error:
+            raise HTTPException(status_code=400, detail=error)
         updateAccount(Account["id"], email=data.email)
 
     # Passwort ändern
@@ -128,17 +128,17 @@ async def updateCurrentUser(
         if not verifyPassword(data.currentPassword, Account["hashedPassword"]):
             raise HTTPException(status_code=401, detail="Falsches Passwort")
 
-        fehler = validatePassword(data.newPassword)
-        if fehler:
-            raise HTTPException(status_code=400, detail=fehler)
+        error = validatePassword(data.newPassword)
+        if error:
+            raise HTTPException(status_code=400, detail=error)
 
-        neuer_hash = hashPassword(data.newPassword)
-        updateAccount(Account["id"], password_hash=neuer_hash)
+        newHash = hashPassword(data.newPassword)
+        updateAccount(Account["id"], password_hash=newHash)
 
         # NEU: try/catch um echten Fehler zu sehen
-        empfaenger_email = data.email if data.email else Account["email"]
+        RecieverEmail = data.email if data.email else Account["email"]
         try:
-            sendPasswordChangedEmail(empfaenger_email, Account["name"])
+            sendPasswordChangedEmail(RecieverEmail, Account["name"])
         except Exception as e:
             print(f"E-Mail konnte nicht gesendet werden: {e}")
 
