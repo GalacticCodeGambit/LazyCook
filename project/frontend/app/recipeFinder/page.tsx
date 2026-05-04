@@ -8,6 +8,7 @@ import "./style.css"
 import {Button} from "@/app/components/ui/button";
 import Modal from "@/app/components/modal";
 import AddIngredientsPopup from "@/app/recipeFinder/popup";
+import ProfileDropdown from "@/app/components/profile_dropdown";
 
 const EINHEITEN = ["Stück", "g", "kg", "ml", "l", "EL", "TL", "Prise"];
 
@@ -76,16 +77,6 @@ export default function RecipeFinder() {
 
     if (!user) return null;
 
-    const handleLogout = () => {
-        logout();
-        router.replace("/");
-    }
-    const handleProfil = () => {
-        setOpen(false);
-        console.log("Profil ansehen");
-        router.push("/profile");
-    };
-
     const handleAdd = (ingredient: IngredientInput) => {
         setIngredients(prev => [...prev, ingredient]);
     };
@@ -145,39 +136,9 @@ export default function RecipeFinder() {
                         <a href="#" className="text-gray-700 hover:text-black">Favoriten</a>
                     </nav>
 
-                    <div className="flex items-center gap-3">
-                        <div ref={menuRef} className="account-menu">
-                            <button
-                                onClick={() => setOpen(!open)}
-                                className="account-menu__trigger"
-                                aria-label="Account-Menü"
-                                aria-expanded={open}
-                            >
-                                <User size={28} />
-                            </button>
+                    <ProfileDropdown>
+                    </ProfileDropdown>
 
-                            {open && (
-                                <div className="account-menu__dropdown" role="menu">
-                                    <button
-                                        onClick={handleProfil}
-                                        className="account-menu__item"
-                                        role="menuitem"
-                                    >
-                                        <UserCircle size={18} />
-                                        <span>Profil ansehen</span>
-                                    </button>
-                                    <button
-                                        onClick={ handleLogout }
-                                        className="account-menu__item"
-                                        role="menuitem"
-                                    >
-                                        <LogOut size={18} />
-                                        <span>Abmelden</span>
-                                    </button>
-                                </div>
-                            )}
-                        </div>
-                    </div>
                 </div>
             </header>
 
