@@ -1,8 +1,13 @@
 import sqlite3
 from contextlib import contextmanager
 from pathlib import Path
+import os
 
-DB_PATH = Path("/data/LazyCookDB.sqlite3")
+# Verwende die Datenbank aus dem data-Ordner
+DB_PATH = Path(__file__).parent.parent / "data" / "LazyCookDB.sqlite3"
+
+# Stelle sicher, dass das Verzeichnis existiert
+DB_PATH.parent.mkdir(parents=True, exist_ok=True)
 
 
 def getConnection() -> sqlite3.Connection:
