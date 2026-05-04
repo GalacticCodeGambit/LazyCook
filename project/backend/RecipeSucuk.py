@@ -10,6 +10,12 @@ def findRecipes(ingriedents: list[Ingridient])-> list[Recipe]:
         recipes = __filterRecipes(recipes)
 
     recipes.sort(key=lambda x: x.getRating(), reverse=True)
+    
+    for recipe in recipes[::-1]:
+        if recipe.getMatching < 3:
+            recipes.remove(recipe)
+        else:
+            break
     return recipes
 
 def __filterRecipes(recipes: list[Recipe], ingridient: Ingridient)-> list[Recipe]:
