@@ -1,9 +1,9 @@
 "use client";
 
-import {useEffect, useRef, useState} from "react";
+import { useRef, useState} from "react";
 import { useAuth, fetchWithAuth } from "@/lib/auth";
 import { useRouter } from "next/navigation";
-import {ChefHat, LogOut, User, UserCircle} from "lucide-react";
+import {ChefHat} from "lucide-react";
 import { Button } from '../components/ui/button';
 import ProfileDropdown from "@/app/components/profile_dropdown";
 
