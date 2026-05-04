@@ -3,7 +3,7 @@ on:
   pull_request:
     branches: [main, 'blatt*']
   push:
-    branches: [main, 'blatt*']
+    branches: [main, 'blatt*', 'feat/*']
 permissions:
   contents: read
 
@@ -50,7 +50,7 @@ jobs:
 
       - name: Run backend tests
         run: |
-          docker-compose -f project/compose.yaml exec -T backend-dev sh -c "python -m unittest discover -s tests -v"
+          docker-compose -f project/compose.yaml exec -T backend-dev sh -c "python -m pytest tests/ -v"
 
 #  tests:
 #    runs-on: ubuntu-latest
