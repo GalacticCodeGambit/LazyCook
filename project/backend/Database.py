@@ -74,6 +74,7 @@ def initDB():
                     CREATE TABLE IF NOT EXISTS Recipe (
                                                           id INTEGER PRIMARY KEY AUTOINCREMENT,
                                                           name TEXT UNIQUE NOT NULL,
+                                                          description nvarchar(MAX),
                                                           vid INTEGER NOT NULL,
                                                           FOREIGN KEY (vid) REFERENCES Author (id) ON DELETE CASCADE
                         )
@@ -204,3 +205,53 @@ def cleanupExpiredTokens() -> None:
     with getDB() as con:
         cur = con.cursor()
         cur.execute("DELETE FROM RefreshToken WHERE expiresAt < datetime('now')")
+
+def getRecipe(recipeID: int) -> dict | None:
+    """Gibt eine Liste aller Rezepte zurück."""
+    with getDB() as con:
+        cur = con.cursor()
+        cur.execute("""
+                    SELECT name, description
+                    FROM Recipe
+                    WHERE id = ?
+                    """, (recipeID,))
+        row = cur.fetchone()
+        return dict(row) if row else None
+
+def getAllRecipes()-> list[dict]:
+    with getDB() as con:
+        cur = con.cursor()
+        cur.execute("""
+                    SELECT id, name, description
+                    FROM Recipe
+                    
+                    """)
+        rows = cur.fetchall()
+        return [dict(row) for row in rows]
+def getAllIngridientsForRecipe(id: int) -> list[dict]:
+    """Gibt eine Liste aller Zutaten zurück."""
+    with getDB() as con:
+        cur = con.cursor()
+        cur.execute("""
+                    SELECT id, name, Exists_from.amount
+                    FROM Ingridient
+                    Inner Join Exists_from id = zid
+                    Inner Join Recipe rid = id
+                    Where id = ?
+                    """, (id,))
+        rows = cur.fetchall()
+        return [dict(row) for row in rows]
+
+def getAllocatedRecipes(name: str)-> list[dict]:
+
+    with getDB() as con:
+        cur = con.cursor()
+        cur.execute("""
+                    SELECT rid 
+                    FROM Exists_from
+                    Inner Join Ingridient on rid=id,
+                    Where id = ?
+                    """, (name,))
+        rows = cur.fetchall()
+        return [dict(row) for row in rows]
+
