@@ -5,7 +5,7 @@ import Field from "@/app/components/fields"
 import styles from "./page.module.css";
 import {useRouter} from "next/navigation";
 
-export default function LoginForm({ onClose, onSwitch }: { onClose: () => void; onSwitch: () => void }) {
+export default function LoginForm({ onClose, onSwitch, onForgot}: { onClose: () => void; onSwitch: () => void; onForgot: () => void }) {
     const { login } = useAuth();
     const router = useRouter();
     const [email, setEmail] = useState("");
@@ -47,6 +47,9 @@ export default function LoginForm({ onClose, onSwitch }: { onClose: () => void; 
             {error && <p className={styles.error}>{error}</p>}
             <Field label="Email" type="email" value={email} onChange={(v: string) => { setEmail(v); if (emailBlurred) setEmailBlurred(false); }} placeholder="Email" onBlur={() => setEmailBlurred(true)} state={emailState()} />
             <Field label="Password" type="password" value={password} onChange={setPassword} placeholder="••••••••" onKeyDown={(e: React.KeyboardEvent) => e.key === "Enter" && handleSubmit()} onBlur={() => setPwBlurred(true)} state={pwBlurred && !password ? "error" : "default"} />
+            <p>
+                <button className={styles.switchBtn} onClick={onForgot}>Passwort vergessen?</button>
+            </p>
             <button className={styles.btn} disabled={busy} onClick={handleSubmit}>
                 {busy ? "Wird geladen…" : "Anmelden"}
             </button>

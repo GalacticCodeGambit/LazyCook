@@ -14,6 +14,8 @@ from Auth import (
     validateRefreshToken,
     verifyPassword,
     createAccessToken,
+    createPasswordResetToken,
+    validatePasswordResetToken,
 )
 from Database import (
     createAccount,
@@ -22,9 +24,13 @@ from Database import (
     deleteAllRefreshTokens,
     deleteAccount,
     updateAccount,
+    markResetTokenUsed,
+    updateKontoPassword,
+    deleteAllRefreshTokens
+
 )
 
-from Models import User, Token, UserCreate, RefreshRequest, LogoutRequest
+from Models import User, Token, UserCreate, RefreshRequest, LogoutRequest, ForgotPasswordRequest, ResetPasswordRequest, UpdateUser
 
 router = APIRouter()
 
@@ -104,10 +110,7 @@ async def deleteCurrentUser(currentUser: Annotated[User, Depends(getCurrentUser)
 
     # ── Account aktualisieren ────────────────────────────────────────
 
-class UpdateUser(_BaseModel):
-    email: str | None = None
-    currentPassword: str | None = None
-    newPassword: str | None = None
+
 
 @router.patch("/users/me")
 async def updateCurrentUser(
@@ -143,3 +146,41 @@ async def updateCurrentUser(
             print(f"E-Mail konnte nicht gesendet werden: {e}")
 
     return {"success": True}
+
+# ------------ Passwort vergessen ----------------- #
+
+@router.post("/auth/forgot-password")
+async def forgotPassword(body: ForgotPasswordRequest):
+    """Schritt 1: User gibt E-Mail ein, bekommt Reset-Link per Mail."""
+    konto = getAccountByEmail(body.email)
+
+    # Token nur erzeugen wenn Konto existiert – aber IMMER gleiche Antwort senden!
+    if konto is not None:
+        token = createPasswordResetToken(konto["id"])
+        resetLink = f"http://localhost:8000/reset-password?token={token}"
+        # TODO: Mail versenden – siehe Hinweis unten
+        print(f"[DEV] Reset-Link für {body.email}: {resetLink}")
+
+    return {"detail": "Falls die E-Mail existiert, wurde ein Link versendet."}
+
+
+@router.post("/auth/reset-password")
+async def resetPassword(body: ResetPasswordRequest):
+    """Schritt 2: User setzt mit Token aus Mail das neue Passwort."""
+    pwError = validatePassword(body.new_password)
+    if pwError:
+        raise HTTPException(status_code=400, detail=pwError)
+
+    entry = validatePasswordResetToken(body.token)
+    if entry is None:
+        raise HTTPException(
+            status_code=400,
+            detail="Link ungültig oder abgelaufen. Bitte neuen anfordern.",
+        )
+
+    updateKontoPassword(entry["konto_id"], hashPassword(body.new_password))
+    markResetTokenUsed(entry["id"])
+    # Sicherheitsmaßnahme: Alle aktiven Sessions ungültig machen
+    deleteAllRefreshTokens(entry["konto_id"])
+
+    return {"detail": "Passwort erfolgreich zurückgesetzt."}

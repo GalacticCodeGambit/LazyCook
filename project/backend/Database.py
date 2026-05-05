@@ -99,6 +99,17 @@ def initDB():
                         UNIQUE (AccountID, rid)
                         )
                     """)
+        cur.execute("""
+                    CREATE TABLE IF NOT EXISTS PasswordResetToken (
+                                                              id INTEGER PRIMARY KEY AUTOINCREMENT,
+                                                              kontoID INTEGER NOT NULL,
+                                                              tokenHash TEXT NOT NULL UNIQUE,
+                                                              expiresAt TIMESTAMP NOT NULL,
+                                                              usedAt TIMESTAMP,
+                                                              createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                                                              FOREIGN KEY (kontoID) REFERENCES Account (id) ON DELETE CASCADE
+                        )
+                    """)
 
     print("✅ Datenbank-Tabellen erfolgreich initialisiert")
 
@@ -204,3 +215,55 @@ def cleanupExpiredTokens() -> None:
     with getDB() as con:
         cur = con.cursor()
         cur.execute("DELETE FROM RefreshToken WHERE expiresAt < datetime('now')")
+
+
+
+# ── Password-Reset-Token-Operationen ───────────────────────────
+
+def savePasswordResetToken(kontoID: int, tokenHash: str, expiresAt: str) -> None:
+    """Invalidiert alte Tokens des Kontos und speichert einen neuen."""
+    with getDB() as con:
+        cur = con.cursor()
+        # Alte, ungenutzte Tokens für dieses Konto invalidieren
+        cur.execute(
+            "UPDATE PasswordResetToken SET used_at = CURRENT_TIMESTAMP "
+            "WHERE kontoID = ? AND usedAt IS NULL",
+            (kontoID,),
+        )
+        cur.execute(
+            "INSERT INTO PasswordResetToken (kontoID, tokenHash, expiresAt) VALUES (?, ?, ?)",
+            (kontoID, tokenHash, expiresAt),
+        )
+
+
+def getPasswordResetToken(tokenHash: str) -> dict | None:
+    con = getConnection()
+    try:
+        cur = con.cursor()
+        cur.execute(
+            "SELECT id, kontoID, tokenHash, expiresAt, usedAt "
+            "FROM PasswordResetToken WHERE tokenHash = ?",
+            (tokenHash,),
+        )
+        row = cur.fetchone()
+        return dict(row) if row else None
+    finally:
+        con.close()
+
+
+def markResetTokenUsed(tokenID: int) -> None:
+    with getDB() as con:
+        cur = con.cursor()
+        cur.execute(
+            "UPDATE PasswordResetToken SET usedAt = CURRENT_TIMESTAMP WHERE id = ?",
+            (token_id,),
+        )
+
+
+def updateKontoPassword(konto_id: int, hashed_password: str) -> None:
+    with getDB() as con:
+        cur = con.cursor()
+        cur.execute(
+            "UPDATE Account SET hashed_password = ? WHERE id = ?",
+            (hashed_password, konto_id),
+        )
