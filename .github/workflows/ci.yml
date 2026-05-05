@@ -78,4 +78,3 @@ jobs:
           VALIDATE_DOCKERFILE: true
           VALIDATE_YAML: true
           VALIDATE_GITHUB_ACTIONS: true
-          VALIDATE_MARKDOWN: false
