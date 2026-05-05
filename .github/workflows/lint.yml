@@ -25,12 +25,11 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           DEFAULT_BRANCH: main
           VALIDATE_ALL_CODEBASE: true
-          FILTER_REGEX_INCLUDE: '^/github/workspace/(\.gitignore|\.github/workflows/.*\.ya?ml|project/(backend/.*\.py|frontend/.*\.(ts|tsx|js|jsx|css|mjs|cjs)|Dockerfile[^/]*|(compose|docker-compose)\.ya?ml))$'
+          FILTER_REGEX_INCLUDE: '^/github/workspace/(\.gitignore|\.github/workflows/.*\.(yaml|yml)|project/(backend/.*\.py|frontend/.*\.(ts|tsx|js|jsx|css|mjs|cjs)|Dockerfile[^/]*|(compose|docker-compose)\.ya?ml))$'
           VALIDATE_PYTHON: true
           VALIDATE_PYTHON_BLACK: true
           VALIDATE_TYPESCRIPT_ES: true
           VALIDATE_JAVASCRIPT_ES: true
           VALIDATE_CSS: true
           VALIDATE_DOCKERFILE: true
-          VALIDATE_YAML: true
           VALIDATE_GITHUB_ACTIONS: true
