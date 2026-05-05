@@ -6,6 +6,7 @@ from email.mime.multipart import MIMEMultipart
 gmailUser = os.environ.get("GMAIL_USER")
 gmailPassword = os.environ.get("GMAIL_PASSWORD")
 
+
 def sendPasswordChangedEmail(to_email: str, name: str) -> None:
     try:
         msg = MIMEMultipart("alternative")
