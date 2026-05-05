@@ -25,7 +25,6 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           DEFAULT_BRANCH: main
           VALIDATE_ALL_CODEBASE: false
-          FILTER_REGEX_INCLUDE: .*(backend/.*\.py|frontend/.*\.(ts|tsx|js|jsx|css|mjs|cjs))$
           VALIDATE_PYTHON: true
           VALIDATE_TYPESCRIPT_ES: true
           VALIDATE_JAVASCRIPT_ES: true
