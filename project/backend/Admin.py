@@ -10,4 +10,3 @@ class Admin(Person):
 
     def addRecipe(self, recipe: Recipe):
         self.__ricepes.append(recipe)
-        

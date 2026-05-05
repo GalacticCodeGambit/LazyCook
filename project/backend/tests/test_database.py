@@ -9,6 +9,7 @@ import Database
 from Auth import hashPassword, verifyPassword
 from Database import createAccount, getAccountByEmail, deleteAccount, updateAccount
 
+
 @pytest.fixture(autouse=True)
 def useTestDb():
     Database.initDB()
