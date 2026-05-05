@@ -72,6 +72,7 @@ jobs:
           FILTER_REGEX_INCLUDE: '^/github/workspace/(\.gitignore|\.github/workflows/.*\.ya?ml|project/(backend/.*\.py|frontend/.*\.(ts|tsx|js|jsx|css|mjs|cjs)|Dockerfile[^/]*|(compose|docker-compose)\.ya?ml))$'
           VALIDATE_PYTHON: true
           VALIDATE_PYTHON_BLACK: true
+          VALIDATE_PYTHON_FLAKE8: true
           VALIDATE_TYPESCRIPT_ES: true
           VALIDATE_JAVASCRIPT_ES: true
           VALIDATE_CSS: true
