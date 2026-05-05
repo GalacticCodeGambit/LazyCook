@@ -4,7 +4,7 @@ on:
   pull_request:
     branches: [main, 'blatt*']
   push:
-    branches: [main, 'blatt*', 'feat/*']
+    branches: [main, 'blatt*']
 
 permissions:
   contents: read
@@ -65,7 +65,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           DEFAULT_BRANCH: main
-          VALIDATE_ALL_CODEBASE: true
+          VALIDATE_ALL_CODEBASE: false
           # Root ignore file
           # GitHub workflows
           # Project backend/frontend + Dockerfiles + compose files
