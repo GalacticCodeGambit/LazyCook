@@ -25,6 +25,9 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           DEFAULT_BRANCH: main
           VALIDATE_ALL_CODEBASE: true
+          # Root ignore file
+          # GitHub workflows
+          # Project backend/frontend + Dockerfiles + compose files
           FILTER_REGEX_INCLUDE: '^/github/workspace/(\.gitignore|\.github/workflows/.*\.(yaml|yml)|project/(backend/.*\.py|frontend/.*\.(ts|tsx|js|jsx|css|mjs|cjs)|Dockerfile[^/]*|(compose|docker-compose)\.ya?ml))$'
           VALIDATE_PYTHON: true
           VALIDATE_PYTHON_BLACK: true
