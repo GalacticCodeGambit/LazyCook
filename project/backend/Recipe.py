@@ -51,4 +51,3 @@ class Recipe:
 
     def setIngridient(self, ingridients: list[Ingridient]):
         self.ingridients = ingridients
-

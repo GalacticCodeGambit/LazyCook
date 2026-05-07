@@ -5,3 +5,4 @@ gunicorn==23.0.0
 bcrypt
 python-jose[cryptography]
 python-multipart
+pytest==9.0.3

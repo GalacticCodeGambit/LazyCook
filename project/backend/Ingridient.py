@@ -1,5 +1,6 @@
 from typing import List, Dict, Any
 
+
 class Ingridient:
     def __init__(self, name: str, amount: float):
         self.__name = name
@@ -16,4 +17,3 @@ class Ingridient:
 
     def setAmount(self, amount: float):
         self.__amount = amount
-

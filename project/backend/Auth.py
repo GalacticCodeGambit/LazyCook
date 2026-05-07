@@ -18,26 +18,32 @@ from Models import Token, User
 from Database import getAccountByEmail, saveRefreshToken, getRefreshToken
 
 # ── Konfiguration ──────────────────────────────────────────────
-SECRET_KEY = "dein-geheimer-schlüssel-hier-ändern"  # In Produktion: aus Umgebungsvariable laden!
+SECRET_KEY = (
+    "dein-geheimer-schlüssel-hier-ändern"  # In Produktion: aus Umgebungsvariable laden!
+)
 ALGORITHM = "HS256"
-ACCESS_TOKEN_EXPIRE_MINUTES = 10       # kurze Laufzeit für Access Token
-refreshToken_EXPIRE_DAYS = 7          # lange Laufzeit für Refresh Token
-
+ACCESS_TOKEN_EXPIRE_MINUTES = 10  # kurze Laufzeit für Access Token
+refreshToken_EXPIRE_DAYS = 7  # lange Laufzeit für Refresh Token
 
 
 # ── Passwort-Hashing ──────────────────────────────────────────
 def hashPassword(password: str) -> str:
     return bcrypt.hashpw(password.encode(), bcrypt.gensalt()).decode()
 
+
 def verifyPassword(plain: str, hashed: str) -> bool:
     return bcrypt.checkpw(plain.encode(), hashed.encode())
+
 
 # ── Access Token (JWT) ─────────────────────────────────────────
 def createAccessToken(data: dict, expires_delta: timedelta | None = None) -> str:
     toEncode = data.copy()
-    expire = datetime.now(timezone.utc) + (expires_delta or timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES))
+    expire = datetime.now(timezone.utc) + (
+        expires_delta or timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
+    )
     toEncode.update({"exp": expire})
     return jwt.encode(toEncode, SECRET_KEY, algorithm=ALGORITHM)
+
 
 def decodeToken(token: str) -> str | None:
     """Dekodiert ein JWT und gibt die E-Mail (sub) zurück, oder None."""
@@ -47,6 +53,7 @@ def decodeToken(token: str) -> str | None:
     except JWTError:
         return None
 
+
 # ── Refresh Token ──────────────────────────────────────────────
 def createRefreshToken(konto_id: int) -> str:
     """Erstellt einen kryptografisch sicheren Refresh Token und speichert ihn in der DB."""
@@ -54,6 +61,7 @@ def createRefreshToken(konto_id: int) -> str:
     expiresAt = datetime.now(timezone.utc) + timedelta(days=refreshToken_EXPIRE_DAYS)
     saveRefreshToken(konto_id, token, expiresAt.isoformat())
     return token
+
 
 def validateRefreshToken(token: str) -> dict | None:
     """Prüft ob ein Refresh Token gültig und nicht abgelaufen ist. Gibt Konto-Daten zurück."""
@@ -67,6 +75,7 @@ def validateRefreshToken(token: str) -> dict | None:
         return None
     return entry
 
+
 # ── Token-Paar erstellen ──────────────────────────────────────
 def createTokenPair(konto: dict) -> Token:
     """Erstellt ein Access + Refresh Token-Paar für ein Konto."""
@@ -75,15 +84,20 @@ def createTokenPair(konto: dict) -> Token:
         expires_delta=timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES),
     )
     refreshToken = createRefreshToken(konto["id"])
-    return Token(access_token=access_token, refresh_token=refreshToken, token_type="bearer")
+    return Token(
+        access_token=access_token, refresh_token=refreshToken, token_type="bearer"
+    )
+
 
 # ── Validierung ────────────────────────────────────────────────
 EMAIL_RE = re.compile(r"^[^\s@]+@[^\s@]+\.[^\s@]+$")
+
 
 def validateEmail(email: str) -> str | None:
     if not EMAIL_RE.match(email):
         return "Ungültige E-Mail-Adresse."
     return None
+
 
 def validatePassword(pw: str) -> str | None:
     if len(pw) < 8:
@@ -98,8 +112,10 @@ def validatePassword(pw: str) -> str | None:
         return "Passwort muss mindestens ein Sonderzeichen enthalten."
     return None
 
+
 # ── Auth-Dependency ────────────────────────────────────────────
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="auth/login")
+
 
 async def getCurrentUser(token: Annotated[str, Depends(oauth2_scheme)]) -> User:
     credentials_exception = HTTPException(
