@@ -66,7 +66,7 @@ jobs:
           fetch-depth: 0
 
       - name: Run GitHub Super Linter
-        uses: super-linter/super-linter/slim@v7
+        uses: super-linter/super-linter/slim@v8.6.0
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           DEFAULT_BRANCH: main
