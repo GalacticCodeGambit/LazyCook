@@ -22,6 +22,22 @@ LazyCook soll eine Webanwendung sein. Die es ermöglichen seine vorhanden Zutate
 - [x] [#47](https://github.com/GalacticCodeGambit/LazyCook/issues/47) Der Nutzer kann bereits hinzugefügte Zutaten bearbeiten, wie z.B. Menge, Einheit
 - [x] [#45](https://github.com/GalacticCodeGambit/LazyCook/issues/45) Passwörter "sicher" in Datenbank Abspeichern als Hash und vom Frontend/Backend "sicher" behandeln
 
+ ## Installation und Setup
+1. Klonen das Repository:  
+   `git clone https://github.com/GalacticCodeGambit/LazyCook.git`
+2. Navigieren zum Projektverzeichnis:  
+   `cd LazyCook/Project`
+3. Starten der Anwendung mit: Docker Compose:
+   `docker compose up --build -d`
+<!--Unterschied zu "docker compose up -d"? -->
+Die Anwendung sollte jetzt unter `http://localhost:8000` erreichbar sein.
+
+Für die Funktion [#115](https://github.com/GalacticCodeGambit/LazyCook/issues/115) von Email Versenden/Empfangen muss im Ordner `project/` eine `.env` Datei mit den folgenden Variablen angelegt werden:
+```
+EMAIL_HOST=<dein.mail@gmail.com>
+GMAIL_PASSWORD=<dein_gmail_passwort>
+```
+
 ## Verwendete Technologien
 - Frontend: HTML, CSS, TypeScript/React
 - Backend: Python
@@ -31,24 +47,14 @@ LazyCook soll eine Webanwendung sein. Die es ermöglichen seine vorhanden Zutate
 - Containerization: Docker
 - Projekt Management: GitHub Projects
 
-## Code-Quality / Linting
-- Der Workflow `.github/workflows/ci.yml` prüft mit dem Job `linter` das Projekt mit **GitHub Super-Linter**.
-- Dabei werden u. a. Python-, TypeScript-, JavaScript-, YAML- und Dockerfile-Dateien validiert.
+### Code-Quality / Linting
+- Der Workflow `.github/workflows/lint.yml` prüft das Projekt mit **GitHub Super-Linter**.
+- Dabei werden u.a. Python-, TypeScript-, JavaScript-, YAML- und Dockerfile-Dateien validiert.
 
 <!-- 
 - Mockup: Figma
 - UML: UMLet/Drawio
 -->
-
- ## Installation and Setup
-1. Klonen das Repository:  
-   `git clone https://github.com/GalacticCodeGambit/LazyCook.git`
-2. Navigieren zum Projektverzeichnis:  
-   `cd LazyCook/Project`
-3. Starten der Anwendung mit: Docker Compose:
-   `docker compose up --build -d`
-<!--Unterschied zu "docker compose up -d"? -->
-Die Anwendung sollte jetzt unter `http://localhost:8000` erreichbar sein.
 
 ## Entwicklung
 ### Linter
