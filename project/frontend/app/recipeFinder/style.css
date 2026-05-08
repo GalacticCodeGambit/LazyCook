@@ -94,6 +94,10 @@
     gap: 10px;
 }
 
+.popup__fields--stacked {
+    flex-direction: column;
+}
+
 .popup__input {
     flex: 1;
     padding: 10px 12px;

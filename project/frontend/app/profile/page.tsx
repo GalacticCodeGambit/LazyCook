@@ -1,6 +1,6 @@
 "use client";
 
-import {useState} from "react";
+import {useEffect, useRef, useState} from "react";
 import { useAuth, fetchWithAuth } from "@/lib/auth";
 import { useRouter } from "next/navigation";
 import {ChefHat} from "lucide-react";
@@ -10,15 +10,33 @@ import Modal from "@/app/components/modal";
 import ChangeEmail from "@/app/profile/changeEmailPopup";
 import ChangePassword from "@/app/profile/changePasswordPopup";
 
+import "../recipeFinder/style.css"
+
 const API_URL = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:3000";
 
 export default function Profile() {
-    const { user, logout } = useAuth();
+    const { user, loading, logout } = useAuth();
     const router = useRouter();
+    const menuRef = useRef<HTMLDivElement>(null);
+
     const [showConfirm, setShowConfirm] = useState(false);
 
     const [showEmailModal, setShowEmailModal] = useState(false);
     const [showPasswordModal, setShowPasswordModal] = useState(false);
+
+    useEffect(() => {
+        if (!loading && !user) {
+            router.replace("/");
+        }
+    }, [loading, user, router]);
+
+    if (loading) {
+        return (
+            <div className="min-h-screen flex items-center justify-center">
+                <p className="text-gray-500">Laden…</p>
+            </div>
+        );
+    }
 
     if (!user) return null;
 
@@ -76,12 +94,31 @@ export default function Profile() {
                 </div>
                 <Button
                     className="bg-red-600 text-white hover:bg-red-700 text-sm font-medium"
-                    onClick={handleAccountDeletion}
+                    onClick={() => setShowConfirm (true)}
                 >
                     Konto löschen
                 </Button>
 
             </div>
+
+            <Modal open={showConfirm} onCloseAction={() => setShowConfirm(false)}>
+                <div>
+                    <h2 className="text-lg font-semibold text-gray-900">
+                        Konto wirklich löschen?
+                    </h2>
+                    <p className="flex gap-3 justify-end">
+                        <Button className="bg-red-600 text-white hover:bg-red-700 text-sm font-medium"
+                                onClick={handleAccountDeletion}>
+                            Bestätigen
+                        </Button>
+                        <Button className="bg-gray-600 text-white hover:bg-gray-700 text-sm font-medium"
+                                onClick={() => setShowConfirm(false)}>
+                            Abbrechen
+                        </Button>
+                    </p>
+
+                </div>
+            </Modal>
 
             <Modal open={showEmailModal} onCloseAction={() => setShowEmailModal(false)}>
                 <ChangeEmail></ChangeEmail>

@@ -1,6 +1,7 @@
 import {Button} from "@/app/components/ui/button";
 import {fetchWithAuth} from "@/lib/auth";
 import {useState} from "react";
+import "../recipeFinder/style.css"
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:3000";
 export default function ChangeEmail (){
@@ -30,15 +31,17 @@ export default function ChangeEmail (){
     }
 
     return (
-        <div className="popup">
-                <h2 className="text-lg font-semibold text-gray-900">E-Mail ändern</h2>
-                <input
-                    type="email"
-                    placeholder="Neue E-Mail-Adresse"
-                    value={newEmail}
-                    onChange={(e) => setNewEmail(e.target.value)}
-                    className="border rounded-lg px-3 py-2 text-sm w-full"
-                />
+        <div className="popup w-[480px] max-w-full">
+                <h2 className="popup__title">E-Mail ändern</h2>
+                <div className="popup__fields">
+                    <input
+                        type="email"
+                        placeholder="Neue E-Mail-Adresse"
+                        value={newEmail}
+                        onChange={(e) => setNewEmail(e.target.value)}
+                        className="popup__input"
+                    />
+                </div>
                 {emailMsg && <p className="text-sm">{emailMsg}</p>}
                 <div className="flex gap-3 justify-end">
                     <Button
