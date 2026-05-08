@@ -1,5 +1,6 @@
 # LazyCook
-[![ci](https://github.com/GalacticCodeGambit/LazyCook/actions/workflows/ci.yml/badge.svg)](https://github.com/GalacticCodeGambit/LazyCook/actions/workflows/ci.yml)
+[![ci.yml](https://github.com/GalacticCodeGambit/LazyCook/actions/workflows/ci.yml/badge.svg)](https://github.com/GalacticCodeGambit/LazyCook/actions/workflows/ci.yml)
+[![lint.yml](https://github.com/GalacticCodeGambit/LazyCook/actions/workflows/lint.yml/badge.svg)](https://github.com/GalacticCodeGambit/LazyCook/actions/workflows/lint.yml)
 
 LazyCook soll eine Webanwendung sein. Die es ermöglichen seine vorhanden Zutaten einzutragen und darauf soll LazyCook dir mögliche Rezepte/Gerichte vorschlagen die du aus diesen Zutaten gemacht werden können.   
 
@@ -49,7 +50,20 @@ LazyCook soll eine Webanwendung sein. Die es ermöglichen seine vorhanden Zutate
 <!--Unterschied zu "docker compose up -d"? -->
 Die Anwendung sollte jetzt unter `http://localhost:8000` erreichbar sein.
 
-## Probleme beim Entwickeln
+## Entwicklung
+### Linter
+#### Python `Black`
+Automatisch formatieren:
+```
+black project/backend/ .
+```
+
+`Black` installieren:
+```
+py -m pip install black
+```
+
+### Probleme beim Entwickeln
 
 Problem: Code hinzugefügt/geändert aber Änderungen werden nicht übernommen von Docker 
 ```
