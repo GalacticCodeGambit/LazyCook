@@ -60,7 +60,7 @@ black project/backend/ .
 
 `Black` installieren:
 ```
-py -m pip install black
+python -m pip install black
 ```
 
 ### Probleme beim Entwickeln
