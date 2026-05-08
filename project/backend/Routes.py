@@ -31,6 +31,7 @@ router = APIRouter()
 
 # ── Auth-Endpunkte ─────────────────────────────────────────────
 
+
 @router.post("/auth/register", response_model=User)
 async def register(user: UserCreate):
     if not user.name.strip():
@@ -91,6 +92,7 @@ async def logout(body: LogoutRequest):
 
 # ── Geschützte Endpunkte ───────────────────────────────────────
 
+
 @router.get("/users/me", response_model=User)
 async def readCurrentUser(currentUser: Annotated[User, Depends(getCurrentUser)]):
     """Nur mit gültigem Access Token erreichbar."""
@@ -104,15 +106,16 @@ async def deleteCurrentUser(currentUser: Annotated[User, Depends(getCurrentUser)
 
     # ── Account aktualisieren ────────────────────────────────────────
 
+
 class UpdateUser(_BaseModel):
     email: str | None = None
     currentPassword: str | None = None
     newPassword: str | None = None
 
+
 @router.patch("/users/me")
 async def updateCurrentUser(
-        data: UpdateUser,
-        currentUser: Annotated[User, Depends(getCurrentUser)]
+    data: UpdateUser, currentUser: Annotated[User, Depends(getCurrentUser)]
 ):
     Account = getAccountByEmail(currentUser.email)
 

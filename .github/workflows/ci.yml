@@ -1,14 +1,17 @@
 name: "CI/CD Pipeline"
+
 on:
   pull_request:
     branches: [main, 'blatt*']
   push:
     branches: [main, 'blatt*']
+
 permissions:
   contents: read
 
 jobs:
-  build:
+  build-tests:
+    name: Build stack and run tests
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -19,13 +22,13 @@ jobs:
           sudo apt-get install -y docker-compose
 
       - name: Build the stack
-        run: docker-compose -f project/compose.yaml build
+        run: docker compose -f project/compose.yaml build
 
       - name: Start services
         run: |
           # remove stale containers/volumes from previous runs that can cause compose to read invalid metadata
-          docker-compose -f project/compose.yaml down --remove-orphans --volumes || true
-          docker-compose -f project/compose.yaml up -d
+          docker compose -f project/compose.yaml down --remove-orphans --volumes || true
+          docker compose -f project/compose.yaml up -d
 
       - name: Wait for frontend on :8000
         run: |
@@ -42,69 +45,42 @@ jobs:
              sleep $wait_seconds
           done
           echo "service not ready" >&2
-          docker-compose -f project/compose.yaml ps || true
-          docker-compose -f project/compose.yaml logs || true
+          docker compose -f project/compose.yaml ps || true
+          docker compose -f project/compose.yaml logs || true
           exit 1
+
       - name: Run smoke test frontend
         run: curl -fsSL -o /dev/null http://localhost:8000/
 
       - name: Run backend tests
         run: |
-          docker-compose -f project/compose.yaml exec -T backend-dev sh -c "python -m unittest discover -s tests -v"
+          docker compose -f project/compose.yaml exec -T backend-dev sh -c "python -m pytest tests/ -v"
 
-#  tests:
-#    runs-on: ubuntu-latest
-#    steps:
-#      - uses: actions/checkout@v4
-#
-#      - name: Install Docker Compose (tests job)
-#        run: |
-#          sudo apt-get update
-#          sudo apt-get install -y docker-compose
-#
-#      - name: Pull images (if available) or build
-#        run: |
-#          # Versuche remote images zu ziehen; falls nicht vorhanden, baue lokal neu.
-#          docker-compose -f project/compose.yaml pull || docker-compose -f project/compose.yaml build
-#
-#      - name: Start services
-#        run: |
-#          docker-compose -f project/compose.yaml down --remove-orphans --volumes || true
-#          docker-compose -f project/compose.yaml up -d backend-dev
-#
-#      - name: Wait for backend to be ready
-#        run: |
-#          for i in $(seq 1 20); do
-#            docker-compose -f project/compose.yaml exec -T backend-dev sh -c "python -c 'print(\"ok\")'" >/dev/null 2>&1 && break
-#            sleep 1
-#          done
-#
-#      - name: Run backend tests
-#        run: |
-#          docker-compose -f project/compose.yaml exec -T backend-dev sh -c "python -m unittest discover -s tests -v"
+  linter:
+    name: Lint code base
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
-#  lint:
-#    runs-on: ubuntu-latest
-#    needs: build
-#    steps:
-#      - name: Wait for frontend on :8000
-#        run: |
-#          PORT=8000
-#          attempts=30
-#          wait_seconds=3
-#          for i in $(seq 1 $attempts); do
-#             if curl -fsSL "http://localhost:${PORT}/" >/dev/null 2>&1; then
-#               echo "ready"
-#               exit 0
-#             fi
-#             echo "waiting... ($i)"
-#             sleep $wait_seconds
-#          done
-#          echo "service not ready" >&2
-#          docker-compose -f project/compose.yaml ps || true
-#          docker-compose -f project/compose.yaml logs || true
-#          exit 1
-#      - name: Run linting tests
-#        run: |
-#          # startet einen einmaligen Container für den Service 'backend' und führt Linting-Tests aus (z.B. mit flake8)
-#          docker-compose -f project/compose.yaml run --rm backend sh -c "flake8 ."
+      - name: Run GitHub Super Linter
+        uses: super-linter/super-linter/slim@v8.6.0
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          DEFAULT_BRANCH: main
+          VALIDATE_ALL_CODEBASE: false
+          # Root ignore file
+          # GitHub workflows
+          # Project backend/frontend + Dockerfiles + compose files
+          FILTER_REGEX_INCLUDE: '^/github/workspace/(\.gitignore|\.github/workflows/.*\.ya?ml|project/(backend/.*\.py|frontend/.*\.(ts|tsx|js|jsx|css|mjs|cjs)|Dockerfile[^/]*|(compose|docker-compose)\.ya?ml))$'
+          VALIDATE_PYTHON: true
+          VALIDATE_PYTHON_BLACK: true
+          VALIDATE_PYTHON_FLAKE8: true
+          VALIDATE_TYPESCRIPT_ES: true
+          VALIDATE_JAVASCRIPT_ES: true
+          VALIDATE_CSS: true
+          VALIDATE_DOCKERFILE: true
+          VALIDATE_YAML: true
+          VALIDATE_GITHUB_ACTIONS: true

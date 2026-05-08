@@ -1,8 +1,13 @@
 import sqlite3
 from contextlib import contextmanager
 from pathlib import Path
+import os
 
-DB_PATH = Path("/data/LazyCookDB.sqlite3")
+# Verwende die Datenbank aus dem data-Ordner
+DB_PATH = Path(__file__).parent.parent / "data" / "LazyCookDB.sqlite3"
+
+# Stelle sicher, dass das Verzeichnis existiert
+DB_PATH.parent.mkdir(parents=True, exist_ok=True)
 
 
 def getConnection() -> sqlite3.Connection:
@@ -10,7 +15,7 @@ def getConnection() -> sqlite3.Connection:
     con = sqlite3.connect(str(DB_PATH), check_same_thread=False)
     con.row_factory = sqlite3.Row
     con.execute("PRAGMA foreign_keys = ON")
-    #con.execute("PRAGMA journal_mode = WAL")
+    # con.execute("PRAGMA journal_mode = WAL")
     return con
 
 
@@ -106,6 +111,7 @@ def initDB():
 
 # ── Account-Operationen ──────────────────────────────────────────
 
+
 def createAccount(email: str, name: str, hashedPassword: str) -> dict | None:
     """Legt ein neues Account an. Gibt die Account-Daten zurück oder None bei Duplikat."""
     with getDB() as con:
@@ -136,6 +142,7 @@ def getAccountByEmail(email: str) -> dict | None:
 
 
 # ── Refresh-Token-Operationen ──────────────────────────────────
+
 
 def saveRefreshToken(AccountID: int, token: str, expiresAt: str) -> None:
     """Speichert einen neuen Refresh Token in der Datenbank."""
@@ -185,20 +192,19 @@ def deleteAccount(email: str) -> bool:
         cur.execute("DELETE FROM Account WHERE email = ?", (email,))
         return cur.rowcount > 0
 
+
 def updateAccount(konto_id: int, email: str = None, password_hash: str = None) -> None:
     """Aktualisiert E-Mail und/oder Passwort eines Accounts."""
     with getDB() as con:
         cur = con.cursor()
         if email:
-            cur.execute(
-                "UPDATE Account SET email = ? WHERE id = ?",
-                (email, konto_id)
-            )
+            cur.execute("UPDATE Account SET email = ? WHERE id = ?", (email, konto_id))
         if password_hash:
             cur.execute(
                 "UPDATE Account SET hashedPassword = ? WHERE id = ?",
-                (password_hash, konto_id)
+                (password_hash, konto_id),
             )
+
 
 def cleanupExpiredTokens() -> None:
     """Löscht alle abgelaufenen Refresh Tokens."""

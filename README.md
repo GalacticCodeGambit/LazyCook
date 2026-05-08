@@ -30,6 +30,10 @@ LazyCook soll eine Webanwendung sein. Die es ermöglichen seine vorhanden Zutate
 - Containerization: Docker
 - Projekt Management: GitHub Projects
 
+## Code-Quality / Linting
+- Der Workflow `.github/workflows/ci.yml` prüft mit dem Job `linter` das Projekt mit **GitHub Super-Linter**.
+- Dabei werden u. a. Python-, TypeScript-, JavaScript-, YAML- und Dockerfile-Dateien validiert.
+
 <!-- 
 - Mockup: Figma
 - UML: UMLet/Drawio
