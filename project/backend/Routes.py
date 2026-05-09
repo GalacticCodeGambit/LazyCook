@@ -129,7 +129,7 @@ async def updateCurrentUser(
     # Passwort ändern
     if data.currentPassword and data.newPassword:
         if not verifyPassword(data.currentPassword, Account["hashedPassword"]):
-            raise HTTPException(status_code=401, detail="Falsches Passwort")
+            raise HTTPException(status_code=400, detail="Aktuelles Passwort ist falsch")
 
         error = validatePassword(data.newPassword)
         if error:

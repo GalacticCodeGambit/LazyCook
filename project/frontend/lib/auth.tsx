@@ -39,6 +39,9 @@ function getRefreshToken(): string | null {
 }
 
 function saveTokens(accessToken: string, refreshToken: string) {
+    if (!accessToken || !refreshToken) {
+        throw new Error("Tokens fehlen — Backend-Response unvollständig");
+    }
     sessionStorage.setItem("access_token", accessToken);
     localStorage.setItem("refresh_token", refreshToken);
 }
@@ -118,23 +121,22 @@ async function fetchWithAuth(url: string, options: RequestInit = {}): Promise<Re
         const refreshToken = getRefreshToken();
         if (!refreshToken) throw new Error("Nicht eingeloggt");
 
+        let tokens;
         try {
-            const tokens = await apiRefreshTokens(refreshToken);
-            saveTokens(tokens.access_token, tokens.refresh_token);
-
-            // Erneuter Versuch mit neuem Access Token
-            res = await fetch(API_URL+url, {
-                ...options,
-                headers: {
-                    ...options.headers,
-                    Authorization: `Bearer ${tokens.access_token}`,
-                },
-            });
+            tokens = await apiRefreshTokens(refreshToken);
         } catch {
-            // Refresh fehlgeschlagen → komplett ausloggen
             clearTokens();
             throw new Error("Session abgelaufen");
         }
+        saveTokens(tokens.access_token, tokens.refresh_token);
+
+        res = await fetch(url, {
+            ...options,
+            headers: {
+                ...options.headers,
+                Authorization: `Bearer ${tokens.access_token}`,
+            },
+        });
     }
 
     return res;

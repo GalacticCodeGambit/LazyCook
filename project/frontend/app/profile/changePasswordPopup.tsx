@@ -1,7 +1,49 @@
 import {fetchWithAuth} from "@/lib/auth";
 import {useState} from "react";
 import {Button} from "@/app/components/ui/button";
+import {Eye, EyeOff} from "lucide-react";
 import "../recipeFinder/style.css"
+
+function PasswordInput({ value, onChange, placeholder }: {
+    value: string;
+    onChange: (v: string) => void;
+    placeholder: string;
+}) {
+    const [show, setShow] = useState(false);
+    return (
+        <div style={{ position: "relative", width: "100%" }}>
+            <input
+                type={show ? "text" : "password"}
+                placeholder={placeholder}
+                value={value}
+                onChange={(e) => onChange(e.target.value)}
+                className="popup__input"
+                style={{ width: "100%", paddingRight: 38 }}
+            />
+            <button
+                type="button"
+                onClick={() => setShow((s) => !s)}
+                aria-label={show ? "Passwort verbergen" : "Passwort anzeigen"}
+                tabIndex={-1}
+                style={{
+                    position: "absolute",
+                    right: 10,
+                    top: "50%",
+                    transform: "translateY(-50%)",
+                    background: "none",
+                    border: "none",
+                    cursor: "pointer",
+                    padding: 0,
+                    display: "flex",
+                    alignItems: "center",
+                    color: "#666",
+                }}
+            >
+                {show ? <EyeOff size={18} /> : <Eye size={18} />}
+            </button>
+        </div>
+    );
+}
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:3000";
 
@@ -63,7 +105,7 @@ export default function ChangePassword({ modus, onSuccess }: ChangePasswordProps
             setConfirmPassword("");
             onSuccess?.();
         } catch {
-            setPasswordMsg("Unbekannter Fehler.");
+            setPasswordMsg('❌ Unbekannter Fehler');
         }
     }
 
@@ -75,29 +117,23 @@ export default function ChangePassword({ modus, onSuccess }: ChangePasswordProps
 
             <div className="popup__fields popup__fields--stacked">
                 {!isForgot && (
-                    <input
-                        type="password"
+                    <PasswordInput
                         placeholder="Aktuelles Passwort"
                         value={currentPassword}
-                        onChange={(e) => setCurrentPassword(e.target.value)}
-                        className="popup__input"
+                        onChange={setCurrentPassword}
                     />
                 )}
 
-                <input
-                    type="password"
+                <PasswordInput
                     placeholder="Neues Passwort"
                     value={newPassword}
-                    onChange={(e) => setNewPassword(e.target.value)}
-                    className="popup__input"
+                    onChange={setNewPassword}
                 />
 
-                <input
-                    type="password"
+                <PasswordInput
                     placeholder="Neues Passwort bestätigen"
                     value={confirmPassword}
-                    onChange={(e) => setConfirmPassword(e.target.value)}
-                    className="popup__input"
+                    onChange={setConfirmPassword}
                 />
             </div>
 
