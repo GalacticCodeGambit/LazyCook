@@ -1,39 +1,39 @@
-from Database import Database
-from Ingridient import Ingridient
+
+from Ingredient import Ingredient
 
 
 class Recipe:
-    def __init__(self, name: str, ingridients: list[Ingridient], description: str):
+    def __init__(self, name: str, Ingredients: list[Ingredient], description: str):
         self.__name = name
-        self.__Ingridients = ingridients
+        self.__Ingredients = Ingredients
         self.__description = description
         self.__original = ""
         self.__duration = ""
         self.__rating = 0.0
         self.__countPersons = 1
         self.__matching = 0
-        self.__database = Database()
+        
 
     def saveInDB(self) -> bool:
         return True
 
     def getName(self) -> str:
-        return self.name
+        return self.__name
 
     def setName(self, name: str):
-        self.name = name
+        self.__name = name
 
     def getOriginal(self) -> str:
-        return self.original
+        return self.__original
 
     def setOriginal(self, original: str):
-        self.original = original
+        self.__original = original
 
     def getDescription(self) -> str:
-        return self.description
+        return self.__description
 
     def setDescription(self, description: str):
-        self.description = description
+        self.__description = description
 
     def getRating(self) -> float:
         return self.__rating
@@ -48,14 +48,14 @@ class Recipe:
         self.__matching+=1
 
     def getDuration(self) -> str:
-        return self.duration
+        return self.__duration
 
     def setDuration(self, duration: str):
-        self.duration = duration
+        self.__duration = duration
 
-    def getIngridients(self) -> list[Ingridient]:
-        return self.__ingridients
+    def getIngredients(self) -> list[Ingredient]:
+        return self.__Ingredients
 
-    def setIngridient(self, ingridients: list[Ingridient]):
-        self.__Ingridients = ingridients
+    def setIngredient(self, Ingredients: list[Ingredient]):
+        self.__Ingredients = Ingredients
 

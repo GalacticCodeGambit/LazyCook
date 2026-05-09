@@ -1,42 +1,54 @@
 import Database
-from Ingridient import Ingridient
+from Ingredient import Ingredient
 from Recipe import Recipe
-from Database import  getAllRecipes, getAllIngridientsForRecipe
+from Database import  getAllRecipes, getAllIngredientsForRecipe
 
-def findRecipes(ingriedents: list[Ingridient])-> list[Recipe]:
+def findRecipes(ingriedents: list[Ingredient])-> list[Recipe]:
     recipes = __initRecipes()
  
-    for ingridient in ingriedents:
-        recipes = __filterRecipes(recipes)
+    for Ingredient in ingriedents:
+        recipes = __filterRecipes(recipes, Ingredient)
 
     recipes.sort(key=lambda x: x.getRating(), reverse=True)
     
     for recipe in recipes[::-1]:
-        if recipe.getMatching < 3:
+        if recipe.getRating() < 0.3:
             recipes.remove(recipe)
         else:
             break
     return recipes
 
-def __filterRecipes(recipes: list[Recipe], ingridient: Ingridient)-> list[Recipe]:
+def __filterRecipes(recipes: list[Recipe], Ingredient: Ingredient)-> list[Recipe]:
     for recipe in recipes:
-        for recipeIngridient in recipe.getIngridients():
-            if recipeIngridient.getName() == ingridient.getName():
+        for recipeIngredient in recipe.getIngredients():
+            if recipeIngredient.getName() == Ingredient.getName():
                 recipe.incrementMatching()
-                recipe.setRating(recipe.getMatching/ len(recipe.getIngridients))                
+                recipe.setRating(recipe.getMatching()/ len(recipe.getIngredients()))                
     return recipes
 
 def __initRecipes()-> list[Recipe]:
-    recipesRaw = getAllRecipes
+    recipesRaw = getAllRecipes()
     recipes = []
     for recipeRaw in recipesRaw:
-        recipe = Recipe(recipeRaw["name"], __formatIngridients(recipeRaw["id"]), recipeRaw["description"])
+        recipe = Recipe(recipeRaw["name"], __formatIngredients(recipeRaw["id"]), recipeRaw["description"])
         recipes.append(recipe)
     return recipes
 
-def __formatIngridients(id: int)-> list[Ingridient]:
-    ingridientsRaw = getAllIngridientsForRecipe(id)
-    ingridients = []
-    for ingridientRaw in ingridientsRaw:
-        ingridients.append(Ingridient(ingridientRaw["name"],ingridientRaw["amount"]))
-    return ingridients
+def __formatIngredients(id: int)-> list[Ingredient]:
+    IngredientsRaw = getAllIngredientsForRecipe(id)
+    Ingredients = []
+    for IngredientRaw in IngredientsRaw:
+        Ingredients.append(Ingredient(IngredientRaw["name"],IngredientRaw["amount"]))
+    return Ingredients
+
+ini = []
+ini.append(Ingredient("Linguine", 10 ))
+ini.append(Ingredient("Fresh Basil", 10 ))
+ini.append(Ingredient("Pine Nuts", 10 ))
+ini.append(Ingredient("Parmesan", 10 ))
+ini.append(Ingredient("Ground Beef", 10 ))
+ini.append(Ingredient("Cumin", 10 ))
+ini.append(Ingredient("Cucumber", 10 ))
+arr = findRecipes(ini)
+for i in arr:
+    print(i.getName()+ " "+ str(i.getRating()))

@@ -1,7 +1,7 @@
 from typing import List, Dict, Any
 
 
-class Ingridient:
+class Ingredient:
     def __init__(self, name: str, amount: float):
         self.__name = name
         self.__amount = amount
