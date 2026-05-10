@@ -70,7 +70,21 @@ export default function ChangePassword({ modus, onSuccess }: ChangePasswordProps
     async function handlePasswordChange() {
         setPasswordMsg("");
 
-        // Bestätigung prüfen (nur im forgot-Modus relevant, aber sinnvoll auch beim Ändern)
+        // Pflichtfelder im "change"-Modus
+        if (!isForgot && !currentPassword) {
+            setPasswordMsg("Bitte das aktuelle Passwort eingeben.");
+            return;
+        }
+        if (!newPassword) {
+            setPasswordMsg("Bitte ein neues Passwort eingeben.");
+            return;
+        }
+        if (!confirmPassword) {
+            setPasswordMsg("Bitte das neue Passwort bestätigen.");
+            return;
+        }
+
+        // Bestätigung prüfen
         if (newPassword !== confirmPassword) {
             setPasswordMsg("Die Passwörter stimmen nicht überein.");
             return;
