@@ -37,7 +37,6 @@ export default function Field({ label, type = "text", value, onChange, placehold
                         type="button"
                         onClick={() => setShowPassword((s) => !s)}
                         aria-label={showPassword ? "Passwort verbergen" : "Passwort anzeigen"}
-                        tabIndex={-1}
                         style={{
                             position: "absolute",
                             right: 8,
