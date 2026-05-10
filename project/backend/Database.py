@@ -1,13 +1,8 @@
 import sqlite3
 from contextlib import contextmanager
 from pathlib import Path
-import os
 
-# Verwende die Datenbank aus dem data-Ordner
-DB_PATH = Path(__file__).parent.parent / "data" / "LazyCookDB.sqlite3"
-
-# Stelle sicher, dass das Verzeichnis existiert
-DB_PATH.parent.mkdir(parents=True, exist_ok=True)
+DB_PATH = Path("/data/LazyCookDB.sqlite3")
 
 
 def getConnection() -> sqlite3.Connection:
@@ -15,7 +10,7 @@ def getConnection() -> sqlite3.Connection:
     con = sqlite3.connect(str(DB_PATH), check_same_thread=False)
     con.row_factory = sqlite3.Row
     con.execute("PRAGMA foreign_keys = ON")
-    # con.execute("PRAGMA journal_mode = WAL")
+    #con.execute("PRAGMA journal_mode = WAL")
     return con
 
 
@@ -104,12 +99,22 @@ def initDB():
                         UNIQUE (AccountID, rid)
                         )
                     """)
+        cur.execute("""
+                    CREATE TABLE IF NOT EXISTS PasswordResetToken (
+                                                              id INTEGER PRIMARY KEY AUTOINCREMENT,
+                                                              kontoID INTEGER NOT NULL,
+                                                              tokenHash TEXT NOT NULL UNIQUE,
+                                                              expiresAt TIMESTAMP NOT NULL,
+                                                              usedAt TIMESTAMP,
+                                                              createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                                                              FOREIGN KEY (kontoID) REFERENCES Account (id) ON DELETE CASCADE
+                        )
+                    """)
 
     print("✅ Datenbank-Tabellen erfolgreich initialisiert")
 
 
 # ── Account-Operationen ──────────────────────────────────────────
-
 
 def createAccount(email: str, name: str, hashedPassword: str) -> dict | None:
     """Legt ein neues Account an. Gibt die Account-Daten zurück oder None bei Duplikat."""
@@ -141,7 +146,6 @@ def getAccountByEmail(email: str) -> dict | None:
 
 
 # ── Refresh-Token-Operationen ──────────────────────────────────
-
 
 def saveRefreshToken(AccountID: int, token: str, expiresAt: str) -> None:
     """Speichert einen neuen Refresh Token in der Datenbank."""
@@ -191,22 +195,90 @@ def deleteAccount(email: str) -> bool:
         cur.execute("DELETE FROM Account WHERE email = ?", (email,))
         return cur.rowcount > 0
 
-
 def updateAccount(konto_id: int, email: str = None, password_hash: str = None) -> None:
     """Aktualisiert E-Mail und/oder Passwort eines Accounts."""
     with getDB() as con:
         cur = con.cursor()
         if email:
-            cur.execute("UPDATE Account SET email = ? WHERE id = ?", (email, konto_id))
+            cur.execute(
+                "UPDATE Account SET email = ? WHERE id = ?",
+                (email, konto_id)
+            )
         if password_hash:
             cur.execute(
                 "UPDATE Account SET hashedPassword = ? WHERE id = ?",
-                (password_hash, konto_id),
+                (password_hash, konto_id)
             )
-
 
 def cleanupExpiredTokens() -> None:
     """Löscht alle abgelaufenen Refresh Tokens."""
     with getDB() as con:
         cur = con.cursor()
         cur.execute("DELETE FROM RefreshToken WHERE expiresAt < datetime('now')")
+
+
+
+# ── Password-Reset-Token-Operationen ───────────────────────────
+
+def savePasswordResetToken(kontoID: int, tokenHash: str, expiresAt: str) -> None:
+    """Invalidiert alte Tokens des Kontos und speichert einen neuen."""
+    with getDB() as con:
+        cur = con.cursor()
+        # Alte, ungenutzte Tokens für dieses Konto invalidieren
+        cur.execute(
+            "UPDATE PasswordResetToken SET usedAt = CURRENT_TIMESTAMP "
+            "WHERE kontoID = ? AND usedAt IS NULL",
+            (kontoID,),
+        )
+        cur.execute(
+            "INSERT INTO PasswordResetToken (kontoID, tokenHash, expiresAt) VALUES (?, ?, ?)",
+            (kontoID, tokenHash, expiresAt),
+        )
+
+
+def getPasswordResetToken(tokenHash: str) -> dict | None:
+    con = getConnection()
+    try:
+        cur = con.cursor()
+        cur.execute(
+            "SELECT id, kontoID, tokenHash, expiresAt, usedAt "
+            "FROM PasswordResetToken WHERE tokenHash = ?",
+            (tokenHash,),
+        )
+        row = cur.fetchone()
+        return dict(row) if row else None
+    finally:
+        con.close()
+
+
+def markResetTokenUsed(tokenID: int) -> None:
+    with getDB() as con:
+        cur = con.cursor()
+        cur.execute(
+            "UPDATE PasswordResetToken SET usedAt = CURRENT_TIMESTAMP WHERE id = ?",
+            (tokenID,),
+        )
+
+
+def updateKontoPassword(konto_id: int, hashed_password: str) -> None:
+    with getDB() as con:
+        cur = con.cursor()
+        cur.execute(
+            "UPDATE Account SET hashedPassword = ? WHERE id = ?",
+            (hashed_password, konto_id),
+        )
+
+
+def getAccountById(konto_id: int) -> dict | None:
+    """Gibt Account-Daten anhand der ID zurück, oder None."""
+    con = getConnection()
+    try:
+        cur = con.cursor()
+        cur.execute(
+            "SELECT id, email, name, hashedPassword FROM Account WHERE id = ?",
+            (konto_id,),
+        )
+        row = cur.fetchone()
+        return dict(row) if row else None
+    finally:
+        con.close()

@@ -7,11 +7,12 @@ import {useCallback, useState} from "react";
 import Modal from "@/app/components/modal";
 import LoginForm from "@/app/homepage/signin";
 import RegisterForm from "@/app/homepage/signup";
+import ForgotPasswordForm from "@/app/homepage/forgotPassword";
 
 
 
 export default function Homepage() {
-    const [modal, setModal] = useState<"login" | "register" | null>(null);
+    const [modal, setModal] = useState<"login" | "register" | "forgot"| null>(null);
     const close = useCallback(() => setModal(null), []);
 
 
@@ -191,11 +192,15 @@ export default function Homepage() {
 
             {/* ── Modals ──────────────────────────────────────────── */}
             <Modal open={modal === "login"} onCloseAction={close}>
-                <LoginForm onClose={close} onSwitch={() => setModal("register")} />
+                <LoginForm onClose={close} onSwitch={() => setModal("register")} onForgot={() => setModal("forgot")} />
             </Modal>
 
             <Modal open={modal === "register"} onCloseAction={close}>
                 <RegisterForm onClose={close} onSwitch={() => setModal("login")} />
+            </Modal>
+
+            <Modal open={modal === "forgot"} onCloseAction={close}>
+                <ForgotPasswordForm onClose={close} onBack={() => setModal("login")} />
             </Modal>
         </div>
     );
