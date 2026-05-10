@@ -13,7 +13,6 @@ from Auth import (
     validatePassword,
     validateRefreshToken,
     verifyPassword,
-    createAccessToken,
     createPasswordResetToken,
     validatePasswordResetToken,
 )
@@ -120,21 +119,6 @@ async def updateCurrentUser(
         currentUser: Annotated[User, Depends(getCurrentUser)]
 ):
     Account = getAccountByEmail(currentUser.email)
-
-    hasEmailChange = bool(data.email)
-    hasAnyPasswordField = bool(data.currentPassword) or bool(data.newPassword)
-    hasCompletePasswordChange = bool(data.currentPassword) and bool(data.newPassword)
-
-    # Mindestens eine vollständige Änderung muss übergeben werden
-    if not hasEmailChange and not hasCompletePasswordChange:
-        raise HTTPException(status_code=400, detail="Keine Änderungen übergeben.")
-
-    # Halb ausgefüllte Passwort-Felder ablehnen statt still zu ignorieren
-    if hasAnyPasswordField and not hasCompletePasswordChange:
-        raise HTTPException(
-            status_code=400,
-            detail="Bitte aktuelles und neues Passwort angeben.",
-        )
 
     # E-Mail ändern
     if data.email:

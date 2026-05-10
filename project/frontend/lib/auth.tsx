@@ -101,20 +101,13 @@ async function apiGetMe(accessToken: string): Promise<User> {
     return res.json();
 }
 
-// Relativen Pfad ("/users/me") an API_URL anhängen, absolute URLs ("http://…") unverändert lassen
-function resolveApiUrl(url: string): string {
-    return /^https?:\/\//i.test(url) ? url : `${API_URL}${url.startsWith("/") ? "" : "/"}${url}`;
-}
-
 // ── Authentifizierter Fetch mit automatischer Token-Erneuerung ──
 async function fetchWithAuth(url: string, options: RequestInit = {}): Promise<Response> {
     const accessToken = getAccessToken();
     if (!accessToken) throw new Error("Nicht eingeloggt");
 
-    const target = resolveApiUrl(url);
-
     // Erster Versuch mit aktuellem Access Token
-    let res = await fetch(target, {
+    let res = await fetch(url, {
         ...options,
         headers: {
             ...options.headers,
@@ -136,7 +129,7 @@ async function fetchWithAuth(url: string, options: RequestInit = {}): Promise<Re
         }
         saveTokens(tokens.access_token, tokens.refresh_token);
 
-        res = await fetch(target, {
+        res = await fetch(url, {
             ...options,
             headers: {
                 ...options.headers,
