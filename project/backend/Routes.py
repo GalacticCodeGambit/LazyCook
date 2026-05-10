@@ -13,7 +13,6 @@ from Auth import (
     validatePassword,
     validateRefreshToken,
     verifyPassword,
-    createAccessToken,
     createPasswordResetToken,
     validatePasswordResetToken,
 )
