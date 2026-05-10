@@ -94,7 +94,7 @@ export default function Profile() {
                 </div>
                 <Button
                     className="bg-red-600 text-white hover:bg-red-700 text-sm font-medium"
-                    onClick={() => setShowConfirm (true)}
+                    onClick={() => setShowConfirm(true)}
                 >
                     Konto löschen
                 </Button>
