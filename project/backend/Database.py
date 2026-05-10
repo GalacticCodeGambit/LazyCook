@@ -9,6 +9,7 @@ def getConnection() -> sqlite3.Connection:
     """Erstellt eine neue SQLite-Connection mit Row-Factory."""
     con = sqlite3.connect(str(DB_PATH), check_same_thread=False)
     con.row_factory = sqlite3.Row
+    con.execute("PRAGMA journal_mode = WAL")
     con.execute("PRAGMA foreign_keys = ON")
     return con
 
