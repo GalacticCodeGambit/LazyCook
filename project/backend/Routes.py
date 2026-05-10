@@ -3,7 +3,6 @@ from typing import Annotated
 from fastapi import APIRouter, Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordRequestForm
 from EmailService import sendPasswordChangedEmail, sendPasswordResetEmail
-from pydantic import BaseModel as _BaseModel
 
 
 from Auth import (
