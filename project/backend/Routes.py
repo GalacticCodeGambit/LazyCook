@@ -28,8 +28,6 @@ from Database import (
     updateAccount,
     markResetTokenUsed,
     updateKontoPassword,
-    deleteAllRefreshTokens
-
 )
 
 from Models import User, Token, UserCreate, RefreshRequest, LogoutRequest, ForgotPasswordRequest, ResetPasswordRequest, UpdateUser
