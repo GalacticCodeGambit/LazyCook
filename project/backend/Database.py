@@ -213,7 +213,7 @@ def cleanupExpiredTokens() -> None:
         cur = con.cursor()
         cur.execute("DELETE FROM RefreshToken WHERE expiresAt < datetime('now')")
         
-def addRecipe(name: str, description: str, vid: int) -> bool:
+def addRecipe(name: str, description: str, vid: int) -> int:
      with getDB() as con:
         cur = con.cursor()
         cur.execute(
@@ -222,7 +222,7 @@ def addRecipe(name: str, description: str, vid: int) -> bool:
         )
         return cur.lastrowid
 
-def addIngredientToRecipe(zid: int, rid: int, amount: float) -> bool:
+def addIngredientToRecipe(zid: int, rid: int, amount: float) -> int:
     with getDB() as con:
         cur = con.cursor()
         cur.execute(
@@ -230,7 +230,7 @@ def addIngredientToRecipe(zid: int, rid: int, amount: float) -> bool:
             (zid, rid, amount),
         )
         
-def addIngredient(name: str, amountType: str) -> bool:
+def addIngredient(name: str, amountType: str) -> int:
     with getDB() as con:
         cur = con.cursor()
         cur.execute(
@@ -238,7 +238,17 @@ def addIngredient(name: str, amountType: str) -> bool:
             (name, amountType),
         )
         return cur.lastrowid
-
+    
+def getIngridientByName(name: str):
+     with getDB() as con:
+        cur = con.cursor()
+        cur.execute("""
+                    SELECT id, amountType
+                    FROM Recipe
+                    WHERE id = ?
+                    """, (name))
+        row = cur.fetchone()
+        return dict(row) if row else None
 
 def getRecipe(recipeID: int) -> dict | None:
     """Gibt eine Liste aller Rezepte zurück."""
@@ -290,7 +300,7 @@ def getAllocatedRecipes(name: str)-> list[dict]:
         rows = cur.fetchall()
         return [dict(row) for row in rows]
 
-initDB()
+
 """
 # --- 1. Fresh Pesto Pasta ---
 r1 = addRecipe("Fresh Pesto Pasta", "Classic Italian basil pesto with linguine.", 301)

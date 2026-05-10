@@ -1,11 +1,10 @@
 
 from Ingredient import Ingredient
-
-
+from Database import addIngredientToRecipe, addRecipe, getIngridientByName
 class Recipe:
-    def __init__(self, name: str, Ingredients: list[Ingredient], description: str):
+    def __init__(self, name: str, ingredients: list[Ingredient], description: str):
         self.__name = name
-        self.__Ingredients = Ingredients
+        self.__ingredients = ingredients
         self.__description = description
         self.__original = ""
         self.__duration = ""
@@ -15,6 +14,13 @@ class Recipe:
         
 
     def saveInDB(self) -> bool:
+        rid = addRecipe(self.__name, self.__description, None)
+        for ingridient in self.__ingredients:
+            zid = getIngridientByName(ingridient.getName())
+            if not zid:
+                return False
+            else:
+                addIngredientToRecipe(zid, rid, ingridient.getAmount())
         return True
 
     def getName(self) -> str:
@@ -53,9 +59,9 @@ class Recipe:
     def setDuration(self, duration: str):
         self.__duration = duration
 
-    def getIngredients(self) -> list[Ingredient]:
-        return self.__Ingredients
+    def getingredients(self) -> list[Ingredient]:
+        return self.__ingredients
 
-    def setIngredient(self, Ingredients: list[Ingredient]):
-        self.__Ingredients = Ingredients
+    def setIngredient(self, ingredients: list[Ingredient]):
+        self.__ingredients = ingredients
 
