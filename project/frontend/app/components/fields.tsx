@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useId, useState } from "react";
 import { Eye, EyeOff } from "lucide-react";
 import styles from "../homepage/page.module.css";
 
@@ -9,6 +9,7 @@ export default function Field({ label, type = "text", value, onChange, placehold
     onBlur?: () => void;
     state?: "default" | "error" | "success";
 }) {
+    const inputId = useId();
     const [showPassword, setShowPassword] = useState(false);
     const isPassword = type === "password";
     const effectiveType = isPassword && showPassword ? "text" : type;
@@ -20,9 +21,10 @@ export default function Field({ label, type = "text", value, onChange, placehold
 
     return (
         <div className={styles.fieldGroup}>
-            <label className={styles.label}>{label}</label>
+            <label className={styles.label} htmlFor={inputId}>{label}</label>
             <div style={{ position: "relative" }}>
                 <input
+                    id={inputId}
                     className={inputClass}
                     type={effectiveType}
                     value={value}
@@ -37,7 +39,7 @@ export default function Field({ label, type = "text", value, onChange, placehold
                         type="button"
                         onClick={() => setShowPassword((s) => !s)}
                         aria-label={showPassword ? "Passwort verbergen" : "Passwort anzeigen"}
-                        tabIndex={-1}
+                        aria-pressed={showPassword}
                         style={{
                             position: "absolute",
                             right: 8,

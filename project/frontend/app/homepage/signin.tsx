@@ -33,8 +33,18 @@ export default function LoginForm({ onClose, onSwitch, onForgot}: { onClose: () 
             await login(email, password);
             onClose();
             router.push("/recipeFinder");
-        } catch {
-            setError("E-Mail oder Passwort falsch.");
+        } catch (err) {
+            // Klassifizieren statt pauschal "Passwort falsch"
+            const msg = err instanceof Error ? err.message : "";
+            if (msg === "Login fehlgeschlagen") {
+                setError("E-Mail oder Passwort falsch.");
+            } else if (msg.includes("Backend-Response unvollständig")) {
+                setError("Server-Antwort unvollständig. Backend-Container neu bauen?");
+            } else if (msg.includes("Failed to fetch") || msg === "Network Error") {
+                setError("Backend nicht erreichbar.");
+            } else {
+                setError(msg || "Unbekannter Fehler beim Anmelden.");
+            }
         } finally {
             setBusy(false);
         }

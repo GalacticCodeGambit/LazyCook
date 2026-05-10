@@ -7,11 +7,12 @@ import Field from "@/app/components/fields";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:3000";
 
-function PasswordInput({ value, onChange, placeholder, onKeyDown }: {
+function PasswordInput({ value, onChange, placeholder, onKeyDown, ariaLabel }: {
     value: string;
     onChange: (v: string) => void;
     placeholder: string;
     onKeyDown?: (e: React.KeyboardEvent) => void;
+    ariaLabel?: string;
 }) {
     const [show, setShow] = useState(false);
     return (
@@ -19,6 +20,7 @@ function PasswordInput({ value, onChange, placeholder, onKeyDown }: {
             <input
                 type={show ? "text" : "password"}
                 placeholder={placeholder}
+                aria-label={ariaLabel ?? placeholder}
                 value={value}
                 onChange={(e) => onChange(e.target.value)}
                 onKeyDown={onKeyDown}
@@ -29,7 +31,7 @@ function PasswordInput({ value, onChange, placeholder, onKeyDown }: {
                 type="button"
                 onClick={() => setShow((s) => !s)}
                 aria-label={show ? "Passwort verbergen" : "Passwort anzeigen"}
-                tabIndex={-1}
+                aria-pressed={show}
                 style={{
                     position: "absolute",
                     right: 10,
