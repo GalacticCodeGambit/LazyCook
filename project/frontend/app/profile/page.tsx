@@ -1,6 +1,6 @@
 "use client";
 
-import {useEffect, useRef, useState} from "react";
+import {useEffect, useState} from "react";
 import { useAuth, fetchWithAuth } from "@/lib/auth";
 import { useRouter } from "next/navigation";
 import {ChefHat} from "lucide-react";
@@ -17,7 +17,6 @@ const API_URL = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:3000";
 export default function Profile() {
     const { user, loading, logout } = useAuth();
     const router = useRouter();
-    const menuRef = useRef<HTMLDivElement>(null);
 
     const [showConfirm, setShowConfirm] = useState(false);
 
