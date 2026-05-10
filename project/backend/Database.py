@@ -10,7 +10,6 @@ def getConnection() -> sqlite3.Connection:
     con = sqlite3.connect(str(DB_PATH), check_same_thread=False)
     con.row_factory = sqlite3.Row
     con.execute("PRAGMA foreign_keys = ON")
-    con.execute("PRAGMA journal_mode = WAL")
     return con
 
 
@@ -99,6 +98,19 @@ def initDB():
                         UNIQUE (AccountID, rid)
                         )
                     """)
+        cur.execute("""
+                    CREATE TABLE IF NOT EXISTS IngredientUsage (
+                                                                   AccountID INTEGER NOT NULL,
+                                                                   name TEXT NOT NULL,
+                                                                   displayName TEXT NOT NULL,
+                                                                   count INTEGER NOT NULL DEFAULT 1,
+                                                                   lastUnit TEXT,
+                                                                   lastUsedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                                                                   PRIMARY KEY (AccountID, name),
+                                                                   FOREIGN KEY (AccountID) REFERENCES Account (id) ON DELETE CASCADE
+                        )
+                    """)
+
         cur.execute("""
                     CREATE TABLE IF NOT EXISTS PasswordResetToken (
                                                               id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -267,6 +279,56 @@ def updateKontoPassword(konto_id: int, hashed_password: str) -> None:
             "UPDATE Account SET hashedPassword = ? WHERE id = ?",
             (hashed_password, konto_id),
         )
+
+
+# ── Ingredient-Usage-Operationen ───────────────────────────────
+
+def incrementIngredientUsage(AccountID: int, name: str, unit: str | None) -> None:
+    """Erhöht den Usage-Counter für eine Zutat um 1, aktualisiert lastUnit und lastUsedAt.
+    Legt einen neuen Eintrag an, falls die Zutat für diesen Account noch nicht existiert.
+    Der Name wird normalisiert (trim + lowercase) für den Primary Key, displayName behält
+    die Originalschreibweise der letzten Eingabe.
+    """
+    displayName = (name or "").strip()
+    if not displayName:
+        return
+    normalizedName = displayName.lower()
+    with getDB() as con:
+        cur = con.cursor()
+        cur.execute(
+            """
+            INSERT INTO IngredientUsage (AccountID, name, displayName, count, lastUnit, lastUsedAt)
+            VALUES (?, ?, ?, 1, ?, CURRENT_TIMESTAMP)
+            ON CONFLICT(AccountID, name) DO UPDATE SET
+                count = count + 1,
+                displayName = excluded.displayName,
+                lastUnit = excluded.lastUnit,
+                lastUsedAt = CURRENT_TIMESTAMP
+            """,
+            (AccountID, normalizedName, displayName, unit),
+        )
+
+
+def getTopIngredients(AccountID: int, limit: int = 5) -> list[dict]:
+    """Liefert die meistgenutzten Zutaten des Users.
+    Sortierung Hybrid: erst nach count DESC, dann nach lastUsedAt DESC als Tie-Breaker.
+    """
+    con = getConnection()
+    try:
+        cur = con.cursor()
+        cur.execute(
+            """
+            SELECT displayName, lastUnit, count, lastUsedAt
+            FROM IngredientUsage
+            WHERE AccountID = ?
+            ORDER BY count DESC, lastUsedAt DESC
+            LIMIT ?
+            """,
+            (AccountID, limit),
+        )
+        return [dict(row) for row in cur.fetchall()]
+    finally:
+        con.close()
 
 
 def getAccountById(konto_id: int) -> dict | None:
