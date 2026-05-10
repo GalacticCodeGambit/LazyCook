@@ -140,9 +140,9 @@ def createPasswordResetToken(kontoId: int) -> str:
 def validatePasswordResetToken(token: str) -> dict | None:
     from Database import getPasswordResetToken
     entry = getPasswordResetToken(hashResetToken(token))
-    if entry is None or entry["used_at"] is not None:
+    if entry is None or entry["usedAt"] is not None:
         return None
-    expiresAt = datetime.fromisoformat(entry["expires_at"])
+    expiresAt = datetime.fromisoformat(entry["expiresAt"])
     if expiresAt.tzinfo is None:
         expiresAt = expiresAt.replace(tzinfo=timezone.utc)
     if expiresAt < datetime.now(timezone.utc):

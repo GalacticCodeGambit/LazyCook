@@ -39,6 +39,7 @@ export default function ChangeEmail (){
                         placeholder="Neue E-Mail-Adresse"
                         value={newEmail}
                         onChange={(e) => setNewEmail(e.target.value)}
+                        onKeyDown={(e) => e.key === "Enter" && handleEmailChange()}
                         className="popup__input"
                     />
                 </div>

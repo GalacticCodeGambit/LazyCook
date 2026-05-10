@@ -1,7 +1,8 @@
+import os
 from typing import Annotated
 from fastapi import APIRouter, Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordRequestForm
-from EmailService import sendPasswordChangedEmail
+from EmailService import sendPasswordChangedEmail, sendPasswordResetEmail
 from pydantic import BaseModel as _BaseModel
 
 
@@ -20,6 +21,7 @@ from Auth import (
 from Database import (
     createAccount,
     getAccountByEmail,
+    getAccountById,
     deleteRefreshToken,
     deleteAllRefreshTokens,
     deleteAccount,
@@ -31,6 +33,9 @@ from Database import (
 )
 
 from Models import User, Token, UserCreate, RefreshRequest, LogoutRequest, ForgotPasswordRequest, ResetPasswordRequest, UpdateUser
+
+# Frontend-URL aus Env, mit Dev-Fallback (Frontend läuft per compose.yaml auf Port 8000)
+FRONTEND_URL = os.environ.get("FRONTEND_URL", "http://localhost:8000")
 
 router = APIRouter()
 
@@ -84,7 +89,7 @@ async def refresh(body: RefreshRequest):
     deleteRefreshToken(body.refresh_token)
 
     # Account-Daten für neues Token-Paar zusammenstellen
-    Account = {"id": entry["konto_id"], "email": entry["email"]}
+    Account = {"id": entry["AccountID"], "email": entry["email"]}
     return createTokenPair(Account)
 
 
@@ -157,9 +162,12 @@ async def forgotPassword(body: ForgotPasswordRequest):
     # Token nur erzeugen wenn Konto existiert – aber IMMER gleiche Antwort senden!
     if konto is not None:
         token = createPasswordResetToken(konto["id"])
-        resetLink = f"http://localhost:8000/reset-password?token={token}"
-        # TODO: Mail versenden – siehe Hinweis unten
-        print(f"[DEV] Reset-Link für {body.email}: {resetLink}")
+        resetLink = f"{FRONTEND_URL}/reset-password?token={token}"
+        try:
+            sendPasswordResetEmail(body.email, konto["name"], resetLink)
+        except Exception as e:
+            # Mail-Fehler darf das Response nicht beeinflussen → User-Enumeration vermeiden
+            print(f"Reset-Mail konnte nicht gesendet werden: {e}")
 
     return {"detail": "Falls die E-Mail existiert, wurde ein Link versendet."}
 
@@ -178,9 +186,17 @@ async def resetPassword(body: ResetPasswordRequest):
             detail="Link ungültig oder abgelaufen. Bitte neuen anfordern.",
         )
 
-    updateKontoPassword(entry["konto_id"], hashPassword(body.new_password))
+    updateKontoPassword(entry["kontoID"], hashPassword(body.new_password))
     markResetTokenUsed(entry["id"])
     # Sicherheitsmaßnahme: Alle aktiven Sessions ungültig machen
-    deleteAllRefreshTokens(entry["konto_id"])
+    deleteAllRefreshTokens(entry["kontoID"])
+
+    # Bestätigungsmail an den Konto-Inhaber
+    konto = getAccountById(entry["kontoID"])
+    if konto is not None:
+        try:
+            sendPasswordChangedEmail(konto["email"], konto["name"])
+        except Exception as e:
+            print(f"Bestätigungsmail konnte nicht gesendet werden: {e}")
 
     return {"detail": "Passwort erfolgreich zurückgesetzt."}

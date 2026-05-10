@@ -90,6 +90,7 @@ function ResetPasswordContent() {
                 value={password}
                 onChange={setPassword}
                 placeholder="••••••••"
+                onKeyDown={(e) => e.key === "Enter" && handleSubmit()}
                 state={password && !pwValid ? "error" : "default"}
             />
             <Field
@@ -98,6 +99,7 @@ function ResetPasswordContent() {
                 value={confirm}
                 onChange={setConfirm}
                 placeholder="••••••••"
+                onKeyDown={(e) => e.key === "Enter" && handleSubmit()}
                 state={confirm && !pwMatch ? "error" : pwMatch ? "success" : "default"}
             />
             <button className={styles.btn} disabled={busy} onClick={handleSubmit}>

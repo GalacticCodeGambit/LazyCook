@@ -57,6 +57,7 @@ export default function ForgotPasswordForm({ onClose, onBack,}: { onClose: () =>
                 onChange={(v: string) => setEmail(v)}
                 placeholder="Email"
                 onBlur={() => setEmailBlurred(true)}
+                onKeyDown={(e) => e.key === "Enter" && handleSubmit()}
                 state={
                     emailBlurred && !emailValid ? "error" : emailValid ? "success" : "default"
                 }

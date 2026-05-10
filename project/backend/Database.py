@@ -226,7 +226,7 @@ def savePasswordResetToken(kontoID: int, tokenHash: str, expiresAt: str) -> None
         cur = con.cursor()
         # Alte, ungenutzte Tokens für dieses Konto invalidieren
         cur.execute(
-            "UPDATE PasswordResetToken SET used_at = CURRENT_TIMESTAMP "
+            "UPDATE PasswordResetToken SET usedAt = CURRENT_TIMESTAMP "
             "WHERE kontoID = ? AND usedAt IS NULL",
             (kontoID,),
         )
@@ -256,7 +256,7 @@ def markResetTokenUsed(tokenID: int) -> None:
         cur = con.cursor()
         cur.execute(
             "UPDATE PasswordResetToken SET usedAt = CURRENT_TIMESTAMP WHERE id = ?",
-            (token_id,),
+            (tokenID,),
         )
 
 
@@ -264,6 +264,21 @@ def updateKontoPassword(konto_id: int, hashed_password: str) -> None:
     with getDB() as con:
         cur = con.cursor()
         cur.execute(
-            "UPDATE Account SET hashed_password = ? WHERE id = ?",
+            "UPDATE Account SET hashedPassword = ? WHERE id = ?",
             (hashed_password, konto_id),
         )
+
+
+def getAccountById(konto_id: int) -> dict | None:
+    """Gibt Account-Daten anhand der ID zurück, oder None."""
+    con = getConnection()
+    try:
+        cur = con.cursor()
+        cur.execute(
+            "SELECT id, email, name, hashedPassword FROM Account WHERE id = ?",
+            (konto_id,),
+        )
+        row = cur.fetchone()
+        return dict(row) if row else None
+    finally:
+        con.close()
