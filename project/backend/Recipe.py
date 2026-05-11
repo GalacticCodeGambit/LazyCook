@@ -1,53 +1,66 @@
-from Database import Database
-from Ingridient import Ingridient
+from Ingredient import Ingredient
+from Database import addIngredientToRecipe, addRecipe, getIngridientByName
 
 
 class Recipe:
-    def __init__(self, name: str, ingridients: list[Ingridient], description: str):
+    def __init__(self, name: str, ingredients: list[Ingredient], description: str):
         self.__name = name
-        self.__Ingridienten = ingridients
+        self.__ingredients = ingredients
         self.__description = description
         self.__original = ""
         self.__duration = ""
-        self.__rating = 0
+        self.__rating = 0.0
         self.__countPersons = 1
-        self.__database = Database()
+        self.__matching = 0
 
     def saveInDB(self) -> bool:
+        rid = addRecipe(self.__name, self.__description, None)
+        for ingridient in self.__ingredients:
+            zid = getIngridientByName(ingridient.getName())
+            if not zid:
+                return False
+            else:
+                addIngredientToRecipe(zid, rid, ingridient.getAmount())
         return True
 
     def getName(self) -> str:
-        return self.name
+        return self.__name
 
     def setName(self, name: str):
-        self.name = name
+        self.__name = name
 
     def getOriginal(self) -> str:
-        return self.original
+        return self.__original
 
     def setOriginal(self, original: str):
-        self.original = original
+        self.__original = original
 
     def getDescription(self) -> str:
-        return self.description
+        return self.__description
 
     def setDescription(self, description: str):
-        self.description = description
+        self.__description = description
 
-    def getRating(self) -> int:
-        return self.rating
+    def getRating(self) -> float:
+        return self.__rating
 
-    def setRating(self, rating: int):
-        self.rating = rating
+    def setRating(self, rating: float):
+        self.__rating = rating
+
+    def getMatching(self) -> int:
+        return self.__matching
+
+    def incrementMatching(self):
+        self.__matching += 1
 
     def getDuration(self) -> str:
-        return self.duration
+        return self.__duration
 
     def setDuration(self, duration: str):
-        self.duration = duration
+        self.__duration = duration
 
-    def getIngridient(self) -> list[Ingridient]:
-        return self.ingridients
+    def getingredients(self) -> list[Ingredient]:
+        return self.__ingredients
 
-    def setIngridient(self, ingridients: list[Ingridient]):
-        self.ingridients = ingridients
+    def setIngredient(self, ingredients: list[Ingredient]):
+        self.__ingredients = ingredients

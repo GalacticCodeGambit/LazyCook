@@ -30,7 +30,17 @@ from Database import (
     getTopIngredients,
 )
 
-from Models import User, Token, UserCreate, RefreshRequest, LogoutRequest, ForgotPasswordRequest, ResetPasswordRequest, UpdateUser, RecipeSearchRequest
+from Models import (
+    User,
+    Token,
+    UserCreate,
+    RefreshRequest,
+    LogoutRequest,
+    ForgotPasswordRequest,
+    ResetPasswordRequest,
+    UpdateUser,
+    RecipeSearchRequest,
+)
 
 # Frontend-URL aus Env, mit Dev-Fallback (Frontend läuft per compose.yaml auf Port 8000)
 FRONTEND_URL = os.environ.get("FRONTEND_URL", "http://localhost:8000")
@@ -39,6 +49,7 @@ router = APIRouter()
 
 
 # ── Auth-Endpunkte ─────────────────────────────────────────────
+
 
 @router.post("/auth/register", response_model=User)
 async def register(user: UserCreate):
@@ -100,6 +111,7 @@ async def logout(body: LogoutRequest):
 
 # ── Geschützte Endpunkte ───────────────────────────────────────
 
+
 @router.get("/users/me", response_model=User)
 async def readCurrentUser(currentUser: Annotated[User, Depends(getCurrentUser)]):
     """Nur mit gültigem Access Token erreichbar."""
@@ -114,11 +126,9 @@ async def deleteCurrentUser(currentUser: Annotated[User, Depends(getCurrentUser)
     # ── Account aktualisieren ────────────────────────────────────────
 
 
-
 @router.patch("/users/me")
 async def updateCurrentUser(
-        data: UpdateUser,
-        currentUser: Annotated[User, Depends(getCurrentUser)]
+    data: UpdateUser, currentUser: Annotated[User, Depends(getCurrentUser)]
 ):
     Account = getAccountByEmail(currentUser.email)
 
@@ -150,7 +160,9 @@ async def updateCurrentUser(
 
     return {"success": True}
 
+
 # ------------ Passwort vergessen ----------------- #
+
 
 @router.post("/auth/forgot-password")
 async def forgotPassword(body: ForgotPasswordRequest):
@@ -202,10 +214,11 @@ async def resetPassword(body: ResetPasswordRequest):
 
 # ── Recipe-Suche ───────────────────────────────────────────────
 
+
 @router.post("/recipes/search")
 async def searchRecipes(
-        body: RecipeSearchRequest,
-        currentUser: Annotated[User, Depends(getCurrentUser)],
+    body: RecipeSearchRequest,
+    currentUser: Annotated[User, Depends(getCurrentUser)],
 ):
     """Sucht Rezepte basierend auf den übergebenen Zutaten.
 
@@ -225,8 +238,7 @@ async def searchRecipes(
     # Aktualisierte Top 5 direkt mit zurückgeben → Frontend muss keinen Extra-Request machen
     topRows = getTopIngredients(Account["id"], limit=5)
     topIngredients = [
-        {"name": r["displayName"], "unit": r["lastUnit"]}
-        for r in topRows
+        {"name": r["displayName"], "unit": r["lastUnit"]} for r in topRows
     ]
 
     # TODO: eigentliche Rezept-Suche implementieren
@@ -235,11 +247,12 @@ async def searchRecipes(
 
 # ── Ingredient-Vorschläge ──────────────────────────────────────
 
+
 @router.get("/ingredients/top")
 async def getTopIngredientsForUser(
-        response: Response,
-        currentUser: Annotated[User, Depends(getCurrentUser)],
-        limit: int = 5,
+    response: Response,
+    currentUser: Annotated[User, Depends(getCurrentUser)],
+    limit: int = 5,
 ):
     """Liefert die meistgenutzten Zutaten des aktuellen Users für die Vorschlags-Badges."""
     Account = getAccountByEmail(currentUser.email)
@@ -252,8 +265,5 @@ async def getTopIngredientsForUser(
 
     rows = getTopIngredients(Account["id"], limit=limit)
     return {
-        "ingredients": [
-            {"name": r["displayName"], "unit": r["lastUnit"]}
-            for r in rows
-        ]
+        "ingredients": [{"name": r["displayName"], "unit": r["lastUnit"]} for r in rows]
     }
