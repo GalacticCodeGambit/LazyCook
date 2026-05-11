@@ -3,7 +3,7 @@
 import {useEffect, useRef, useState} from "react";
 import { useRouter } from "next/navigation";
 import {fetchWithAuth, useAuth} from "@/lib/auth";
-import {ChefHat, LogOut, X, User, UserCircle, Search, Plus} from "lucide-react";
+import {ChefHat, X, Search, Plus} from "lucide-react";
 import "./style.css"
 import {Button} from "@/app/components/ui/button";
 import Modal from "@/app/components/modal";
@@ -18,8 +18,33 @@ interface IngredientInput {
     unit: string;
 }
 
+interface Suggestion {
+    name: string;
+    unit: string | null;
+}
+
+// Reine Helper-Funktion auf Modulebene – schließt keinen Component-State ein,
+// damit useEffect/useCallback keine ändernden Closure-Variablen aufnehmen müssen.
+async function loadTopIngredients(): Promise<Suggestion[] | null> {
+    try {
+        const res = await fetchWithAuth(`/ingredients/top?limit=5&_=${Date.now()}`, {
+            cache: "no-store",
+            headers: { "Cache-Control": "no-cache" },
+        });
+        if (!res.ok) return null;
+        const data = await res.json();
+        if (Array.isArray(data.ingredients)) {
+            localStorage.setItem("ingredientSuggestions", JSON.stringify(data.ingredients));
+            return data.ingredients as Suggestion[];
+        }
+        return null;
+    } catch {
+        return null;
+    }
+}
+
 export default function RecipeFinder() {
-    const { user, loading, logout } = useAuth();
+    const { user, loading } = useAuth();
     const router = useRouter();
 
     const [open, setOpen] = useState(false);
@@ -47,11 +72,42 @@ export default function RecipeFinder() {
 
     const [modalOpen, setModalOpen] = useState(false);
 
+    // Vorschläge: localStorage als sofortiger Initialwert (instant beim Öffnen),
+    // im Hintergrund per useEffect aktualisiert.
+    const [suggestions, setSuggestions] = useState<Suggestion[]>(() => {
+        try {
+            const saved = localStorage.getItem("ingredientSuggestions");
+            return saved ? JSON.parse(saved) : [];
+        } catch {
+            return [];
+        }
+    });
+
     useEffect(() => {
         if (!loading && !user) {
             router.replace("/");
         }
     }, [loading, user, router]);
+
+    // Initial nach dem Login laden (damit sie beim ersten Popup-Öffnen sofort da sind)
+    useEffect(() => {
+        if (!user) return;
+        let cancelled = false;
+        loadTopIngredients().then(result => {
+            if (!cancelled && result) setSuggestions(result);
+        });
+        return () => { cancelled = true; };
+    }, [user]);
+
+    // Bei jedem Öffnen des Popups erneut laden – aktuelle Daten nach jeder Suche
+    useEffect(() => {
+        if (!modalOpen || !user) return;
+        let cancelled = false;
+        loadTopIngredients().then(result => {
+            if (!cancelled && result) setSuggestions(result);
+        });
+        return () => { cancelled = true; };
+    }, [modalOpen, user]);
 
     useEffect(() => {
         function handleClickOutside(event: MouseEvent) {
@@ -115,6 +171,12 @@ export default function RecipeFinder() {
             });
             const data = await res.json();
             setResults(data.rezepte ?? []);
+            // Aktualisierte Top 5 direkt aus der Search-Response übernehmen –
+            // beim nächsten Popup-Öffnen sind die Vorschläge sofort aktuell, ohne extra Roundtrip
+            if (Array.isArray(data.topIngredients)) {
+                setSuggestions(data.topIngredients);
+                localStorage.setItem("ingredientSuggestions", JSON.stringify(data.topIngredients));
+            }
         } catch {
             setSearchError("Suche fehlgeschlagen.");
         } finally {
@@ -150,7 +212,15 @@ export default function RecipeFinder() {
                     <div className="finder-sidebar__section">
                         <p className="finder-sidebar__title">Zutaten</p>
                         <div style={{ display: "flex", gap: 8 }}>
-                            <Button onClick={() => setModalOpen(true)} className="finder-sidebar__add-btn">
+                            <Button
+                                onPointerDown={() => {
+                                    loadTopIngredients().then(result => {
+                                        if (result) setSuggestions(result);
+                                    });
+                                }}
+                                onClick={() => setModalOpen(true)}
+                                className="finder-sidebar__add-btn"
+                            >
                                 <Plus size={15} />
                                 Zutat hinzufügen
                             </Button>
@@ -240,6 +310,7 @@ export default function RecipeFinder() {
                         onAdd={handleAdd}
                         servings={servings}
                         onServingsChange={setServings}
+                        suggestions={suggestions}
                     />
                 </Modal>
             </div>

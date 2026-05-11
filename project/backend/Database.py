@@ -15,8 +15,8 @@ def getConnection() -> sqlite3.Connection:
     """Erstellt eine neue SQLite-Connection mit Row-Factory."""
     con = sqlite3.connect(str(DB_PATH), check_same_thread=False)
     con.row_factory = sqlite3.Row
+    con.execute("PRAGMA journal_mode = WAL")
     con.execute("PRAGMA foreign_keys = ON")
-    # con.execute("PRAGMA journal_mode = WAL")
     return con
 
 
@@ -104,6 +104,30 @@ def initDB():
                                                              FOREIGN KEY (AccountID) REFERENCES Account (id) ON DELETE CASCADE,
                         FOREIGN KEY (rid) REFERENCES Recipe (id) ON DELETE CASCADE,
                         UNIQUE (AccountID, rid)
+                        )
+                    """)
+        cur.execute("""
+                    CREATE TABLE IF NOT EXISTS IngredientUsage (
+                                                                   AccountID INTEGER NOT NULL,
+                                                                   name TEXT NOT NULL,
+                                                                   displayName TEXT NOT NULL,
+                                                                   count INTEGER NOT NULL DEFAULT 1,
+                                                                   lastUnit TEXT,
+                                                                   lastUsedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                                                                   PRIMARY KEY (AccountID, name),
+                                                                   FOREIGN KEY (AccountID) REFERENCES Account (id) ON DELETE CASCADE
+                        )
+                    """)
+
+        cur.execute("""
+                    CREATE TABLE IF NOT EXISTS PasswordResetToken (
+                                                              id INTEGER PRIMARY KEY AUTOINCREMENT,
+                                                              kontoID INTEGER NOT NULL,
+                                                              tokenHash TEXT NOT NULL UNIQUE,
+                                                              expiresAt TIMESTAMP NOT NULL,
+                                                              usedAt TIMESTAMP,
+                                                              createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                                                              FOREIGN KEY (kontoID) REFERENCES Account (id) ON DELETE CASCADE
                         )
                     """)
 
@@ -394,3 +418,120 @@ addIngredientToRecipe(11, r10, 100.0) # Sugar
 addIngredientToRecipe(i26, r10, 100.0)
 addIngredientToRecipe(i27, r10, 5.0)
 """
+
+
+
+# ── Password-Reset-Token-Operationen ───────────────────────────
+
+def savePasswordResetToken(kontoID: int, tokenHash: str, expiresAt: str) -> None:
+    """Invalidiert alte Tokens des Kontos und speichert einen neuen."""
+    with getDB() as con:
+        cur = con.cursor()
+        # Alte, ungenutzte Tokens für dieses Konto invalidieren
+        cur.execute(
+            "UPDATE PasswordResetToken SET usedAt = CURRENT_TIMESTAMP "
+            "WHERE kontoID = ? AND usedAt IS NULL",
+            (kontoID,),
+        )
+        cur.execute(
+            "INSERT INTO PasswordResetToken (kontoID, tokenHash, expiresAt) VALUES (?, ?, ?)",
+            (kontoID, tokenHash, expiresAt),
+        )
+
+
+def getPasswordResetToken(tokenHash: str) -> dict | None:
+    con = getConnection()
+    try:
+        cur = con.cursor()
+        cur.execute(
+            "SELECT id, kontoID, tokenHash, expiresAt, usedAt "
+            "FROM PasswordResetToken WHERE tokenHash = ?",
+            (tokenHash,),
+        )
+        row = cur.fetchone()
+        return dict(row) if row else None
+    finally:
+        con.close()
+
+
+def markResetTokenUsed(tokenID: int) -> None:
+    with getDB() as con:
+        cur = con.cursor()
+        cur.execute(
+            "UPDATE PasswordResetToken SET usedAt = CURRENT_TIMESTAMP WHERE id = ?",
+            (tokenID,),
+        )
+
+
+def updateKontoPassword(konto_id: int, hashed_password: str) -> None:
+    with getDB() as con:
+        cur = con.cursor()
+        cur.execute(
+            "UPDATE Account SET hashedPassword = ? WHERE id = ?",
+            (hashed_password, konto_id),
+        )
+
+
+# ── Ingredient-Usage-Operationen ───────────────────────────────
+
+def incrementIngredientUsage(AccountID: int, name: str, unit: str | None) -> None:
+    """Erhöht den Usage-Counter für eine Zutat um 1, aktualisiert lastUnit und lastUsedAt.
+    Legt einen neuen Eintrag an, falls die Zutat für diesen Account noch nicht existiert.
+    Der Name wird normalisiert (trim + lowercase) für den Primary Key, displayName behält
+    die Originalschreibweise der letzten Eingabe.
+    """
+    displayName = (name or "").strip()
+    if not displayName:
+        return
+    normalizedName = displayName.lower()
+    with getDB() as con:
+        cur = con.cursor()
+        cur.execute(
+            """
+            INSERT INTO IngredientUsage (AccountID, name, displayName, count, lastUnit, lastUsedAt)
+            VALUES (?, ?, ?, 1, ?, CURRENT_TIMESTAMP)
+            ON CONFLICT(AccountID, name) DO UPDATE SET
+                count = count + 1,
+                displayName = excluded.displayName,
+                lastUnit = excluded.lastUnit,
+                lastUsedAt = CURRENT_TIMESTAMP
+            """,
+            (AccountID, normalizedName, displayName, unit),
+        )
+
+
+def getTopIngredients(AccountID: int, limit: int = 5) -> list[dict]:
+    """Liefert die meistgenutzten Zutaten des Users.
+    Sortierung Hybrid: erst nach count DESC, dann nach lastUsedAt DESC als Tie-Breaker.
+    """
+    con = getConnection()
+    try:
+        cur = con.cursor()
+        cur.execute(
+            """
+            SELECT displayName, lastUnit, count, lastUsedAt
+            FROM IngredientUsage
+            WHERE AccountID = ?
+            ORDER BY count DESC, lastUsedAt DESC
+            LIMIT ?
+            """,
+            (AccountID, limit),
+        )
+        return [dict(row) for row in cur.fetchall()]
+    finally:
+        con.close()
+
+
+def getAccountById(konto_id: int) -> dict | None:
+    """Gibt Account-Daten anhand der ID zurück, oder None."""
+    con = getConnection()
+    try:
+        cur = con.cursor()
+        cur.execute(
+            "SELECT id, email, name, hashedPassword FROM Account WHERE id = ?",
+            (konto_id,),
+        )
+        row = cur.fetchone()
+        return dict(row) if row else None
+    finally:
+        con.close()
