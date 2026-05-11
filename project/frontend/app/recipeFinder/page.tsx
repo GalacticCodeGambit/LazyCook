@@ -62,7 +62,7 @@ export default function RecipeFinder() {
 
     const [servings, setServings] = useState(1);
     const [searching, setSearching] = useState(false);
-    const [results, setResults] = useState<any[] | null>(null);
+    const [results, setResults] = useState<never[] | null>(null);
     const [editingIngredient, setEditingIngredient] = useState<string | null>(null);
     const [editAmount, setEditAmount] = useState("");
     const [editUnit, setEditUnit] = useState("Stück");
