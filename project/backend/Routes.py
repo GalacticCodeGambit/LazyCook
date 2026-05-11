@@ -6,6 +6,7 @@ from EmailService import sendPasswordChangedEmail, sendPasswordResetEmail
 
 from RecipeSucuk import findRecipes
 from Ingredient import Ingredient
+from pydantic import BaseModel as _BaseModel
 
 
 from Auth import (
@@ -165,39 +166,6 @@ async def updateCurrentUser(
 
 
 # ── Rezept-Endpunkte ───────────────────────────────────────────
-
-class IngredientInput(_BaseModel):
-    name: str
-    amount: float
-    unit: str
-
-class RecipeSearchRequest(_BaseModel):
-    zutaten: list[IngredientInput]
-    servings: int = 1
-
-@router.post("/recipes/search")
-async def searchRecipes(
-        body: RecipeSearchRequest,
-        currentUser: Annotated[User, Depends(getCurrentUser)]
-):
-    Ingredients = [Ingredient(z.name, z.amount) for z in body.zutaten]
-    recipes = findRecipes(Ingredients)
-    return {
-        "rezepte": [
-            {
-                "name": r.getName(),
-                "description": r.getDescription(),
-                "rating": r.getRating(),
-                "duration": r.getDuration(),
-                "matching": r.getMatching(),
-                "ingredients": [
-                    {"name": i.getName(), "amount": i.getAmount()}
-                    for i in r.getIngredients()
-                ]
-            }
-            for r in recipes
-        ]
-    }
 
 # ------------ Passwort vergessen ----------------- #
 
