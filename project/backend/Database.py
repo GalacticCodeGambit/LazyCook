@@ -3,7 +3,6 @@ from contextlib import contextmanager
 from pathlib import Path
 import os
 
-
 # Verwende die Datenbank aus dem data-Ordner
 DB_PATH = Path(__file__).parent.parent / "data" / "LazyCookDB.sqlite3"
 
@@ -236,15 +235,17 @@ def cleanupExpiredTokens() -> None:
     with getDB() as con:
         cur = con.cursor()
         cur.execute("DELETE FROM RefreshToken WHERE expiresAt < datetime('now')")
-        
+
+
 def addRecipe(name: str, description: str, vid: int) -> int:
-     with getDB() as con:
+    with getDB() as con:
         cur = con.cursor()
         cur.execute(
             "INSERT INTO Recipe (name, description) VALUES (?, ?)",
             (name, description),
         )
         return cur.lastrowid
+
 
 def addIngredientToRecipe(zid: int, rid: int, amount: float) -> int:
     with getDB() as con:
@@ -253,7 +254,8 @@ def addIngredientToRecipe(zid: int, rid: int, amount: float) -> int:
             "INSERT INTO Exists_from (zid, rid, amount) VALUES (?, ?, ?)",
             (zid, rid, amount),
         )
-        
+
+
 def addIngredient(name: str, amountType: str) -> int:
     with getDB() as con:
         cur = con.cursor()
@@ -262,31 +264,40 @@ def addIngredient(name: str, amountType: str) -> int:
             (name, amountType),
         )
         return cur.lastrowid
-    
+
+
 def getIngridientByName(name: str):
-     with getDB() as con:
+    with getDB() as con:
         cur = con.cursor()
-        cur.execute("""
+        cur.execute(
+            """
                     SELECT id, amountType
                     FROM Recipe
                     WHERE id = ?
-                    """, (name))
+                    """,
+            (name),
+        )
         row = cur.fetchone()
         return dict(row) if row else None
+
 
 def getRecipe(recipeID: int) -> dict | None:
     """Gibt eine Liste aller Rezepte zurück."""
     with getDB() as con:
         cur = con.cursor()
-        cur.execute("""
+        cur.execute(
+            """
                     SELECT name, description
                     FROM Recipe
                     WHERE id = ?
-                    """, (recipeID))
+                    """,
+            (recipeID),
+        )
         row = cur.fetchone()
         return dict(row) if row else None
 
-def getAllRecipes()-> list[dict]:
+
+def getAllRecipes() -> list[dict]:
     with getDB() as con:
         cur = con.cursor()
         cur.execute("""
@@ -295,10 +306,13 @@ def getAllRecipes()-> list[dict]:
                     """)
         rows = cur.fetchall()
         return [dict(row) for row in rows]
+
+
 def getAllIngredientsForRecipe(rid: int):
     with getDB() as con:
         cur = con.cursor()
-        cur.execute("""
+        cur.execute(
+            """
             SELECT 
                 Ingredient.name, 
                 Exists_from.amount,
@@ -307,20 +321,26 @@ def getAllIngredientsForRecipe(rid: int):
             JOIN Exists_from ON Ingredient.id = Exists_from.zid
             JOIN Recipe ON Exists_from.rid = Recipe.id
             WHERE Exists_from.rid = ?
-        """, (rid,)) # Note the comma here!
+        """,
+            (rid,),
+        )  # Note the comma here!
         rows = cur.fetchall()
         return [dict(row) for row in rows]
 
-def getAllocatedRecipes(name: str)-> list[dict]:
+
+def getAllocatedRecipes(name: str) -> list[dict]:
 
     with getDB() as con:
         cur = con.cursor()
-        cur.execute("""
+        cur.execute(
+            """
                     SELECT rid 
                     FROM Exists_from
                     Inner Join Ingredient on rid=id,
                     Where Exists_from.id = ?
-                    """, (name,))
+                    """,
+            (name,),
+        )
         rows = cur.fetchall()
         return [dict(row) for row in rows]
 
@@ -420,8 +440,8 @@ addIngredientToRecipe(i27, r10, 5.0)
 """
 
 
-
 # ── Password-Reset-Token-Operationen ───────────────────────────
+
 
 def savePasswordResetToken(kontoID: int, tokenHash: str, expiresAt: str) -> None:
     """Invalidiert alte Tokens des Kontos und speichert einen neuen."""
@@ -473,6 +493,7 @@ def updateKontoPassword(konto_id: int, hashed_password: str) -> None:
 
 
 # ── Ingredient-Usage-Operationen ───────────────────────────────
+
 
 def incrementIngredientUsage(AccountID: int, name: str, unit: str | None) -> None:
     """Erhöht den Usage-Counter für eine Zutat um 1, aktualisiert lastUnit und lastUsedAt.

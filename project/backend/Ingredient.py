@@ -1,11 +1,12 @@
 from typing import List, Dict, Any
 from Database import addIngredient
 
+
 class Ingredient:
     def __init__(self, name: str, amount: float):
         self.__name = name
         self.__amount = amount
-    
+
     def getName(self) -> str:
         return self.__name
 
@@ -17,13 +18,13 @@ class Ingredient:
 
     def setAmount(self, amount: float):
         self.__amount = amount
-        
+
     def setAmountType(self, amountType: str):
         self.__amountType = amountType
-        
+
     def getAmountType(self):
         return self.__amountType
-    
+
     def saveInDB(self):
         if not self.__amountType:
             return False

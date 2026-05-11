@@ -1,6 +1,7 @@
-
 from Ingredient import Ingredient
 from Database import addIngredientToRecipe, addRecipe, getIngridientByName
+
+
 class Recipe:
     def __init__(self, name: str, ingredients: list[Ingredient], description: str):
         self.__name = name
@@ -11,7 +12,6 @@ class Recipe:
         self.__rating = 0.0
         self.__countPersons = 1
         self.__matching = 0
-        
 
     def saveInDB(self) -> bool:
         rid = addRecipe(self.__name, self.__description, None)
@@ -51,7 +51,7 @@ class Recipe:
         return self.__matching
 
     def incrementMatching(self):
-        self.__matching+=1
+        self.__matching += 1
 
     def getDuration(self) -> str:
         return self.__duration
@@ -64,4 +64,3 @@ class Recipe:
 
     def setIngredient(self, ingredients: list[Ingredient]):
         self.__ingredients = ingredients
-
