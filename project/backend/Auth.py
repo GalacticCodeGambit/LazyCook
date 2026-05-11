@@ -140,7 +140,9 @@ async def getCurrentUser(token: Annotated[str, Depends(oauth2_scheme)]) -> User:
 
     return User(email=konto["email"], name=konto["name"])
 
+
 # --- Reset Password --- #
+
 
 def hashResetToken(token: str) -> str:
     """SHA-256 Hash – für Reset-Tokens reicht das, sie sind ohnehin hochentropisch."""
@@ -150,14 +152,18 @@ def hashResetToken(token: str) -> str:
 def createPasswordResetToken(kontoId: int) -> str:
     """Generiert Klartext-Token (geht per Mail) und speichert nur den Hash in der DB."""
     from Database import savePasswordResetToken
+
     token = secrets.token_urlsafe(48)
-    expiresAt = datetime.now(timezone.utc) + timedelta(minutes=PASSWORD_RESET_EXPIRE_MINUTES)
+    expiresAt = datetime.now(timezone.utc) + timedelta(
+        minutes=PASSWORD_RESET_EXPIRE_MINUTES
+    )
     savePasswordResetToken(kontoId, hashResetToken(token), expiresAt.isoformat())
     return token
 
 
 def validatePasswordResetToken(token: str) -> dict | None:
     from Database import getPasswordResetToken
+
     entry = getPasswordResetToken(hashResetToken(token))
     if entry is None or entry["usedAt"] is not None:
         return None

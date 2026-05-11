@@ -1,6 +1,6 @@
 import os
 from typing import Annotated
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, HTTPException, status, Response
 from fastapi.security import OAuth2PasswordRequestForm
 from EmailService import sendPasswordChangedEmail, sendPasswordResetEmail
 
@@ -26,9 +26,21 @@ from Database import (
     updateAccount,
     markResetTokenUsed,
     updateKontoPassword,
+    incrementIngredientUsage,
+    getTopIngredients,
 )
 
-from Models import User, Token, UserCreate, RefreshRequest, LogoutRequest, ForgotPasswordRequest, ResetPasswordRequest, UpdateUser
+from Models import (
+    User,
+    Token,
+    UserCreate,
+    RefreshRequest,
+    LogoutRequest,
+    ForgotPasswordRequest,
+    ResetPasswordRequest,
+    UpdateUser,
+    RecipeSearchRequest,
+)
 
 # Frontend-URL aus Env, mit Dev-Fallback (Frontend läuft per compose.yaml auf Port 8000)
 FRONTEND_URL = os.environ.get("FRONTEND_URL", "http://localhost:8000")
@@ -37,6 +49,7 @@ router = APIRouter()
 
 
 # ── Auth-Endpunkte ─────────────────────────────────────────────
+
 
 @router.post("/auth/register", response_model=User)
 async def register(user: UserCreate):
@@ -98,6 +111,7 @@ async def logout(body: LogoutRequest):
 
 # ── Geschützte Endpunkte ───────────────────────────────────────
 
+
 @router.get("/users/me", response_model=User)
 async def readCurrentUser(currentUser: Annotated[User, Depends(getCurrentUser)]):
     """Nur mit gültigem Access Token erreichbar."""
@@ -112,11 +126,9 @@ async def deleteCurrentUser(currentUser: Annotated[User, Depends(getCurrentUser)
     # ── Account aktualisieren ────────────────────────────────────────
 
 
-
 @router.patch("/users/me")
 async def updateCurrentUser(
-        data: UpdateUser,
-        currentUser: Annotated[User, Depends(getCurrentUser)]
+    data: UpdateUser, currentUser: Annotated[User, Depends(getCurrentUser)]
 ):
     Account = getAccountByEmail(currentUser.email)
 
@@ -148,7 +160,9 @@ async def updateCurrentUser(
 
     return {"success": True}
 
+
 # ------------ Passwort vergessen ----------------- #
+
 
 @router.post("/auth/forgot-password")
 async def forgotPassword(body: ForgotPasswordRequest):
@@ -196,3 +210,60 @@ async def resetPassword(body: ResetPasswordRequest):
             print(f"Bestätigungsmail konnte nicht gesendet werden: {e}")
 
     return {"detail": "Passwort erfolgreich zurückgesetzt."}
+
+
+# ── Recipe-Suche ───────────────────────────────────────────────
+
+
+@router.post("/recipes/search")
+async def searchRecipes(
+    body: RecipeSearchRequest,
+    currentUser: Annotated[User, Depends(getCurrentUser)],
+):
+    """Sucht Rezepte basierend auf den übergebenen Zutaten.
+
+    Hinweis: Aktuell nur Usage-Tracking implementiert – die eigentliche
+    Rezept-Suche folgt. Jede gesuchte Zutat erhöht den persönlichen Counter
+    des Users (IngredientUsage), damit später die Top-5-Vorschläge daraus
+    abgeleitet werden können.
+    """
+    Account = getAccountByEmail(currentUser.email)
+    if Account is None:
+        raise HTTPException(status_code=404, detail="Account nicht gefunden")
+
+    # Usage-Tracking: jede gesuchte Zutat hochzählen (Hybrid: count + lastUsedAt + lastUnit)
+    for zutat in body.zutaten:
+        incrementIngredientUsage(Account["id"], zutat.name, zutat.unit)
+
+    # Aktualisierte Top 5 direkt mit zurückgeben → Frontend muss keinen Extra-Request machen
+    topRows = getTopIngredients(Account["id"], limit=5)
+    topIngredients = [
+        {"name": r["displayName"], "unit": r["lastUnit"]} for r in topRows
+    ]
+
+    # TODO: eigentliche Rezept-Suche implementieren
+    return {"rezepte": [], "topIngredients": topIngredients}
+
+
+# ── Ingredient-Vorschläge ──────────────────────────────────────
+
+
+@router.get("/ingredients/top")
+async def getTopIngredientsForUser(
+    response: Response,
+    currentUser: Annotated[User, Depends(getCurrentUser)],
+    limit: int = 5,
+):
+    """Liefert die meistgenutzten Zutaten des aktuellen Users für die Vorschlags-Badges."""
+    Account = getAccountByEmail(currentUser.email)
+    if Account is None:
+        raise HTTPException(status_code=404, detail="Account nicht gefunden")
+
+    # Caching unterbinden – die Liste ändert sich mit jeder Suche
+    response.headers["Cache-Control"] = "no-store, no-cache, must-revalidate"
+    response.headers["Pragma"] = "no-cache"
+
+    rows = getTopIngredients(Account["id"], limit=limit)
+    return {
+        "ingredients": [{"name": r["displayName"], "unit": r["lastUnit"]} for r in rows]
+    }

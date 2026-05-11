@@ -49,6 +49,7 @@ function clearTokens() {
     sessionStorage.removeItem("access_token");
     localStorage.removeItem("refresh_token");
     localStorage.removeItem("ingredients");
+    localStorage.removeItem("ingredientSuggestions");
 }
 
 // ── API-Aufrufe ───────────────────────────────────────────────
@@ -107,7 +108,7 @@ async function fetchWithAuth(url: string, options: RequestInit = {}): Promise<Re
     if (!accessToken) throw new Error("Nicht eingeloggt");
 
     // Erster Versuch mit aktuellem Access Token
-    let res = await fetch(url, {
+    let res = await fetch(`${API_URL}`+url, {
         ...options,
         headers: {
             ...options.headers,
