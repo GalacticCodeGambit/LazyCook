@@ -1,6 +1,6 @@
 "use client";
 
-import {useCallback, useEffect, useRef, useState} from "react";
+import {useEffect, useRef, useState} from "react";
 import { useRouter } from "next/navigation";
 import {fetchWithAuth, useAuth} from "@/lib/auth";
 import {ChefHat, X, Search, Plus} from "lucide-react";
@@ -21,6 +21,26 @@ interface IngredientInput {
 interface Suggestion {
     name: string;
     unit: string | null;
+}
+
+// Reine Helper-Funktion auf Modulebene – schließt keinen Component-State ein,
+// damit useEffect/useCallback keine ändernden Closure-Variablen aufnehmen müssen.
+async function loadTopIngredients(): Promise<Suggestion[] | null> {
+    try {
+        const res = await fetchWithAuth(`/ingredients/top?limit=5&_=${Date.now()}`, {
+            cache: "no-store",
+            headers: { "Cache-Control": "no-cache" },
+        });
+        if (!res.ok) return null;
+        const data = await res.json();
+        if (Array.isArray(data.ingredients)) {
+            localStorage.setItem("ingredientSuggestions", JSON.stringify(data.ingredients));
+            return data.ingredients as Suggestion[];
+        }
+        return null;
+    } catch {
+        return null;
+    }
 }
 
 export default function RecipeFinder() {
@@ -69,36 +89,25 @@ export default function RecipeFinder() {
         }
     }, [loading, user, router]);
 
-    // Top 5 Zutaten vom Backend laden – als wiederverwendbare Funktion,
-    // damit wir sie sowohl beim Page-Load als auch beim Popup-Öffnen aufrufen können.
-    // cache: "no-store" + Cache-Buster, damit wir wirklich frische Daten bekommen
-    // und nicht eine vom Browser gecachte Antwort.
-    const fetchSuggestions = useCallback(async () => {
-        try {
-            const res = await fetchWithAuth(`/ingredients/top?limit=5&_=${Date.now()}`, {
-                cache: "no-store",
-                headers: { "Cache-Control": "no-cache" },
-            });
-            if (!res.ok) return;
-            const data = await res.json();
-            if (Array.isArray(data.ingredients)) {
-                setSuggestions(data.ingredients);
-                localStorage.setItem("ingredientSuggestions", JSON.stringify(data.ingredients));
-            }
-        } catch {
-            // bei Fehler den localStorage-Wert behalten
-        }
-    }, []);
-
     // Initial nach dem Login laden (damit sie beim ersten Popup-Öffnen sofort da sind)
     useEffect(() => {
-        if (user) fetchSuggestions();
-    }, [user, fetchSuggestions]);
+        if (!user) return;
+        let cancelled = false;
+        loadTopIngredients().then(result => {
+            if (!cancelled && result) setSuggestions(result);
+        });
+        return () => { cancelled = true; };
+    }, [user]);
 
     // Bei jedem Öffnen des Popups erneut laden – aktuelle Daten nach jeder Suche
     useEffect(() => {
-        if (modalOpen && user) fetchSuggestions();
-    }, [modalOpen, user, fetchSuggestions]);
+        if (!modalOpen || !user) return;
+        let cancelled = false;
+        loadTopIngredients().then(result => {
+            if (!cancelled && result) setSuggestions(result);
+        });
+        return () => { cancelled = true; };
+    }, [modalOpen, user]);
 
     useEffect(() => {
         function handleClickOutside(event: MouseEvent) {
@@ -204,7 +213,11 @@ export default function RecipeFinder() {
                         <p className="finder-sidebar__title">Zutaten</p>
                         <div style={{ display: "flex", gap: 8 }}>
                             <Button
-                                onPointerDown={() => fetchSuggestions()}
+                                onPointerDown={() => {
+                                    loadTopIngredients().then(result => {
+                                        if (result) setSuggestions(result);
+                                    });
+                                }}
                                 onClick={() => setModalOpen(true)}
                                 className="finder-sidebar__add-btn"
                             >
