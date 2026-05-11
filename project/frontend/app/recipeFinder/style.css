@@ -147,6 +147,62 @@
     margin: 0;
 }
 
+/* ── Zutaten-Vorschläge (Top 5 Badges) ─────────────────────── */
+.popup__suggestions {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.popup__suggestions-label {
+    font-size: 12px;
+    font-weight: 600;
+    color: #6b7280;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin: 0;
+    font-family: system-ui;
+}
+
+.popup__suggestions-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+}
+
+.popup__suggestion-badge {
+    padding: 5px 12px;
+    background: #f3f3f5;
+    border: 1px solid #e5e7eb;
+    border-radius: 999px;
+    font-size: 13px;
+    font-family: system-ui;
+    color: #111;
+    cursor: pointer;
+    transition: background 0.15s, border-color 0.15s, color 0.15s;
+}
+
+.popup__suggestion-badge:hover {
+    background: #030213;
+    border-color: #030213;
+    color: #fff;
+}
+
+.popup__suggestion-badge:focus-visible {
+    outline: 2px solid #030213;
+    outline-offset: 2px;
+}
+
+.popup__suggestion-badge--added,
+.popup__suggestion-badge--added:hover {
+    background: #f3f3f5;
+    border-color: #e5e7eb;
+    color: #9ca3af;
+    cursor: default;
+    text-decoration: line-through;
+    opacity: 0.6;
+}
+
 .popup__btn {
     display: block;
     margin: 0 auto;

@@ -9,20 +9,34 @@ export default function ForgotPasswordForm({ onClose, onBack,}: { onClose: () =>
     const [busy, setBusy] = useState(false);
     const [submitted, setSubmitted] = useState(false);
     const [emailBlurred, setEmailBlurred] = useState(false);
+    const [error, setError] = useState("");
 
     const emailValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
 
     const handleSubmit = async () => {
         setEmailBlurred(true);
+        setError("");
         if (!emailValid) return;
         setBusy(true);
         try {
-            await fetch(`${API_URL}/auth/forgot-password`, {
+            const res = await fetch(`${API_URL}/auth/forgot-password`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ email }),
             });
+            if (!res.ok) {
+                const data = await res.json().catch(() => null);
+                setError(data?.detail ?? `Fehler beim Anfordern (Status ${res.status}).`);
+                return;
+            }
             setSubmitted(true);
+        } catch (err) {
+            const msg = err instanceof Error ? err.message : "";
+            setError(
+                msg.includes("Failed to fetch") || msg === "Network Error"
+                    ? "Backend nicht erreichbar."
+                    : (msg || "Unbekannter Fehler.")
+            );
         } finally {
             setBusy(false);
         }
@@ -50,6 +64,7 @@ export default function ForgotPasswordForm({ onClose, onBack,}: { onClose: () =>
                 Gib deine E-Mail-Adresse ein. Wir schicken dir einen Link zum
                 Zurücksetzen.
             </p>
+            {error && <p className={styles.error}>{error}</p>}
             <Field
                 label="Email"
                 type="email"

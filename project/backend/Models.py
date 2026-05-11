@@ -37,3 +37,14 @@ class UpdateUser(BaseModel):
     email: str | None = None
     currentPassword: str | None = None
     newPassword: str | None = None
+
+
+class IngredientSearch(BaseModel):
+    name: str
+    amount: float
+    unit: str
+
+
+class RecipeSearchRequest(BaseModel):
+    zutaten: list[IngredientSearch]
+    servings: int
