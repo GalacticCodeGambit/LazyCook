@@ -3,10 +3,10 @@
 12.05.2026 16.:00 bis 16:20
 
 ### **Teilnehmende**: 
-- Moderator: 
-- Zeitwächter: 
-- Notizen: 
-- Teilnehmer:  
+- Moderator: PrussianBaron 
+- Zeitwächter: Nicoolaus
+- Notizen: GalacticCodeGambit
+- Teilnehmer: EdenBernhard, Hellocrafting
 
 ###  **Ziel**/**Schwerpunkt** des Reviews: <br>
 Schwerpunkt: Team übergreifenden Verständnis des Algorithmus Rezept Suche verbessern.  
