@@ -3,10 +3,10 @@
 12.05.2026 16.:00 bis 16:20
 
 ### **Teilnehmende**: 
-- Moderator: Samuel 
-- Zeitwächter: Niclas
-- Notizen: Frederik
-- Teilnehmer: Eden, Alexander 
+- Moderator: 
+- Zeitwächter: 
+- Notizen: 
+- Teilnehmer:  
 
 ###  **Ziel**/**Schwerpunkt** des Reviews: <br>
 Schwerpunkt: Team übergreifenden Verständnis des Algorithmus Rezept Suche verbessern.  
