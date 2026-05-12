@@ -28,8 +28,8 @@ export default function Homepage() {
 
                     <nav className="hidden md:flex items-center gap-6">
                         // TODO Datenschutz & Impressum
-                        <a href="#" className="text-gray-700 hover:text-black">Datenschutz</a>
-                        <a href="#" className="text-gray-700 hover:text-black">Impressum</a>
+                        <a href="project/frontend/app/homepage/MarkdownFiles/Datenschutz.md" className="text-gray-700 hover:text-black">Datenschutz</a>
+                        <a href="project/frontend/app/homepage/MarkdownFiles/Impressum.md" className="text-gray-700 hover:text-black">Impressum</a>
                     </nav>
 
                     <div className="flex items-center gap-3">
