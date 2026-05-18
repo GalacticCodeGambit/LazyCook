@@ -1,3 +1,4 @@
+# SUCUK = Search for Uncomplicated Cooking and User-friendly Kitchen recipes
 import Database
 from Ingredient import Ingredient
 from Recipe import Recipe
@@ -12,11 +13,9 @@ def findRecipes(ingriedents: list[Ingredient]) -> list[Recipe]:
 
     recipes.sort(key=lambda x: x.getRating(), reverse=True)
 
-    for recipe in recipes[::-1]:
-        if recipe.getRating() < 0.3:
-            recipes.remove(recipe)
-        else:
-            break
+    if len(recipes) > 98:
+        return recipes[:98]
+    
     return recipes
 
 
