@@ -117,7 +117,7 @@ def validatePassword(pw: str) -> str | None:
 
 
 # ── Auth-Dependency ────────────────────────────────────────────
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl="auth/login")
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/auth/login")
 
 
 async def getCurrentUser(token: Annotated[str, Depends(oauth2_scheme)]) -> User:

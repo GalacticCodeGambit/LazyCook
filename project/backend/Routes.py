@@ -4,10 +4,6 @@ from fastapi import APIRouter, Depends, HTTPException, status, Response
 from fastapi.security import OAuth2PasswordRequestForm
 from EmailService import sendPasswordChangedEmail, sendPasswordResetEmail
 
-from RecipeSucuk import findRecipes
-from Ingredient import Ingredient
-from pydantic import BaseModel as _BaseModel
-
 
 from Auth import (
     createTokenPair,
@@ -127,7 +123,6 @@ async def deleteCurrentUser(currentUser: Annotated[User, Depends(getCurrentUser)
     """Löscht das eigene Account inkl. aller Refresh Tokens (CASCADE)."""
     deleteAccount(currentUser.email)
 
-    # ── Account aktualisieren ────────────────────────────────────────
 
 
 @router.patch("/users/me")

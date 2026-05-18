@@ -13,6 +13,16 @@ import ProfileDropdown from "@/app/components/profile_dropdown";
 const EINHEITEN = ["Stück", "g", "kg", "ml", "l", "EL", "TL", "Prise"];
 const API_URL = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:3000";
 
+// Direkt nach den Imports hinzufügen
+interface Recipe {
+    name: string;
+    description: string;
+    rating: number;
+    duration: string;
+    matching: number;
+    ingredients: { name: string; amount: number }[];
+}
+
 interface IngredientInput {
     name: string;
     amount: number;
@@ -62,7 +72,7 @@ export default function RecipeFinder() {
 
     const [servings, setServings] = useState(1);
     const [searching, setSearching] = useState(false);
-    const [results, setResults] = useState<never[] | null>(null);
+    const [results, setResults] = useState<Recipe[] | null>(null);
     const [editingIngredient, setEditingIngredient] = useState<string | null>(null);
     const [editAmount, setEditAmount] = useState("");
     const [editUnit, setEditUnit] = useState("Stück");
