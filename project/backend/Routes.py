@@ -3,7 +3,8 @@ from typing import Annotated
 from fastapi import APIRouter, Depends, HTTPException, status, Response
 from fastapi.security import OAuth2PasswordRequestForm
 from EmailService import sendPasswordChangedEmail, sendPasswordResetEmail
-
+from RecipeSUCUK import findRecipes
+from Ingredient import Ingredient
 
 from Auth import (
     createTokenPair,
@@ -217,34 +218,44 @@ async def resetPassword(body: ResetPasswordRequest):
 
 @router.post("/recipes/search")
 async def searchRecipes(
-    body: RecipeSearchRequest,
-    currentUser: Annotated[User, Depends(getCurrentUser)],
+        body: RecipeSearchRequest,
+        currentUser: Annotated[User, Depends(getCurrentUser)],
 ):
-    """Sucht Rezepte basierend auf den übergebenen Zutaten.
-
-    Hinweis: Aktuell nur Usage-Tracking implementiert – die eigentliche
-    Rezept-Suche folgt. Jede gesuchte Zutat erhöht den persönlichen Counter
-    des Users (IngredientUsage), damit später die Top-5-Vorschläge daraus
-    abgeleitet werden können.
-    """
     Account = getAccountByEmail(currentUser.email)
     if Account is None:
         raise HTTPException(status_code=404, detail="Account nicht gefunden")
 
-    # Usage-Tracking: jede gesuchte Zutat hochzählen (Hybrid: count + lastUsedAt + lastUnit)
+    # Usage-Tracking
     for zutat in body.zutaten:
         incrementIngredientUsage(Account["id"], zutat.name, zutat.unit)
 
-    # Aktualisierte Top 5 direkt mit zurückgeben → Frontend muss keinen Extra-Request machen
+    # Echte Rezept-Suche
+    ingredients = [Ingredient(z.name, z.amount) for z in body.zutaten]
+    recipes = findRecipes(ingredients)
+
+    # Top 5 Zutaten
     topRows = getTopIngredients(Account["id"], limit=5)
     topIngredients = [
         {"name": r["displayName"], "unit": r["lastUnit"]} for r in topRows
     ]
 
-    # TODO: eigentliche Rezept-Suche implementieren
-    return {"rezepte": [], "topIngredients": topIngredients}
-
-
+    return {
+        "rezepte": [
+            {
+                "name": r.getName(),
+                "description": r.getDescription(),
+                "rating": r.getRating(),
+                "duration": r.getDuration(),
+                "matching": r.getMatching(),
+                "ingredients": [
+                    {"name": i.getName(), "amount": i.getAmount()}
+                    for i in r.getIngredients()
+                ]
+            }
+            for r in recipes
+        ],
+        "topIngredients": topIngredients
+    }
 # ── Ingredient-Vorschläge ──────────────────────────────────────
 
 
