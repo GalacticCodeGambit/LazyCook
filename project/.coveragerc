@@ -1,0 +1,15 @@
+[run]
+# Pfade in coverage.xml relativ statt absolut – wichtig für Sonar-Mapping
+relative_files = True
+source = backend
+branch = True
+omit =
+    backend/tests/*
+    backend/__pycache__/*
+
+[report]
+show_missing = True
+skip_empty = True
+
+[xml]
+output = coverage.xml
