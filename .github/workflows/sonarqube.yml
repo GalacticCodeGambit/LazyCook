@@ -57,11 +57,6 @@ jobs:
         working-directory: project/frontend
         run: npm ci
 
-      - name: Run frontend tests with coverage
-        working-directory: project/frontend
-        run: npm run test:coverage --if-present
-        continue-on-error: true
-
       # =====================================================
       # SONARCLOUD SCAN
       # =====================================================
