@@ -73,9 +73,13 @@ jobs:
             -Dsonar.projectKey=GalacticCodeGambit_LazyCook
             -Dsonar.organization=galacticcodegambit
             -Dproject.settings=sonar-project.properties
+            -Dsonar.python.coverage.reportPaths=backend/coverage.xml
+            -Dsonar.javascript.lcov.reportPaths=frontend/coverage/lcov.info
+            -Dsonar.typescript.lcov.reportPaths=frontend/coverage/lcov.info
+            -Dsonar.python.version=3.10
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          SONAR_TOKEN:  ${{ secrets.SONAR_TOKEN }}
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
 
       - name: SonarCloud Quality Gate check
         id: sonar-qg
