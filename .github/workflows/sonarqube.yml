@@ -79,20 +79,41 @@ jobs:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
           SONAR_HOST: https://sonarcloud.io
           QG_STATUS: ${{ steps.sonar-qg.outputs.quality-gate-status }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
         run: |
           set +e
 
           PROJECT_KEY=$(grep -E '^\s*sonar.projectKey\s*=' project/sonar-project.properties \
             | head -1 | cut -d'=' -f2 | tr -d ' \r\n')
 
+          # PR-Kontext erkennen: dann Daten der PR-Analyse holen, nicht der Main-Branch
+          PR_PARAM=""
+          if [ -n "${PR_NUMBER}" ]; then
+            PR_PARAM="&pullRequest=${PR_NUMBER}"
+            echo "PR-Modus aktiv – Daten werden für PR #${PR_NUMBER} geholt"
+          else
+            echo "Branch-Modus aktiv – Daten werden für den Default-Branch geholt"
+          fi
+
           METRICS="alert_status,bugs,vulnerabilities,code_smells,coverage,line_coverage,branch_coverage,duplicated_lines_density,duplicated_blocks,duplicated_files,complexity,cognitive_complexity,ncloc,sqale_rating,reliability_rating,security_rating,sqale_index"
 
-          API_URL="${SONAR_HOST}/api/measures/component?component=${PROJECT_KEY}&metricKeys=${METRICS}"
+          API_URL="${SONAR_HOST}/api/measures/component?component=${PROJECT_KEY}&metricKeys=${METRICS}${PR_PARAM}"
           HTTP_CODE=$(curl -s -o /tmp/sonar.json -w "%{http_code}" \
             -u "${SONAR_TOKEN}:" "${API_URL}")
           RESP=$(cat /tmp/sonar.json)
 
           HAS_MEASURES=$(echo "${RESP}" | jq -r 'if (.component? and .component.measures?) then "yes" else "no" end' 2>/dev/null)
+
+          # DIAGNOSE – wir wollen sehen, was der Script konkret sieht
+          echo "===== DEBUG ====="
+          echo "PROJECT_KEY = '${PROJECT_KEY}'"
+          echo "API_URL     = ${API_URL}"
+          echo "HTTP_CODE   = ${HTTP_CODE}"
+          echo "HAS_MEASURES= ${HAS_MEASURES}"
+          echo "RESP first 800 chars:"
+          echo "${RESP}" | head -c 800
+          echo ""
+          echo "===== /DEBUG ====="
 
           SUMMARY_FILE="${GITHUB_STEP_SUMMARY}"
 
@@ -117,11 +138,14 @@ jobs:
           }
 
           get_sub() {
-            local sub_resp
-            sub_resp=$(curl -s -u "${SONAR_TOKEN}:" -G \
-              --data-urlencode "component=${PROJECT_KEY}:$1" \
-              --data-urlencode "metricKeys=$2" \
-              "${SONAR_HOST}/api/measures/component")
+            local sub_resp curl_args
+            curl_args=(-s -u "${SONAR_TOKEN}:" -G
+              --data-urlencode "component=${PROJECT_KEY}:$1"
+              --data-urlencode "metricKeys=$2")
+            if [ -n "${PR_NUMBER}" ]; then
+              curl_args+=(--data-urlencode "pullRequest=${PR_NUMBER}")
+            fi
+            sub_resp=$(curl "${curl_args[@]}" "${SONAR_HOST}/api/measures/component")
             echo "${sub_resp}" | jq -r --arg k "$2" \
               'if (.component? and .component.measures?) then
                  ((.component.measures[] | select(.metric==$k) | .value) // "-")
@@ -155,6 +179,17 @@ jobs:
             echo "**Quality Gate:** ${QG_EMOJI} **${QG_ICON}**"
             echo "**Dashboard:** [${SONAR_HOST}/project/overview?id=${PROJECT_KEY}](${SONAR_HOST}/project/overview?id=${PROJECT_KEY})"
             echo ""
+            echo "<details><summary>Debug-Info (kann später raus)</summary>"
+            echo ""
+            echo "- PROJECT_KEY: ${PROJECT_KEY}"
+            echo "- HTTP_CODE: ${HTTP_CODE}"
+            echo "- HAS_MEASURES: ${HAS_MEASURES}"
+            echo "- coverage value direkt aus get: '$(get coverage)'"
+            echo "- ncloc direkt aus get: '$(get ncloc)'"
+            echo "- duplicated_lines_density direkt aus get: '$(get duplicated_lines_density)'"
+            echo ""
+            echo "</details>"
+            echo ""
             echo "### Coverage"
             echo ""
             echo "| Komponente | Coverage | Line Coverage | Branch Coverage | LoC |"
@@ -178,7 +213,7 @@ jobs:
             echo ""
           } >> "$SUMMARY_FILE"
 
-          TREE_URL="${SONAR_HOST}/api/measures/component_tree?component=${PROJECT_KEY}&metricKeys=duplicated_blocks,duplicated_lines,duplicated_lines_density,ncloc&qualifiers=FIL&ps=500&s=metric&metricSort=duplicated_blocks&asc=false"
+          TREE_URL="${SONAR_HOST}/api/measures/component_tree?component=${PROJECT_KEY}&metricKeys=duplicated_blocks,duplicated_lines,duplicated_lines_density,ncloc&qualifiers=FIL&ps=500&s=metric&metricSort=duplicated_blocks&asc=false${PR_PARAM}"
           TREE_RESP=$(curl -s -u "${SONAR_TOKEN}:" "${TREE_URL}")
 
           FILES_WITH_DUPS=$(echo "${TREE_RESP}" | jq '[.components[]? | select((.measures[]? | select(.metric=="duplicated_blocks") | .value | tonumber) > 0)] | length' 2>/dev/null || echo "0")
