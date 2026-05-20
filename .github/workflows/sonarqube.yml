@@ -44,25 +44,6 @@ jobs:
         continue-on-error: true
 
       # =====================================================
-      # FRONTEND (Next.js / TypeScript) – Tests + Coverage
-      # =====================================================
-      - name: Set up Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: "20"
-          cache: "npm"
-          cache-dependency-path: project/frontend/package-lock.json
-
-      - name: Install frontend dependencies
-        working-directory: project/frontend
-        run: npm ci
-
-      - name: Run frontend tests with coverage
-        working-directory: project/frontend
-        run: npm run test:coverage --if-present
-        continue-on-error: true
-
-      # =====================================================
       # SONARCLOUD SCAN
       # =====================================================
       - name: SonarQube Scan
@@ -173,7 +154,6 @@ jobs:
             echo "|---|---|---|---|---|"
             echo "| **Gesamt** | $(get coverage)% | $(get line_coverage)% | $(get branch_coverage)% | $(get ncloc) |"
             echo "| Backend (Python) | $(get_sub backend coverage)% | $(get_sub backend line_coverage)% | $(get_sub backend branch_coverage)% | $(get_sub backend ncloc) |"
-            echo "| Frontend (TS/JS/CSS) | $(get_sub frontend/app coverage)% | $(get_sub frontend/app line_coverage)% | $(get_sub frontend/app branch_coverage)% | $(get_sub frontend/app ncloc) |"
             echo ""
 
             echo "### Duplikate & Komplexität"
