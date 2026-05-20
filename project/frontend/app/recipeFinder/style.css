@@ -3,7 +3,7 @@
     display: inline-block;
 }
 
-.account-menu__trigger {
+.account-menu-trigger {
     background: none;
     border: none;
     cursor: pointer;
@@ -15,30 +15,30 @@
     transition: background-color 0.15s ease;
 }
 
-.account-menu__trigger:hover {
+.account-menu-trigger:hover {
     background-color: #f3f4f6;
 }
 
-.account-menu__trigger:focus-visible {
+.account-menu-trigger:focus-visible {
     outline: 2px solid #3b82f6;
     outline-offset: 2px;
 }
 
-.account-menu__dropdown {
+.account-menu-dropdown {
     position: absolute;
     right: 0;
     top: calc(100% + 6px);
-    background: #ffffff;
+    background: #fff;
     border: 1px solid #e5e7eb;
     border-radius: 8px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 4px 12px rgb(0 0 0 / 10%);
     min-width: 180px;
     z-index: 100;
     overflow: hidden;
     animation: account-menu-fade-in 0.12s ease-out;
 }
 
-.account-menu__item {
+.account-menu-item {
     display: flex;
     align-items: center;
     gap: 8px;
@@ -53,11 +53,11 @@
     transition: background-color 0.1s ease;
 }
 
-.account-menu__item:hover {
+.account-menu-item:hover {
     background-color: #f3f4f6;
 }
 
-.account-menu__item:focus-visible {
+.account-menu-item:focus-visible {
     outline: none;
     background-color: #eff6ff;
 }
@@ -67,6 +67,7 @@
         opacity: 0;
         transform: translateY(-4px);
     }
+
     to {
         opacity: 1;
         transform: translateY(0);
@@ -80,7 +81,7 @@
     gap: 20px;
 }
 
-.popup__title {
+.popup-title {
     font-size: 20px;
     font-weight: 600;
     color: #111;
@@ -89,16 +90,16 @@
     margin: 0;
 }
 
-.popup__fields {
+.popup-fields {
     display: flex;
     gap: 10px;
 }
 
-.popup__fields--stacked {
+.popup-fields-stacked {
     flex-direction: column;
 }
 
-.popup__input {
+.popup-input {
     flex: 1;
     padding: 10px 12px;
     border-radius: 6px;
@@ -111,18 +112,18 @@
     box-sizing: border-box;
 }
 
-.popup__input:focus {
+.popup-input:focus {
     border-color: #030213;
     background: #fff;
 }
 
-.popup__input--amount {
+.popup-input-amount {
     flex: 0 0 90px;
     width: 90px;
     min-width: 0;
 }
 
-.popup__select {
+.popup-select {
     padding: 10px 12px;
     border-radius: 6px;
     border: 1px solid #ddd;
@@ -134,12 +135,12 @@
     transition: border-color 0.15s;
 }
 
-.popup__select:focus {
+.popup-select:focus {
     border-color: #030213;
     background: #fff;
 }
 
-.popup__error {
+.popup-error {
     font-size: 13px;
     color: #b91c1c;
     font-family: system-ui;
@@ -148,13 +149,13 @@
 }
 
 /* ── Zutaten-Vorschläge (Top 5 Badges) ─────────────────────── */
-.popup__suggestions {
+.popup-suggestions {
     display: flex;
     flex-direction: column;
     gap: 8px;
 }
 
-.popup__suggestions-label {
+.popup-suggestions-label {
     font-size: 12px;
     font-weight: 600;
     color: #6b7280;
@@ -164,13 +165,13 @@
     font-family: system-ui;
 }
 
-.popup__suggestions-list {
+.popup-suggestions-list {
     display: flex;
     flex-wrap: wrap;
     gap: 6px;
 }
 
-.popup__suggestion-badge {
+.popup-suggestion-badge {
     padding: 5px 12px;
     background: #f3f3f5;
     border: 1px solid #e5e7eb;
@@ -182,19 +183,19 @@
     transition: background 0.15s, border-color 0.15s, color 0.15s;
 }
 
-.popup__suggestion-badge:hover {
+.popup-suggestion-badge:hover {
     background: #030213;
     border-color: #030213;
     color: #fff;
 }
 
-.popup__suggestion-badge:focus-visible {
+.popup-suggestion-badge:focus-visible {
     outline: 2px solid #030213;
     outline-offset: 2px;
 }
 
-.popup__suggestion-badge--added,
-.popup__suggestion-badge--added:hover {
+.popup-suggestion-badge-added,
+.popup-suggestion-badge-added:hover {
     background: #f3f3f5;
     border-color: #e5e7eb;
     color: #9ca3af;
@@ -203,7 +204,7 @@
     opacity: 0.6;
 }
 
-.popup__btn {
+.popup-btn {
     display: block;
     margin: 0 auto;
     padding: 10px 32px;
@@ -217,8 +218,8 @@
     transition: background-color 0.15s;
 }
 
-.popup__btn:hover {
-    background: rgba(3, 2, 19, 0.85);
+.popup-btn:hover {
+    background: rgb(3 2 19 / 85%);
 }
 
 /* ── RecipeFinder Layout ───────────────────────────────────── */
@@ -238,22 +239,22 @@
     background: #fff;
 }
 
-.finder-sidebar__section {
+.finder-sidebar-section {
     padding: 20px;
     border-bottom: 1px solid #e5e7eb;
 }
 
-.finder-sidebar__title {
+.finder-sidebar-title {
     font-size: 13px;
     font-weight: 600;
     color: #6b7280;
     text-transform: uppercase;
     letter-spacing: 0.05em;
-    margin: 0 0 12px 0;
+    margin: 0 0 12px;
     font-family: system-ui;
 }
 
-.finder-sidebar__add-btn {
+.finder-sidebar-add-btn {
     flex: 1;
     padding: 10px;
     background: #030213;
@@ -270,18 +271,18 @@
     transition: background 0.15s;
 }
 
-.finder-sidebar__add-btn:hover {
-    background: rgba(3, 2, 19, 0.85);
+.finder-sidebar-add-btn:hover {
+    background: rgb(3 2 19 / 85%);
 }
 
-.finder-sidebar__ingredient-list {
+.finder-sidebar-ingredient-list {
     display: flex;
     flex-direction: column;
     gap: 6px;
     margin-top: 12px;
 }
 
-.finder-sidebar__ingredient {
+.finder-sidebar-ingredient {
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -292,17 +293,21 @@
     font-family: system-ui;
 }
 
-.finder-sidebar__ingredient-name {
+.finder-sidebar-ingredient-name {
     font-weight: 500;
     color: #111;
 }
 
-.finder-sidebar__ingredient-amount {
+.finder-sidebar-ingredient-amount {
     color: #6b7280;
     font-size: 12px;
+    cursor: pointer;
+    padding: 2px 6px;
+    border-radius: 4px;
+    transition: background 0.1s;
 }
 
-.finder-sidebar__ingredient-remove {
+.finder-sidebar-ingredient-remove {
     background: none;
     border: none;
     cursor: pointer;
@@ -313,25 +318,25 @@
     transition: color 0.1s;
 }
 
-.finder-sidebar__ingredient-remove:hover {
+.finder-sidebar-ingredient-remove:hover {
     color: #ef4444;
 }
 
-.finder-sidebar__empty {
+.finder-sidebar-empty {
     font-size: 13px;
     color: #9ca3af;
     font-family: system-ui;
-    margin: 8px 0 0 0;
+    margin: 8px 0 0;
 }
 
 /* Personenanzahl */
-.finder-sidebar__persons {
+.finder-sidebar-persons {
     display: flex;
     align-items: center;
     gap: 16px;
 }
 
-.finder-sidebar__persons-btn {
+.finder-sidebar-persons-btn {
     width: 32px;
     height: 32px;
     border: 1px solid #e5e7eb;
@@ -345,11 +350,11 @@
     transition: background 0.1s;
 }
 
-.finder-sidebar__persons-btn:hover {
+.finder-sidebar-persons-btn:hover {
     background: #f3f4f6;
 }
 
-.finder-sidebar__persons-count {
+.finder-sidebar-persons-count {
     font-size: 22px;
     font-weight: 600;
     font-family: system-ui;
@@ -358,14 +363,14 @@
     text-align: center;
 }
 
-.finder-sidebar__persons-label {
+.finder-sidebar-persons-label {
     font-size: 12px;
     color: #6b7280;
     font-family: system-ui;
 }
 
 /* Suchen Button */
-.finder-sidebar__search-btn {
+.finder-sidebar-search-btn {
     width: 100%;
     padding: 12px;
     background: #030213;
@@ -383,13 +388,13 @@
     transition: background 0.15s;
 }
 
-.finder-sidebar__search-btn:hover:not(:disabled) {
-    background: rgba(3, 2, 19, 0.85);
-}
-
-.finder-sidebar__search-btn:disabled {
+.finder-sidebar-search-btn:disabled {
     opacity: 0.4;
     cursor: not-allowed;
+}
+
+.finder-sidebar-search-btn:hover:not(:disabled) {
+    background: rgb(3 2 19 / 85%);
 }
 
 /* Rezepte Bereich */
@@ -400,7 +405,7 @@
     background: #fafafa;
 }
 
-.finder-content__empty {
+.finder-content-empty {
     display: flex;
     align-items: center;
     justify-content: center;
@@ -410,13 +415,13 @@
     font-family: system-ui;
 }
 
-.finder-content__grid {
+.finder-content-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
     gap: 16px;
 }
 
-.finder-content__card {
+.finder-content-card {
     background: #fff;
     border: 1px solid #e5e7eb;
     border-radius: 12px;
@@ -424,14 +429,14 @@
     font-family: system-ui;
 }
 
-.finder-content__card-name {
+.finder-content-card-name {
     font-size: 15px;
     font-weight: 600;
     color: #111;
     margin: 0;
 }
 
-.finder-sidebar__clear-btn {
+.finder-sidebar-clear-btn {
     flex-shrink: 0;
     padding: 10px;
     background: #fff;
@@ -445,38 +450,29 @@
     transition: background 0.15s, color 0.15s;
 }
 
-.finder-sidebar__clear-btn:hover {
+.finder-sidebar-clear-btn:hover {
     background: #fef2f2;
     color: #ef4444;
     border-color: #ef4444;
 }
-.finder-sidebar__ingredient-right {
+.finder-sidebar-ingredient-right {
     display: flex;
     align-items: center;
     gap: 8px;
 }
 
-.finder-sidebar__ingredient-amount {
-    color: #6b7280;
-    font-size: 12px;
-    cursor: pointer;
-    padding: 2px 6px;
-    border-radius: 4px;
-    transition: background 0.1s;
-}
-
-.finder-sidebar__ingredient-amount:hover {
+.finder-sidebar-ingredient-amount:hover {
     background: #e5e7eb;
     color: #111;
 }
 
-.finder-sidebar__ingredient-edit {
+.finder-sidebar-ingredient-edit {
     display: flex;
     align-items: center;
     gap: 4px;
 }
 
-.finder-sidebar__edit-input {
+.finder-sidebar-edit-input {
     width: 52px;
     padding: 3px 6px;
     border: 1px solid #d1d5db;
@@ -486,11 +482,11 @@
     outline: none;
 }
 
-.finder-sidebar__edit-input:focus {
+.finder-sidebar-edit-input:focus {
     border-color: #030213;
 }
 
-.finder-sidebar__edit-select {
+.finder-sidebar-edit-select {
     padding: 3px 4px;
     border: 1px solid #d1d5db;
     border-radius: 6px;
@@ -500,11 +496,11 @@
     outline: none;
 }
 
-.finder-sidebar__edit-select:focus {
+.finder-sidebar-edit-select:focus {
     border-color: #030213;
 }
 
-.finder-sidebar__edit-save {
+.finder-sidebar-edit-save {
     background: #030213;
     color: #fff;
     border: none;
@@ -515,11 +511,11 @@
     transition: background 0.15s;
 }
 
-.finder-sidebar__edit-save:hover {
-    background: rgba(3, 2, 19, 0.8);
+.finder-sidebar-edit-save:hover {
+    background: rgb(3 2 19 / 80%);
 }
 
-.finder-sidebar__edit-cancel {
+.finder-sidebar-edit-cancel {
     background: none;
     color: #9ca3af;
     border: 1px solid #e5e7eb;
@@ -530,7 +526,7 @@
     transition: color 0.1s;
 }
 
-.finder-sidebar__edit-cancel:hover {
+.finder-sidebar-edit-cancel:hover {
     color: #ef4444;
     border-color: #ef4444;
 }
