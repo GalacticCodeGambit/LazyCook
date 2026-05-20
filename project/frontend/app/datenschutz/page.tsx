@@ -1,0 +1,18 @@
+import MarkdownRenderer from "@/app/components/markdown-renderer";
+import { readMarkdownFile } from "@/app/lib/read-markdown";
+
+export default function DatenschutzPage() {
+    const content = readMarkdownFile("Datenschutz.md");
+
+    return (
+        <main className="min-h-screen bg-white px-6 py-12">
+            <div className="mx-auto max-w-4xl">
+                <h1 className="text-3xl font-semibold mb-6">Datenschutzerklärung</h1>
+                <p className="text-gray-600 mb-8">
+                    Die vollständige Datenschutzerklärung wird hier aus der bestehenden Markdown-Datei angezeigt.
+                </p>
+                <MarkdownRenderer content={content} />
+            </div>
+        </main>
+    );
+}

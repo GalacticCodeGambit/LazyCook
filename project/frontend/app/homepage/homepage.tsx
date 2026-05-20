@@ -2,6 +2,7 @@
 
 
 import { ChefHat, Search, BookOpen, Star, Clock, Smile } from 'lucide-react';
+import Link from 'next/link';
 import { Button } from '../components/ui/button';
 import {useCallback, useState} from "react";
 import Modal from "@/app/components/modal";
@@ -27,9 +28,9 @@ export default function Homepage() {
                     </div>
 
                     <nav className="hidden md:flex items-center gap-6">
-                        // TODO Datenschutz & Impressum
-                        <a href="#" className="text-gray-700 hover:text-black">Datenschutz</a>
-                        <a href="#" className="text-gray-700 hover:text-black">Impressum</a>
+                        {/* Datenschutz & Impressum */}
+                        <Link href="/datenschutz" className="text-gray-700 hover:text-black">Datenschutz</Link>
+                        <Link href="/impressum" className="text-gray-700 hover:text-black">Impressum</Link>
                     </nav>
 
                     <div className="flex items-center gap-3">
