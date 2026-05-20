@@ -50,6 +50,12 @@ jobs:
         uses: SonarSource/sonarqube-scan-action@v3
         with:
           projectBaseDir: project
+          args: >
+            -Dsonar.projectKey=GalacticCodeGambit_LazyCook
+            -Dsonar.organization=galacticcodegambit
+            -Dproject.settings=sonar-project.properties
+            -Dsonar.python.coverage.reportPaths=backend/coverage.xml
+            -Dsonar.python.version=3.10
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SONAR_TOKEN:  ${{ secrets.SONAR_TOKEN }}
@@ -96,8 +102,8 @@ jobs:
               echo ""
               echo ":warning: Konnte die Metriken nicht abrufen."
               echo ""
-              echo "- **HTTP Status:** \`${HTTP_CODE}\`"
-              echo "- **Project Key:** \`${PROJECT_KEY}\`"
+              echo "- **HTTP Status:** ${HTTP_CODE}"
+              echo "- **Project Key:** ${PROJECT_KEY}"
               echo "- **Dashboard:** [${SONAR_HOST}/project/overview?id=${PROJECT_KEY}](${SONAR_HOST}/project/overview?id=${PROJECT_KEY})"
             } >> "$SUMMARY_FILE"
             exit 0
@@ -111,10 +117,11 @@ jobs:
           }
 
           get_sub() {
-            local path_enc sub_resp
-            path_enc=$(printf '%s' "$1" | sed 's|/|%2F|g')
-            sub_resp=$(curl -s -u "${SONAR_TOKEN}:" \
-              "${SONAR_HOST}/api/measures/component?component=${PROJECT_KEY}:${path_enc}&metricKeys=$2")
+            local sub_resp
+            sub_resp=$(curl -s -u "${SONAR_TOKEN}:" -G \
+              --data-urlencode "component=${PROJECT_KEY}:$1" \
+              --data-urlencode "metricKeys=$2" \
+              "${SONAR_HOST}/api/measures/component")
             echo "${sub_resp}" | jq -r --arg k "$2" \
               'if (.component? and .component.measures?) then
                  ((.component.measures[] | select(.metric==$k) | .value) // "-")
@@ -145,7 +152,7 @@ jobs:
           {
             echo "## SonarCloud Analyse – LazyCook"
             echo ""
-            echo "**Quality Gate:** ${QG_EMOJI} \`${QG_ICON}\`  "
+            echo "**Quality Gate:** ${QG_EMOJI} **${QG_ICON}**"
             echo "**Dashboard:** [${SONAR_HOST}/project/overview?id=${PROJECT_KEY}](${SONAR_HOST}/project/overview?id=${PROJECT_KEY})"
             echo ""
             echo "### Coverage"
@@ -187,16 +194,13 @@ jobs:
               echo "|---|---:|---:|---:|---:|"
               echo "${TREE_RESP}" | jq -r '
                 .components[]?
-                | . as $c
-                | {
-                    path: ($c.path // $c.key),
-                    blocks: (($c.measures[]? | select(.metric=="duplicated_blocks") | .value) // "0"),
-                    lines:  (($c.measures[]? | select(.metric=="duplicated_lines")  | .value) // "0"),
-                    pct:    (($c.measures[]? | select(.metric=="duplicated_lines_density") | .value) // "0"),
-                    ncloc:  (($c.measures[]? | select(.metric=="ncloc") | .value) // "-")
-                  }
-                | select((.blocks | tonumber) > 0)
-                | "| `\(.path)` | \(.blocks) | \(.lines) | \(.pct)% | \(.ncloc) |"
+                | (.path // .key) as $p
+                | ((.measures[]? | select(.metric=="duplicated_blocks")          | .value) // "0") as $b
+                | ((.measures[]? | select(.metric=="duplicated_lines")           | .value) // "0") as $l
+                | ((.measures[]? | select(.metric=="duplicated_lines_density")   | .value) // "0") as $pct
+                | ((.measures[]? | select(.metric=="ncloc")                      | .value) // "-") as $n
+                | select(($b | tonumber) > 0)
+                | "| " + $p + " | " + $b + " | " + $l + " | " + $pct + "% | " + $n + " |"
               '
               echo ""
             fi
