@@ -304,4 +304,4 @@ Diese Erklärung kann sich von Zeit zu Zeit ändern. Wenn wir wesentliche Änder
 
 ---
 
-*Version: Mai 2026* *basiert auf der Lieferando Februar 2026 Datenschutz Erklärung*
+*Version: Mai 2026*
