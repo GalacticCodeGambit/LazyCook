@@ -1,5 +1,6 @@
 # LazyCook
-[![ci](https://github.com/GalacticCodeGambit/LazyCook/actions/workflows/ci.yml/badge.svg)](https://github.com/GalacticCodeGambit/LazyCook/actions/workflows/ci.yml)
+[![ci.yml](https://github.com/GalacticCodeGambit/LazyCook/actions/workflows/ci.yml/badge.svg)](https://github.com/GalacticCodeGambit/LazyCook/actions/workflows/ci.yml)
+[![lint.yml](https://github.com/GalacticCodeGambit/LazyCook/actions/workflows/lint.yml/badge.svg)](https://github.com/GalacticCodeGambit/LazyCook/actions/workflows/lint.yml)
 
 LazyCook soll eine Webanwendung sein. Die es ermöglichen seine vorhanden Zutaten einzutragen und darauf soll LazyCook dir mögliche Rezepte/Gerichte vorschlagen die du aus diesen Zutaten gemacht werden können.   
 
@@ -21,25 +22,7 @@ LazyCook soll eine Webanwendung sein. Die es ermöglichen seine vorhanden Zutate
 - [x] [#47](https://github.com/GalacticCodeGambit/LazyCook/issues/47) Der Nutzer kann bereits hinzugefügte Zutaten bearbeiten, wie z.B. Menge, Einheit
 - [x] [#45](https://github.com/GalacticCodeGambit/LazyCook/issues/45) Passwörter "sicher" in Datenbank Abspeichern als Hash und vom Frontend/Backend "sicher" behandeln
 
-## Verwendete Technologien
-- Frontend: HTML, CSS, TypeScript/React
-- Backend: Python
-- DB: SQLite
-- Tests: Pytest
-- CI/CD: GitHub Actions
-- Containerization: Docker
-- Projekt Management: GitHub Projects
-
-## Code-Quality / Linting
-- Der Workflow `.github/workflows/ci.yml` prüft mit dem Job `linter` das Projekt mit **GitHub Super-Linter**.
-- Dabei werden u. a. Python-, TypeScript-, JavaScript-, YAML- und Dockerfile-Dateien validiert.
-
-<!-- 
-- Mockup: Figma
-- UML: UMLet/Drawio
--->
-
- ## Installation and Setup
+ ## Installation und Setup
 1. Klonen das Repository:  
    `git clone https://github.com/GalacticCodeGambit/LazyCook.git`
 2. Navigieren zum Projektverzeichnis:  
@@ -49,7 +32,44 @@ LazyCook soll eine Webanwendung sein. Die es ermöglichen seine vorhanden Zutate
 <!--Unterschied zu "docker compose up -d"? -->
 Die Anwendung sollte jetzt unter `http://localhost:8000` erreichbar sein.
 
-## Probleme beim Entwickeln
+Für die Funktion [#115](https://github.com/GalacticCodeGambit/LazyCook/issues/115) von Email Versenden/Empfangen muss im Ordner `project/` eine `.env` Datei mit den folgenden Variablen angelegt werden:
+```
+EMAIL_HOST=<dein.mail@gmail.com>
+GMAIL_PASSWORD=<dein_gmail_passwort>
+```
+
+## Verwendete Technologien
+- Frontend: HTML, CSS, TypeScript/React
+- Backend: Python
+- DB: SQLite
+- Tests: Pytest
+- CI/CD: GitHub Actions
+- Containerization: Docker
+- Projekt Management: GitHub Projects
+
+### Code-Quality / Linting
+- Der Workflow `.github/workflows/lint.yml` prüft das Projekt mit **GitHub Super-Linter**.
+- Dabei werden u.a. Python-, TypeScript-, JavaScript-, YAML- und Dockerfile-Dateien validiert.
+
+<!-- 
+- Mockup: Figma
+- UML: UMLet/Drawio
+-->
+
+## Entwicklung
+### Linter
+#### Python `Black`
+Automatisch formatieren:
+```
+black project/backend/ .
+```
+
+`Black` installieren:
+```
+python -m pip install black
+```
+
+### Probleme beim Entwickeln
 
 Problem: Code hinzugefügt/geändert aber Änderungen werden nicht übernommen von Docker 
 ```

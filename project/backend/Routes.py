@@ -1,8 +1,8 @@
+import os
 from typing import Annotated
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, HTTPException, status, Response
 from fastapi.security import OAuth2PasswordRequestForm
-from EmailService import sendPasswordChangedEmail
-from pydantic import BaseModel as _BaseModel
+from EmailService import sendPasswordChangedEmail, sendPasswordResetEmail
 
 
 from Auth import (
@@ -13,18 +13,37 @@ from Auth import (
     validatePassword,
     validateRefreshToken,
     verifyPassword,
-    createAccessToken,
+    createPasswordResetToken,
+    validatePasswordResetToken,
 )
 from Database import (
     createAccount,
     getAccountByEmail,
+    getAccountById,
     deleteRefreshToken,
     deleteAllRefreshTokens,
     deleteAccount,
     updateAccount,
+    markResetTokenUsed,
+    updateKontoPassword,
+    incrementIngredientUsage,
+    getTopIngredients,
 )
 
-from Models import User, Token, UserCreate, RefreshRequest, LogoutRequest
+from Models import (
+    User,
+    Token,
+    UserCreate,
+    RefreshRequest,
+    LogoutRequest,
+    ForgotPasswordRequest,
+    ResetPasswordRequest,
+    UpdateUser,
+    RecipeSearchRequest,
+)
+
+# Frontend-URL aus Env, mit Dev-Fallback (Frontend läuft per compose.yaml auf Port 8000)
+FRONTEND_URL = os.environ.get("FRONTEND_URL", "http://localhost:8000")
 
 router = APIRouter()
 
@@ -79,7 +98,7 @@ async def refresh(body: RefreshRequest):
     deleteRefreshToken(body.refresh_token)
 
     # Account-Daten für neues Token-Paar zusammenstellen
-    Account = {"id": entry["konto_id"], "email": entry["email"]}
+    Account = {"id": entry["AccountID"], "email": entry["email"]}
     return createTokenPair(Account)
 
 
@@ -107,12 +126,6 @@ async def deleteCurrentUser(currentUser: Annotated[User, Depends(getCurrentUser)
     # ── Account aktualisieren ────────────────────────────────────────
 
 
-class UpdateUser(_BaseModel):
-    email: str | None = None
-    currentPassword: str | None = None
-    newPassword: str | None = None
-
-
 @router.patch("/users/me")
 async def updateCurrentUser(
     data: UpdateUser, currentUser: Annotated[User, Depends(getCurrentUser)]
@@ -129,7 +142,7 @@ async def updateCurrentUser(
     # Passwort ändern
     if data.currentPassword and data.newPassword:
         if not verifyPassword(data.currentPassword, Account["hashedPassword"]):
-            raise HTTPException(status_code=401, detail="Falsches Passwort")
+            raise HTTPException(status_code=400, detail="Aktuelles Passwort ist falsch")
 
         error = validatePassword(data.newPassword)
         if error:
@@ -146,3 +159,111 @@ async def updateCurrentUser(
             print(f"E-Mail konnte nicht gesendet werden: {e}")
 
     return {"success": True}
+
+
+# ------------ Passwort vergessen ----------------- #
+
+
+@router.post("/auth/forgot-password")
+async def forgotPassword(body: ForgotPasswordRequest):
+    """Schritt 1: User gibt E-Mail ein, bekommt Reset-Link per Mail."""
+    konto = getAccountByEmail(body.email)
+
+    # Token nur erzeugen wenn Konto existiert – aber IMMER gleiche Antwort senden!
+    if konto is not None:
+        token = createPasswordResetToken(konto["id"])
+        resetLink = f"{FRONTEND_URL}/reset-password?token={token}"
+        try:
+            sendPasswordResetEmail(body.email, konto["name"], resetLink)
+        except Exception as e:
+            # Mail-Fehler darf das Response nicht beeinflussen → User-Enumeration vermeiden
+            print(f"Reset-Mail konnte nicht gesendet werden: {e}")
+
+    return {"detail": "Falls die E-Mail existiert, wurde ein Link versendet."}
+
+
+@router.post("/auth/reset-password")
+async def resetPassword(body: ResetPasswordRequest):
+    """Schritt 2: User setzt mit Token aus Mail das neue Passwort."""
+    pwError = validatePassword(body.new_password)
+    if pwError:
+        raise HTTPException(status_code=400, detail=pwError)
+
+    entry = validatePasswordResetToken(body.token)
+    if entry is None:
+        raise HTTPException(
+            status_code=400,
+            detail="Link ungültig oder abgelaufen. Bitte neuen anfordern.",
+        )
+
+    updateKontoPassword(entry["kontoID"], hashPassword(body.new_password))
+    markResetTokenUsed(entry["id"])
+    # Sicherheitsmaßnahme: Alle aktiven Sessions ungültig machen
+    deleteAllRefreshTokens(entry["kontoID"])
+
+    # Bestätigungsmail an den Konto-Inhaber
+    konto = getAccountById(entry["kontoID"])
+    if konto is not None:
+        try:
+            sendPasswordChangedEmail(konto["email"], konto["name"])
+        except Exception as e:
+            print(f"Bestätigungsmail konnte nicht gesendet werden: {e}")
+
+    return {"detail": "Passwort erfolgreich zurückgesetzt."}
+
+
+# ── Recipe-Suche ───────────────────────────────────────────────
+
+
+@router.post("/recipes/search")
+async def searchRecipes(
+    body: RecipeSearchRequest,
+    currentUser: Annotated[User, Depends(getCurrentUser)],
+):
+    """Sucht Rezepte basierend auf den übergebenen Zutaten.
+
+    Hinweis: Aktuell nur Usage-Tracking implementiert – die eigentliche
+    Rezept-Suche folgt. Jede gesuchte Zutat erhöht den persönlichen Counter
+    des Users (IngredientUsage), damit später die Top-5-Vorschläge daraus
+    abgeleitet werden können.
+    """
+    Account = getAccountByEmail(currentUser.email)
+    if Account is None:
+        raise HTTPException(status_code=404, detail="Account nicht gefunden")
+
+    # Usage-Tracking: jede gesuchte Zutat hochzählen (Hybrid: count + lastUsedAt + lastUnit)
+    for zutat in body.zutaten:
+        incrementIngredientUsage(Account["id"], zutat.name, zutat.unit)
+
+    # Aktualisierte Top 5 direkt mit zurückgeben → Frontend muss keinen Extra-Request machen
+    topRows = getTopIngredients(Account["id"], limit=5)
+    topIngredients = [
+        {"name": r["displayName"], "unit": r["lastUnit"]} for r in topRows
+    ]
+
+    # TODO: eigentliche Rezept-Suche implementieren
+    return {"rezepte": [], "topIngredients": topIngredients}
+
+
+# ── Ingredient-Vorschläge ──────────────────────────────────────
+
+
+@router.get("/ingredients/top")
+async def getTopIngredientsForUser(
+    response: Response,
+    currentUser: Annotated[User, Depends(getCurrentUser)],
+    limit: int = 5,
+):
+    """Liefert die meistgenutzten Zutaten des aktuellen Users für die Vorschlags-Badges."""
+    Account = getAccountByEmail(currentUser.email)
+    if Account is None:
+        raise HTTPException(status_code=404, detail="Account nicht gefunden")
+
+    # Caching unterbinden – die Liste ändert sich mit jeder Suche
+    response.headers["Cache-Control"] = "no-store, no-cache, must-revalidate"
+    response.headers["Pragma"] = "no-cache"
+
+    rows = getTopIngredients(Account["id"], limit=limit)
+    return {
+        "ingredients": [{"name": r["displayName"], "unit": r["lastUnit"]} for r in rows]
+    }

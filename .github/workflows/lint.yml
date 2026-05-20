@@ -1,0 +1,40 @@
+name: "Lint code base"
+
+on:
+  pull_request:
+    branches: [main, 'blatt*']
+  push:
+    branches: [main, 'blatt*']
+
+permissions:
+  contents: read
+
+jobs:
+  linter:
+    name: Lint code base
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Run GitHub Super Linter
+        uses: super-linter/super-linter/slim@v8.6.0
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          DEFAULT_BRANCH: main
+          VALIDATE_ALL_CODEBASE: false
+          # Root ignore file
+          # GitHub workflows
+          # Project backend/frontend + Dockerfiles + compose files
+          FILTER_REGEX_INCLUDE: '^/github/workspace/(\.gitignore|\.github/workflows/.*\.ya?ml|project/(backend/.*\.py|frontend/.*\.(ts|tsx|js|jsx|css|mjs|cjs)|Dockerfile[^/]*|(compose|docker-compose)\.ya?ml))$'
+          VALIDATE_PYTHON: true
+          VALIDATE_PYTHON_BLACK: true
+          VALIDATE_PYTHON_FLAKE8: true
+          VALIDATE_TYPESCRIPT_ES: true
+          VALIDATE_JAVASCRIPT_ES: true
+          VALIDATE_CSS: true
+          VALIDATE_DOCKERFILE: true
+          VALIDATE_YAML: true
+          VALIDATE_GITHUB_ACTIONS: true

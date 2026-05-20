@@ -6,11 +6,10 @@ import {
     useState,
     useEffect,
     useCallback,
-    useRef,
     type ReactNode,
 } from "react";
 
-const API_URL = "http://localhost:3000";
+const API_URL = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:3000";
 
 // ── Typen ─────────────────────────────────────────────────────
 export interface User {
@@ -39,6 +38,9 @@ function getRefreshToken(): string | null {
 }
 
 function saveTokens(accessToken: string, refreshToken: string) {
+    if (!accessToken || !refreshToken) {
+        throw new Error("Tokens fehlen — Backend-Response unvollständig");
+    }
     sessionStorage.setItem("access_token", accessToken);
     localStorage.setItem("refresh_token", refreshToken);
 }
@@ -47,6 +49,7 @@ function clearTokens() {
     sessionStorage.removeItem("access_token");
     localStorage.removeItem("refresh_token");
     localStorage.removeItem("ingredients");
+    localStorage.removeItem("ingredientSuggestions");
 }
 
 // ── API-Aufrufe ───────────────────────────────────────────────
@@ -105,7 +108,7 @@ async function fetchWithAuth(url: string, options: RequestInit = {}): Promise<Re
     if (!accessToken) throw new Error("Nicht eingeloggt");
 
     // Erster Versuch mit aktuellem Access Token
-    let res = await fetch(url, {
+    let res = await fetch(`${API_URL}`+url, {
         ...options,
         headers: {
             ...options.headers,
@@ -118,23 +121,22 @@ async function fetchWithAuth(url: string, options: RequestInit = {}): Promise<Re
         const refreshToken = getRefreshToken();
         if (!refreshToken) throw new Error("Nicht eingeloggt");
 
+        let tokens;
         try {
-            const tokens = await apiRefreshTokens(refreshToken);
-            saveTokens(tokens.access_token, tokens.refresh_token);
-
-            // Erneuter Versuch mit neuem Access Token
-            res = await fetch(API_URL+url, {
-                ...options,
-                headers: {
-                    ...options.headers,
-                    Authorization: `Bearer ${tokens.access_token}`,
-                },
-            });
+            tokens = await apiRefreshTokens(refreshToken);
         } catch {
-            // Refresh fehlgeschlagen → komplett ausloggen
             clearTokens();
             throw new Error("Session abgelaufen");
         }
+        saveTokens(tokens.access_token, tokens.refresh_token);
+
+        res = await fetch(url, {
+            ...options,
+            headers: {
+                ...options.headers,
+                Authorization: `Bearer ${tokens.access_token}`,
+            },
+        });
     }
 
     return res;

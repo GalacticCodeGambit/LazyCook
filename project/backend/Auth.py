@@ -11,7 +11,14 @@ from fastapi import Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer
 from jose import JWTError, jwt
 import bcrypt
-from pydantic import BaseModel
+
+import hashlib
+
+PASSWORD_RESET_EXPIRE_MINUTES = 30
+
+import hashlib
+
+PASSWORD_RESET_EXPIRE_MINUTES = 30
 
 from Models import Token, User
 
@@ -132,3 +139,37 @@ async def getCurrentUser(token: Annotated[str, Depends(oauth2_scheme)]) -> User:
         raise credentials_exception
 
     return User(email=konto["email"], name=konto["name"])
+
+
+# --- Reset Password --- #
+
+
+def hashResetToken(token: str) -> str:
+    """SHA-256 Hash – für Reset-Tokens reicht das, sie sind ohnehin hochentropisch."""
+    return hashlib.sha256(token.encode()).hexdigest()
+
+
+def createPasswordResetToken(kontoId: int) -> str:
+    """Generiert Klartext-Token (geht per Mail) und speichert nur den Hash in der DB."""
+    from Database import savePasswordResetToken
+
+    token = secrets.token_urlsafe(48)
+    expiresAt = datetime.now(timezone.utc) + timedelta(
+        minutes=PASSWORD_RESET_EXPIRE_MINUTES
+    )
+    savePasswordResetToken(kontoId, hashResetToken(token), expiresAt.isoformat())
+    return token
+
+
+def validatePasswordResetToken(token: str) -> dict | None:
+    from Database import getPasswordResetToken
+
+    entry = getPasswordResetToken(hashResetToken(token))
+    if entry is None or entry["usedAt"] is not None:
+        return None
+    expiresAt = datetime.fromisoformat(entry["expiresAt"])
+    if expiresAt.tzinfo is None:
+        expiresAt = expiresAt.replace(tzinfo=timezone.utc)
+    if expiresAt < datetime.now(timezone.utc):
+        return None
+    return entry
