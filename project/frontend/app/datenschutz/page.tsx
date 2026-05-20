@@ -1,6 +1,7 @@
 import { readFileSync } from "node:fs";
 import path from "node:path";
 import { notFound } from "next/navigation";
+import MarkdownRenderer from "@/app/components/markdown-renderer";
 
 function readMarkdownFile(fileName: string) {
     try {
@@ -23,11 +24,7 @@ export default function DatenschutzPage() {
                 <p className="text-gray-600 mb-8">
                     Die vollständige Datenschutzerklärung wird hier aus der bestehenden Markdown-Datei angezeigt.
                 </p>
-                <article className="rounded-lg border border-gray-200 bg-gray-50 p-6">
-                    <pre className="whitespace-pre-wrap break-words text-sm leading-6 text-gray-800">
-                        {content}
-                    </pre>
-                </article>
+                <MarkdownRenderer content={content} />
             </div>
         </main>
     );
