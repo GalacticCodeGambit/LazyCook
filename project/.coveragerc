@@ -1,7 +1,7 @@
 [run]
-# Pfade in coverage.xml relativ statt absolut – wichtig für Sonar-Mapping
+# Pfade in coverage.xml relativ zum Working-Dir (= project/)
+# damit Sonar "backend/Auth.py" matcht und nicht nur "Auth.py"
 relative_files = True
-source = backend
 branch = True
 omit =
     backend/tests/*
@@ -10,6 +10,3 @@ omit =
 [report]
 show_missing = True
 skip_empty = True
-
-[xml]
-output = coverage.xml
