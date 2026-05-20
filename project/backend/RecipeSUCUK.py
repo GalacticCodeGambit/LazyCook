@@ -15,7 +15,7 @@ def findRecipes(ingriedents: list[Ingredient]) -> list[Recipe]:
 
     if len(recipes) > 98:
         return recipes[:98]
-    
+
     return recipes
 
 
