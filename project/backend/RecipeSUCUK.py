@@ -1,4 +1,5 @@
 # SUCUK = Search for Uncomplicated Cooking and User-friendly Kitchen recipes
+import Database
 from Ingredient import Ingredient
 from Recipe import Recipe
 from Database import getAllRecipes, getAllIngredientsForRecipe
