@@ -23,7 +23,7 @@ Wenn du mit unseren Diensten interagierst, erhältst du die Möglichkeit, ein Ko
 - Kontaktdaten
 - IP-Adresse
 - Social-Media-Kontoinformationen, zum Beispiel wann du dich mit Social-Media-Zugangsdaten bei Lazycook anmeldest. Wir empfehlen dir, die Datenschutzerklärung deines Social-Media-Anbieters zu lesen, um zu verstehen, wie deine personenbezogenen Daten verwendet werden.
-- Anmeldedaten (gilt für Just Eat for Business)
+- Anmeldedaten (gilt für Lazycook for Business)
 
 ### 2. Bestellprozess
 
