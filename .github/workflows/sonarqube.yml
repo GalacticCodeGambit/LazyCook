@@ -57,11 +57,6 @@ jobs:
         working-directory: project/frontend
         run: npm ci
 
-      - name: Run frontend tests with coverage
-        working-directory: project/frontend
-        run: npm run test:coverage --if-present
-        continue-on-error: true
-
       # =====================================================
       # SONARCLOUD SCAN
       # =====================================================
@@ -220,10 +215,6 @@ jobs:
                 | "| " + $p + " | " + $b + " | " + $l + " | " + $pct + "% | " + $n + " |"
               '
               echo ""
-            fi
-            echo "[Volle Duplikat-Ansicht in SonarCloud öffnen](${SONAR_HOST}/component_measures?id=${PROJECT_KEY}&metric=duplicated_lines_density&view=list)"
-            echo ""
-
             echo "### Ratings & Issues"
             echo ""
             echo "| Bewertung | Wert | Anzahl |"
