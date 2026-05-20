@@ -26,7 +26,7 @@ LazyCook soll eine Webanwendung sein. Die es ermöglichen seine vorhanden Zutate
 1. Klonen das Repository:  
    `git clone https://github.com/GalacticCodeGambit/LazyCook.git`
 2. Navigieren zum Projektverzeichnis:  
-   `cd LazyCook/Project`
+   `cd LazyCook/project`
 3. Starten der Anwendung mit: Docker Compose:
    `docker compose up --build -d`
 <!--Unterschied zu "docker compose up -d"? -->
@@ -34,7 +34,7 @@ Die Anwendung sollte jetzt unter `http://localhost:8000` erreichbar sein.
 
 Für die Funktion [#115](https://github.com/GalacticCodeGambit/LazyCook/issues/115) von Email Versenden/Empfangen muss im Ordner `project/` eine `.env` Datei mit den folgenden Variablen angelegt werden:
 ```
-EMAIL_HOST=<dein.mail@gmail.com>
+GMAIL_USER=<dein.mail@gmail.com>
 GMAIL_PASSWORD=<dein_gmail_passwort>
 ```
 
