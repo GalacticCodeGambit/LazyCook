@@ -2,23 +2,23 @@
 
 ## Angaben gemäß § 5 TMG
 
-**[Lazycook GmbH]**  
-[Erzbergerstraße 121]  
-[76133] [Karlsruhe]  
+**Lazycook GmbH**  
+Erzbergerstraße 121  
+76133 Karlsruhe  
 Deutschland
 
 ## Kontakt
 
-- **Telefon:** [+49 000 00000000]
-- **E-Mail:** [lazycook.noreply@gmail.com]
-- **Website:** [https://www.lazycook.de]
+- **Telefon:** +49 000 00000000
+- **E-Mail:** lazycook.noreply@gmail.com
+- **Website:** https://www.lazycook.de
 
 ## Verantwortlich für den Inhalt nach § 55 Abs. 2 RStV
 
-**[Lazycook GmbH]**  
-[Erzbergerstraße 121]  
-[76133] [Karlsruhe]  
-Deutschland
+**Lazycook GmbH**  
+ Erzbergerstraße 121  
+ 76133 Karlsruhe
+ Deutschland
 
 ## Rechtliche Hinweise
 
