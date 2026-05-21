@@ -134,6 +134,35 @@ jobs:
           REL_EFF_FMT=$(fmt_debt "$(get reliability_remediation_effort)")
           SEC_EFF_FMT=$(fmt_debt "$(get security_remediation_effort)")
 
+          # ===== Backend-Coverage direkt aus coverage.xml =====
+          COV_FILE="project/backend/coverage.xml"
+          if [ -f "${COV_FILE}" ]; then
+            COV_DATA=$(python3 - "${COV_FILE}" <<'PYEOF'
+          import sys, xml.etree.ElementTree as ET
+          root = ET.parse(sys.argv[1]).getroot()
+          lr = float(root.get('line-rate', '0'))
+          br = float(root.get('branch-rate', '0'))
+          lv = int(root.get('lines-valid', '0'))
+          lc = int(root.get('lines-covered', '0'))
+          bv = int(root.get('branches-valid', '0'))
+          bc = int(root.get('branches-covered', '0'))
+          total = lv + bv
+          covered = lc + bc
+          overall = (covered / total * 100) if total > 0 else 0.0
+          uncov_lines = lv - lc
+          uncov_branches = bv - bc
+          print(f"{overall:.1f} {lr*100:.1f} {br*100:.1f} {lv} {lc} {bv} {bc} {uncov_lines} {uncov_branches}")
+          PYEOF
+          )
+            read -r COV_OVERALL COV_LINE COV_BRANCH LINES_VALID LINES_COVERED BRANCHES_VALID BRANCHES_COVERED UNCOVERED_LINES UNCOVERED_BRANCHES <<< "${COV_DATA}"
+            echo "Backend-Coverage aus coverage.xml: ${COV_OVERALL}% (Line ${COV_LINE}%, Branch ${COV_BRANCH}%)"
+          else
+            echo "::warning::coverage.xml nicht gefunden bei ${COV_FILE}"
+            COV_OVERALL="-"; COV_LINE="-"; COV_BRANCH="-"
+            LINES_VALID="-"; LINES_COVERED="-"; BRANCHES_VALID="-"; BRANCHES_COVERED="-"
+            UNCOVERED_LINES="-"; UNCOVERED_BRANCHES="-"
+          fi
+
           # ===== Summary schreiben =====
           {
             echo "# SonarCloud – Voller Projekt-Report"
@@ -158,16 +187,22 @@ jobs:
             echo "| Statements | $(get statements) |"
             echo ""
 
-            # --- Coverage ---
-            echo "## Test-Coverage"
+            # --- Coverage (aus pytest-cov coverage.xml, nicht aus Sonar-API) ---
+            echo "## Test-Coverage (Backend / Python)"
+            echo ""
+            echo "_Werte direkt aus \`backend/coverage.xml\` von pytest-cov gelesen._"
             echo ""
             echo "| Metrik | Wert |"
             echo "|---|---:|"
-            echo "| Coverage (gesamt) | $(get coverage)% |"
-            echo "| Line Coverage | $(get line_coverage)% |"
-            echo "| Branch Coverage | $(get branch_coverage)% |"
-            echo "| Deckbare Zeilen | $(get lines_to_cover) |"
-            echo "| Ungedeckte Zeilen | $(get uncovered_lines) |"
+            echo "| Coverage (gesamt) | ${COV_OVERALL}% |"
+            echo "| Line Coverage | ${COV_LINE}% |"
+            echo "| Branch Coverage | ${COV_BRANCH}% |"
+            echo "| Deckbare Zeilen | ${LINES_VALID} |"
+            echo "| Gedeckte Zeilen | ${LINES_COVERED} |"
+            echo "| Ungedeckte Zeilen | ${UNCOVERED_LINES} |"
+            echo "| Deckbare Branches | ${BRANCHES_VALID} |"
+            echo "| Gedeckte Branches | ${BRANCHES_COVERED} |"
+            echo "| Ungedeckte Branches | ${UNCOVERED_BRANCHES} |"
             echo ""
 
             # --- Duplikate ---
@@ -233,22 +268,38 @@ jobs:
 
           {
             echo ""
-            echo "## Top-10 Dateien mit schlechtester Coverage"
+            echo "## Top-10 Dateien mit schlechtester Coverage (Backend)"
             echo ""
-            echo "| Datei | Coverage | Ungedeckte Zeilen | LoC |"
+            echo "_Aus \`backend/coverage.xml\`, sortiert aufsteigend nach Coverage._"
+            echo ""
+            echo "| Datei | Coverage | Gedeckte / Deckbare | Ungedeckte Zeilen |"
             echo "|---|---:|---:|---:|"
           } >> "$OUT"
 
-          curl -s -u "${SONAR_TOKEN}:" \
-            "${SONAR_HOST}/api/measures/component_tree?component=${KEY}&metricKeys=coverage,uncovered_lines,ncloc&qualifiers=FIL&ps=10&s=metric&metricSort=coverage&asc=true" \
-            | jq -r '.components[]?
-                | select(.measures[]? | select(.metric=="coverage"))
-                | (.path // .key) as $p
-                | ((.measures[]? | select(.metric=="coverage")        | .value) // "-") as $cov
-                | ((.measures[]? | select(.metric=="uncovered_lines") | .value) // "-") as $unc
-                | ((.measures[]? | select(.metric=="ncloc")           | .value) // "-") as $n
-                | "| " + $p + " | " + $cov + "% | " + $unc + " | " + $n + " |"' \
-            >> "$OUT"
+          if [ -f "${COV_FILE}" ]; then
+            python3 - "${COV_FILE}" >> "$OUT" <<'PYEOF'
+          import sys, xml.etree.ElementTree as ET
+          root = ET.parse(sys.argv[1]).getroot()
+          rows = []
+          for cls in root.iter('class'):
+              fname = cls.get('filename', '')
+              lines = cls.find('lines')
+              if lines is None:
+                  continue
+              total = len(lines.findall('line'))
+              if total == 0:
+                  continue
+              covered = sum(1 for l in lines.findall('line') if int(l.get('hits', '0')) > 0)
+              uncov = total - covered
+              pct = covered / total * 100
+              rows.append((pct, fname, covered, total, uncov))
+          rows.sort(key=lambda r: (r[0], -r[3]))
+          for pct, fname, cov, total, uncov in rows[:10]:
+              print(f"| {fname} | {pct:.1f}% | {cov} / {total} | {uncov} |")
+          PYEOF
+          else
+            echo "_coverage.xml nicht gefunden._" >> "$OUT"
+          fi
 
           {
             echo ""
