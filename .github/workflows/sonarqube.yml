@@ -144,34 +144,34 @@
               echo "$v"
             }
             
-            # Holt Metrik für Sub-Komponente. Versucht erst PR-Scope, fällt auf Branch zurück.
+            # Holt Metrik für Sub-Komponente.
+            # SonarCloud-Sub-Komponente kann '<projectKey>:<pfad>' nicht immer per
+            # measures/component-Endpoint adressieren – wir nutzen component_tree
+            # mit dem 'q'-Filter, der nach Pfad-Suffix sucht.
             get_sub() {
-              local v sub_resp_pr sub_resp_branch
-              # PR-Versuch (falls PR-Kontext)
-              if [ -n "${PR_NUMBER}" ]; then
-                sub_resp_pr=$(curl -s -u "${SONAR_TOKEN}:" -G \
-                  --data-urlencode "component=${PROJECT_KEY}:$1" \
-                  --data-urlencode "metricKeys=$2" \
-                  --data-urlencode "pullRequest=${PR_NUMBER}" \
-                  "${SONAR_HOST}/api/measures/component")
-                v=$(echo "${sub_resp_pr}" | jq -r --arg k "$2" \
-                  'if (.component? and .component.measures?) then
-                     ((.component.measures[] | select(.metric==$k) | .value) // "-")
-                   else "-" end' 2>/dev/null)
-                if [ "$v" != "-" ] && [ -n "$v" ]; then
+              local path="$1"
+              local metric="$2"
+              local tree_url tree_resp v
+
+              # Branch-Tree erstmal, danach PR falls vorhanden – beide pruefen
+              for try_pr in branch pr; do
+                tree_url="${SONAR_HOST}/api/measures/component_tree?component=${PROJECT_KEY}&metricKeys=${metric}&qualifiers=DIR&q=${path}&ps=20"
+                if [ "$try_pr" = "pr" ] && [ -n "${PR_NUMBER}" ]; then
+                  tree_url="${tree_url}&pullRequest=${PR_NUMBER}"
+                elif [ "$try_pr" = "pr" ]; then
+                  continue
+                fi
+                tree_resp=$(curl -s -u "${SONAR_TOKEN}:" "${tree_url}")
+                # Sucht in den Components die mit path enden ODER deren path == argument
+                v=$(echo "${tree_resp}" | jq -r --arg p "$path" --arg k "$metric" \
+                  '[.components[]? | select(.path == $p)]
+                   | .[0].measures[]? | select(.metric==$k) | .value' 2>/dev/null)
+                if [ -n "$v" ] && [ "$v" != "null" ] && [ "$v" != "-" ]; then
                   echo "$v"
                   return
                 fi
-              fi
-              # Fallback: Branch-/Default-Query ohne PR
-              sub_resp_branch=$(curl -s -u "${SONAR_TOKEN}:" -G \
-                --data-urlencode "component=${PROJECT_KEY}:$1" \
-                --data-urlencode "metricKeys=$2" \
-                "${SONAR_HOST}/api/measures/component")
-              echo "${sub_resp_branch}" | jq -r --arg k "$2" \
-                'if (.component? and .component.measures?) then
-                   ((.component.measures[] | select(.metric==$k) | .value) // "-")
-                 else "-" end' 2>/dev/null || echo "-"
+              done
+              echo "-"
             }
             
             rating() {
