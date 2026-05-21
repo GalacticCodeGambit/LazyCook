@@ -1,0 +1,275 @@
+name: SonarCloud Full Metrics (main branch)
+
+on:
+  push:
+    branches: [main, master, sonarqube]
+  pull_request:
+    branches: [main, master, sonarqube]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  full-metrics:
+    name: Full Project Report
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      # =====================================================
+      # Backend-Tests + Coverage
+      # =====================================================
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.10"
+
+      - name: Install backend deps
+        working-directory: project/backend
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install -r requirements.txt
+          python -m pip install "pytest-cov>=5,<7" "coverage>=7"
+
+      - name: Run backend tests with coverage
+        working-directory: project
+        run: |
+          python -m pytest \
+            --cov=backend \
+            --cov-report=xml:backend/coverage.xml \
+            backend/tests/
+        continue-on-error: true
+
+      # =====================================================
+      # SonarCloud Scan
+      # =====================================================
+      - name: SonarQube Scan
+        uses: SonarSource/sonarqube-scan-action@v3
+        with:
+          projectBaseDir: project
+          args: >
+            -Dsonar.projectKey=GalacticCodeGambit_LazyCook
+            -Dsonar.organization=galacticcodegambit
+            -Dproject.settings=sonar-project.properties
+            -Dsonar.python.coverage.reportPaths=backend/coverage.xml
+            -Dsonar.python.version=3.10
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+
+      - name: Wait for analysis
+        id: qg
+        uses: SonarSource/sonarqube-quality-gate-action@master
+        timeout-minutes: 5
+        continue-on-error: true
+        with:
+          scanMetadataReportFile: project/.scannerwork/report-task.txt
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+
+      # =====================================================
+      # Voller Projekt-Report ins Job-Summary
+      # =====================================================
+      - name: Render Full Metrics
+        if: always()
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          SONAR_HOST: https://sonarcloud.io
+          QG_STATUS: ${{ steps.qg.outputs.quality-gate-status }}
+        run: |
+          set +e
+          KEY="GalacticCodeGambit_LazyCook"
+          OUT="$GITHUB_STEP_SUMMARY"
+
+          # Alle relevanten Branch-Metriken auf einen Schwung holen
+          METRICS="alert_status,bugs,vulnerabilities,code_smells,security_hotspots,security_hotspots_reviewed,coverage,line_coverage,branch_coverage,lines_to_cover,uncovered_lines,duplicated_lines_density,duplicated_blocks,duplicated_files,duplicated_lines,complexity,cognitive_complexity,classes,functions,statements,files,ncloc,comment_lines,comment_lines_density,sqale_rating,reliability_rating,security_rating,security_review_rating,sqale_index,sqale_debt_ratio,reliability_remediation_effort,security_remediation_effort"
+
+          URL="${SONAR_HOST}/api/measures/component?component=${KEY}&metricKeys=${METRICS}"
+          RESP=$(curl -s -u "${SONAR_TOKEN}:" "${URL}")
+
+          # Mini-Diagnose im Log
+          echo "Anfrage: ${URL}"
+          echo "Response (erste 300 Zeichen):"
+          echo "${RESP}" | head -c 300
+          echo ""
+
+          # Hilfsfunktion: Metrik-Wert holen, "-" als Fallback
+          get() {
+            echo "${RESP}" | jq -r --arg k "$1" \
+              '(.component.measures[]? | select(.metric==$k) | .value) // "-"' 2>/dev/null
+          }
+
+          # Rating-Buchstabe (1.0..5.0 → A..E)
+          rating() {
+            case "$(get "$1")" in
+              1.0) echo "A" ;; 2.0) echo "B" ;; 3.0) echo "C" ;;
+              4.0) echo "D" ;; 5.0) echo "E" ;; *) echo "-" ;;
+            esac
+          }
+
+          # Minuten → Stunden + Minuten
+          fmt_debt() {
+            local m=$1
+            if [[ "$m" =~ ^[0-9]+$ ]]; then
+              local h=$((m / 60)); local r=$((m % 60))
+              echo "${h}h ${r}min"
+            else
+              echo "-"
+            fi
+          }
+
+          # Quality-Gate-Icon
+          if [ "${QG_STATUS}" = "PASSED" ] || [ "$(get alert_status)" = "OK" ]; then
+            QG_ICON=":white_check_mark:"; QG_TXT="PASSED"
+          else
+            QG_ICON=":x:"; QG_TXT="FAILED"
+          fi
+
+          DEBT_FMT=$(fmt_debt "$(get sqale_index)")
+          REL_EFF_FMT=$(fmt_debt "$(get reliability_remediation_effort)")
+          SEC_EFF_FMT=$(fmt_debt "$(get security_remediation_effort)")
+
+          # ===== Summary schreiben =====
+          {
+            echo "# SonarCloud – Voller Projekt-Report"
+            echo ""
+            echo "**Quality Gate:** ${QG_ICON} **${QG_TXT}**  "
+            echo "**Branch:** ${GITHUB_REF_NAME}  "
+            echo "**Commit:** ${GITHUB_SHA:0:7}  "
+            echo "**Dashboard:** [${SONAR_HOST}/project/overview?id=${KEY}](${SONAR_HOST}/project/overview?id=${KEY})"
+            echo ""
+
+            # --- Übersicht ---
+            echo "## Projekt-Übersicht"
+            echo ""
+            echo "| Kennzahl | Wert |"
+            echo "|---|---:|"
+            echo "| Lines of Code | $(get ncloc) |"
+            echo "| Kommentar-Zeilen | $(get comment_lines) |"
+            echo "| Kommentar-Anteil | $(get comment_lines_density)% |"
+            echo "| Dateien | $(get files) |"
+            echo "| Klassen | $(get classes) |"
+            echo "| Funktionen | $(get functions) |"
+            echo "| Statements | $(get statements) |"
+            echo ""
+
+            # --- Coverage ---
+            echo "## Test-Coverage"
+            echo ""
+            echo "| Metrik | Wert |"
+            echo "|---|---:|"
+            echo "| Coverage (gesamt) | $(get coverage)% |"
+            echo "| Line Coverage | $(get line_coverage)% |"
+            echo "| Branch Coverage | $(get branch_coverage)% |"
+            echo "| Deckbare Zeilen | $(get lines_to_cover) |"
+            echo "| Ungedeckte Zeilen | $(get uncovered_lines) |"
+            echo ""
+
+            # --- Duplikate ---
+            echo "## Duplikate"
+            echo ""
+            echo "| Metrik | Wert |"
+            echo "|---|---:|"
+            echo "| Duplizierte Zeilen (Rate) | $(get duplicated_lines_density)% |"
+            echo "| Duplizierte Zeilen (absolut) | $(get duplicated_lines) |"
+            echo "| Duplikat-Blöcke | $(get duplicated_blocks) |"
+            echo "| Betroffene Dateien | $(get duplicated_files) |"
+            echo ""
+
+            # --- Komplexität ---
+            echo "## Komplexität"
+            echo ""
+            echo "| Metrik | Wert |"
+            echo "|---|---:|"
+            echo "| Zyklomatische Komplexität | $(get complexity) |"
+            echo "| Cognitive Complexity | $(get cognitive_complexity) |"
+            echo ""
+
+            # --- Issues & Ratings ---
+            echo "## Issues & Bewertungen"
+            echo ""
+            echo "| Kategorie | Rating | Anzahl | Behebungs-Aufwand |"
+            echo "|---|:---:|---:|---:|"
+            echo "| Reliability (Bugs) | $(rating reliability_rating) | $(get bugs) | ${REL_EFF_FMT} |"
+            echo "| Security (Vulnerabilities) | $(rating security_rating) | $(get vulnerabilities) | ${SEC_EFF_FMT} |"
+            echo "| Maintainability (Code Smells) | $(rating sqale_rating) | $(get code_smells) | ${DEBT_FMT} |"
+            echo "| Security Hotspots | $(rating security_review_rating) | $(get security_hotspots) | $(get security_hotspots_reviewed)% reviewed |"
+            echo ""
+
+            # --- Technische Schuld ---
+            echo "## Technische Schuld"
+            echo ""
+            echo "| Metrik | Wert |"
+            echo "|---|---:|"
+            echo "| Gesamte Schuld | ${DEBT_FMT} |"
+            echo "| Debt Ratio | $(get sqale_debt_ratio)% |"
+            echo ""
+          } >> "$OUT"
+
+          # =====================================================
+          # Top-10 Files: höchste Komplexität, schlechteste Coverage
+          # =====================================================
+          {
+            echo "## Top-10 komplexeste Dateien"
+            echo ""
+            echo "| Datei | Komplexität | Cognitive | LoC |"
+            echo "|---|---:|---:|---:|"
+          } >> "$OUT"
+
+          curl -s -u "${SONAR_TOKEN}:" \
+            "${SONAR_HOST}/api/measures/component_tree?component=${KEY}&metricKeys=complexity,cognitive_complexity,ncloc&qualifiers=FIL&ps=10&s=metric&metricSort=complexity&asc=false" \
+            | jq -r '.components[]?
+                | (.path // .key) as $p
+                | ((.measures[]? | select(.metric=="complexity")          | .value) // "-") as $c
+                | ((.measures[]? | select(.metric=="cognitive_complexity")| .value) // "-") as $cog
+                | ((.measures[]? | select(.metric=="ncloc")               | .value) // "-") as $n
+                | "| " + $p + " | " + $c + " | " + $cog + " | " + $n + " |"' \
+            >> "$OUT"
+
+          {
+            echo ""
+            echo "## Top-10 Dateien mit schlechtester Coverage"
+            echo ""
+            echo "| Datei | Coverage | Ungedeckte Zeilen | LoC |"
+            echo "|---|---:|---:|---:|"
+          } >> "$OUT"
+
+          curl -s -u "${SONAR_TOKEN}:" \
+            "${SONAR_HOST}/api/measures/component_tree?component=${KEY}&metricKeys=coverage,uncovered_lines,ncloc&qualifiers=FIL&ps=10&s=metric&metricSort=coverage&asc=true" \
+            | jq -r '.components[]?
+                | select(.measures[]? | select(.metric=="coverage"))
+                | (.path // .key) as $p
+                | ((.measures[]? | select(.metric=="coverage")        | .value) // "-") as $cov
+                | ((.measures[]? | select(.metric=="uncovered_lines") | .value) // "-") as $unc
+                | ((.measures[]? | select(.metric=="ncloc")           | .value) // "-") as $n
+                | "| " + $p + " | " + $cov + "% | " + $unc + " | " + $n + " |"' \
+            >> "$OUT"
+
+          {
+            echo ""
+            echo "## Top-10 Dateien mit den meisten Duplikat-Blöcken"
+            echo ""
+            echo "| Datei | Blöcke | Dupl. Zeilen | LoC |"
+            echo "|---|---:|---:|---:|"
+          } >> "$OUT"
+
+          curl -s -u "${SONAR_TOKEN}:" \
+            "${SONAR_HOST}/api/measures/component_tree?component=${KEY}&metricKeys=duplicated_blocks,duplicated_lines,ncloc&qualifiers=FIL&ps=10&s=metric&metricSort=duplicated_blocks&asc=false" \
+            | jq -r '.components[]?
+                | (.path // .key) as $p
+                | ((.measures[]? | select(.metric=="duplicated_blocks") | .value) // "0") as $b
+                | ((.measures[]? | select(.metric=="duplicated_lines")  | .value) // "0") as $l
+                | ((.measures[]? | select(.metric=="ncloc")             | .value) // "-") as $n
+                | select(($b | tonumber) > 0)
+                | "| " + $p + " | " + $b + " | " + $l + " | " + $n + " |"' \
+            >> "$OUT"
+
+          {
+            echo ""
+            echo "---"
+            echo "_Generiert von SonarCloud-Analyse aus Push auf \`${GITHUB_REF_NAME}\`._"
+          } >> "$OUT"
