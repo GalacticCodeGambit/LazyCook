@@ -44,7 +44,7 @@
               --cov-report=xml:backend/coverage.xml \
               --cov-report=term-missing \
               backend/tests/
-            continue-on-error: true
+          continue-on-error: true
 
         # =====================================================
         # SONARCLOUD SCAN
