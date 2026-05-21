@@ -56,7 +56,7 @@ jobs:
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
 
-      # 2. Tabelle ins Job-Summary + PR-Kommentar schreiben
+      # 2. Quality-Gate-Tabelle ins Job-Summary + PR-Kommentar
       - name: Quality Gate + Summary-Tabelle
         if: always()
         uses: phwt/sonarqube-quality-gate-action@v1
@@ -66,7 +66,61 @@ jobs:
           sonar-token: ${{ secrets.SONAR_TOKEN }}
           github-token: ${{ secrets.GITHUB_TOKEN }}
           working-dir: project
-          # Explizit Branch ODER PR mitgeben, damit der API-Query den richtigen Scope trifft
           branch:       ${{ github.event_name != 'pull_request' && github.ref_name || '' }}
           pull-request: ${{ github.event.pull_request.number }}
           fail-on-quality-gate-error: "true"
+
+      # 3. Zusatz-Metriken (Coverage, Duplication, Komplexität) ans Summary anhängen
+      - name: Zusatz-Metriken
+        if: always()
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          PR: ${{ github.event.pull_request.number }}
+        run: |
+          set +e
+          KEY="GalacticCodeGambit_LazyCook"
+          HOST="https://sonarcloud.io"
+          METRICS="coverage,line_coverage,branch_coverage,duplicated_lines_density,duplicated_blocks,duplicated_files,complexity,cognitive_complexity,ncloc"
+
+          # API-Aufruf mit korrektem Scope (PR vs Branch)
+          if [ -n "$PR" ]; then
+            URL="$HOST/api/measures/component?component=$KEY&metricKeys=$METRICS&pullRequest=$PR"
+          else
+            URL="$HOST/api/measures/component?component=$KEY&metricKeys=$METRICS"
+          fi
+          RESP=$(curl -s -u "$SONAR_TOKEN:" "$URL")
+
+          # Helper: Metrik-Wert ziehen, "-" als Default
+          val() {
+            echo "$RESP" | jq -r --arg k "$1" \
+              '(.component.measures[]? | select(.metric==$k) | .value) // "-"' 2>/dev/null
+          }
+
+          {
+            echo ""
+            echo "## Zusatz-Metriken"
+            echo ""
+            echo "### Coverage"
+            echo ""
+            echo "| Metrik | Wert |"
+            echo "|---|---|"
+            echo "| Gesamt-Coverage | $(val coverage)% |"
+            echo "| Line Coverage | $(val line_coverage)% |"
+            echo "| Branch Coverage | $(val branch_coverage)% |"
+            echo "| Lines of Code | $(val ncloc) |"
+            echo ""
+            echo "### Duplikate"
+            echo ""
+            echo "| Metrik | Wert |"
+            echo "|---|---|"
+            echo "| Duplizierte Zeilen (Rate) | $(val duplicated_lines_density)% |"
+            echo "| Duplikat-Blöcke | $(val duplicated_blocks) |"
+            echo "| Betroffene Dateien | $(val duplicated_files) |"
+            echo ""
+            echo "### Komplexität"
+            echo ""
+            echo "| Metrik | Wert |"
+            echo "|---|---|"
+            echo "| Zyklomatische Komplexität | $(val complexity) |"
+            echo "| Cognitive Complexity | $(val cognitive_complexity) |"
+          } >> "$GITHUB_STEP_SUMMARY"
