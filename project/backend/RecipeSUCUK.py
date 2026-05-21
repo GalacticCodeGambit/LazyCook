@@ -1,5 +1,4 @@
 # SUCUK = Search for Uncomplicated Cooking and User-friendly Kitchen recipes
-import Database
 from Ingredient import Ingredient
 from Recipe import Recipe
 from Database import getAllRecipes, getAllIngredientsForRecipe
@@ -8,8 +7,8 @@ from Database import getAllRecipes, getAllIngredientsForRecipe
 def findRecipes(ingredients: list[Ingredient]) -> list[Recipe]:
     recipes = __initRecipes()
 
-    for Ingredient in ingredients:
-        recipes = __filterRecipes(recipes, Ingredient)
+    for ingredient in ingredients:
+        recipes = __filterRecipes(recipes, ingredient)
 
     recipes.sort(key=lambda x: x.getRating(), reverse=True)
 
@@ -19,10 +18,10 @@ def findRecipes(ingredients: list[Ingredient]) -> list[Recipe]:
     return recipes
 
 
-def __filterRecipes(recipes: list[Recipe], Ingredient: Ingredient) -> list[Recipe]:
+def __filterRecipes(recipes: list[Recipe], ingredient: Ingredient) -> list[Recipe]:
     for recipe in recipes:
         for recipeIngredient in recipe.getIngredients():
-            if recipeIngredient.getName() == Ingredient.getName():
+            if recipeIngredient.getName() == ingredient.getName():
                 recipe.incrementMatching()
                 recipe.setRating(recipe.getMatching() / len(recipe.getIngredients()))
     return recipes
