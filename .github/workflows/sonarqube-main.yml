@@ -80,16 +80,43 @@ jobs:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
           SONAR_HOST: https://sonarcloud.io
           QG_STATUS: ${{ steps.qg.outputs.quality-gate-status }}
+          EVENT_NAME: ${{ github.event_name }}
+          BRANCH_NAME: ${{ github.ref_name }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
         run: |
           set +e
           KEY="GalacticCodeGambit_LazyCook"
           OUT="$GITHUB_STEP_SUMMARY"
 
-          # Alle relevanten Branch-Metriken auf einen Schwung holen
+          # ---- Scope der API-Abfrage dynamisch bestimmen ----
+          # PR-Lauf  → ?pullRequest=<nr>
+          # Push auf nicht-Default-Branch → ?branch=<name>
+          # Push auf main/master → kein Parameter (Default-Branch)
+          SCOPE_PARAM=""
+          SCOPE_DESC="Default-Branch"
+          if [ -n "${PR_NUMBER}" ]; then
+            SCOPE_PARAM="&pullRequest=${PR_NUMBER}"
+            SCOPE_DESC="PR #${PR_NUMBER}"
+          elif [ "${BRANCH_NAME}" != "main" ] && [ "${BRANCH_NAME}" != "master" ]; then
+            SCOPE_PARAM="&branch=${BRANCH_NAME}"
+            SCOPE_DESC="Branch ${BRANCH_NAME}"
+          fi
+          echo "Abfrage-Scope: ${SCOPE_DESC}"
+
+          # Alle relevanten Metriken auf einen Schwung holen
           METRICS="alert_status,bugs,vulnerabilities,code_smells,security_hotspots,security_hotspots_reviewed,coverage,line_coverage,branch_coverage,lines_to_cover,uncovered_lines,duplicated_lines_density,duplicated_blocks,duplicated_files,duplicated_lines,complexity,cognitive_complexity,classes,functions,statements,files,ncloc,comment_lines,comment_lines_density,sqale_rating,reliability_rating,security_rating,security_review_rating,sqale_index,sqale_debt_ratio,reliability_remediation_effort,security_remediation_effort"
 
-          URL="${SONAR_HOST}/api/measures/component?component=${KEY}&metricKeys=${METRICS}"
+          URL="${SONAR_HOST}/api/measures/component?component=${KEY}&metricKeys=${METRICS}${SCOPE_PARAM}"
           RESP=$(curl -s -u "${SONAR_TOKEN}:" "${URL}")
+
+          # Falls die Scope-Abfrage leer ist: Fallback auf Default-Branch
+          HAS=$(echo "${RESP}" | jq -r '(.component.measures | length) // 0' 2>/dev/null)
+          if [ -z "${HAS}" ] || [ "${HAS}" = "0" ]; then
+            echo "Scope-Abfrage leer, Fallback auf Default-Branch"
+            URL="${SONAR_HOST}/api/measures/component?component=${KEY}&metricKeys=${METRICS}"
+            RESP=$(curl -s -u "${SONAR_TOKEN}:" "${URL}")
+            SCOPE_DESC="${SCOPE_DESC} → fallback Default-Branch"
+          fi
 
           # Mini-Diagnose im Log
           echo "Anfrage: ${URL}"
@@ -221,7 +248,7 @@ jobs:
           } >> "$OUT"
 
           curl -s -u "${SONAR_TOKEN}:" \
-            "${SONAR_HOST}/api/measures/component_tree?component=${KEY}&metricKeys=complexity,cognitive_complexity,ncloc&qualifiers=FIL&ps=10&s=metric&metricSort=complexity&asc=false" \
+            "${SONAR_HOST}/api/measures/component_tree?component=${KEY}&metricKeys=complexity,cognitive_complexity,ncloc&qualifiers=FIL&ps=10&s=metric&metricSort=complexity&asc=false${SCOPE_PARAM}" \
             | jq -r '.components[]?
                 | (.path // .key) as $p
                 | ((.measures[]? | select(.metric=="complexity")          | .value) // "-") as $c
@@ -239,7 +266,7 @@ jobs:
           } >> "$OUT"
 
           curl -s -u "${SONAR_TOKEN}:" \
-            "${SONAR_HOST}/api/measures/component_tree?component=${KEY}&metricKeys=coverage,uncovered_lines,ncloc&qualifiers=FIL&ps=10&s=metric&metricSort=coverage&asc=true" \
+            "${SONAR_HOST}/api/measures/component_tree?component=${KEY}&metricKeys=coverage,uncovered_lines,ncloc&qualifiers=FIL&ps=10&s=metric&metricSort=coverage&asc=true${SCOPE_PARAM}" \
             | jq -r '.components[]?
                 | select(.measures[]? | select(.metric=="coverage"))
                 | (.path // .key) as $p
@@ -258,7 +285,7 @@ jobs:
           } >> "$OUT"
 
           curl -s -u "${SONAR_TOKEN}:" \
-            "${SONAR_HOST}/api/measures/component_tree?component=${KEY}&metricKeys=duplicated_blocks,duplicated_lines,ncloc&qualifiers=FIL&ps=10&s=metric&metricSort=duplicated_blocks&asc=false" \
+            "${SONAR_HOST}/api/measures/component_tree?component=${KEY}&metricKeys=duplicated_blocks,duplicated_lines,ncloc&qualifiers=FIL&ps=10&s=metric&metricSort=duplicated_blocks&asc=false${SCOPE_PARAM}" \
             | jq -r '.components[]?
                 | (.path // .key) as $p
                 | ((.measures[]? | select(.metric=="duplicated_blocks") | .value) // "0") as $b
