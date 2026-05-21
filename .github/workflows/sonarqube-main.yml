@@ -1,8 +1,6 @@
 name: SonarCloud Full Metrics (main branch)
 
 on:
-  push:
-    branches: [sonarqube]
   pull_request:
     branches: [main, master]
   workflow_dispatch:

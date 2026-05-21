@@ -1,8 +1,6 @@
   name: SonarCloud Analysis
 
   on:
-    push:
-      branches: [main, master, sonarqube]
     pull_request:
       branches: [main, master]
     workflow_dispatch:
