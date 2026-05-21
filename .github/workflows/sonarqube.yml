@@ -104,6 +104,17 @@ jobs:
 
           HAS_MEASURES=$(echo "${RESP}" | jq -r 'if (.component? and .component.measures?) then "yes" else "no" end' 2>/dev/null)
 
+          # DIAGNOSE – wir wollen sehen, was der Script konkret sieht
+          echo "===== DEBUG ====="
+          echo "PROJECT_KEY = '${PROJECT_KEY}'"
+          echo "API_URL     = ${API_URL}"
+          echo "HTTP_CODE   = ${HTTP_CODE}"
+          echo "HAS_MEASURES= ${HAS_MEASURES}"
+          echo "RESP first 800 chars:"
+          echo "${RESP}" | head -c 800
+          echo ""
+          echo "===== /DEBUG ====="
+
           SUMMARY_FILE="${GITHUB_STEP_SUMMARY}"
 
           if [ "${HTTP_CODE}" != "200" ] || [ "${HAS_MEASURES}" != "yes" ]; then
@@ -167,6 +178,17 @@ jobs:
             echo ""
             echo "**Quality Gate:** ${QG_EMOJI} **${QG_ICON}**"
             echo "**Dashboard:** [${SONAR_HOST}/project/overview?id=${PROJECT_KEY}](${SONAR_HOST}/project/overview?id=${PROJECT_KEY})"
+            echo ""
+            echo "<details><summary>Debug-Info (kann später raus)</summary>"
+            echo ""
+            echo "- PROJECT_KEY: ${PROJECT_KEY}"
+            echo "- HTTP_CODE: ${HTTP_CODE}"
+            echo "- HAS_MEASURES: ${HAS_MEASURES}"
+            echo "- coverage value direkt aus get: '$(get coverage)'"
+            echo "- ncloc direkt aus get: '$(get ncloc)'"
+            echo "- duplicated_lines_density direkt aus get: '$(get duplicated_lines_density)'"
+            echo ""
+            echo "</details>"
             echo ""
             echo "### Coverage"
             echo ""
