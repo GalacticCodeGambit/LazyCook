@@ -237,3 +237,4 @@
           if: steps.sonar-qg.outputs.quality-gate-status == 'FAILED'
           run: |
             echo "::error::SonarCloud Quality Gate ist FAILED – siehe Job Summary."
+            exit 1
