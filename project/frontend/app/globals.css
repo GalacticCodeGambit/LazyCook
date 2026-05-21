@@ -84,7 +84,6 @@
     --sidebar-ring: oklch(43.9% 0 0deg);
 }
 
-/* stylelint-disable-next-line at-rule-no-unknown */
 @theme inline {
     --color-background: var(--background);
     --color-foreground: var(--foreground);
