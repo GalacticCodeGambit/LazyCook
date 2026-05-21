@@ -47,6 +47,16 @@ jobs:
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
 
+      # 1. Warten bis SonarCloud die Analyse fertig verarbeitet hat
+      - name: Wait for SonarCloud analysis
+        uses: SonarSource/sonarqube-quality-gate-action@master
+        continue-on-error: true
+        with:
+          scanMetadataReportFile: project/.scannerwork/report-task.txt
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+
+      # 2. Tabelle ins Job-Summary + PR-Kommentar schreiben
       - name: Quality Gate + Summary-Tabelle
         if: always()
         uses: phwt/sonarqube-quality-gate-action@v1
@@ -55,4 +65,5 @@ jobs:
           sonar-project-key: GalacticCodeGambit_LazyCook
           sonar-token: ${{ secrets.SONAR_TOKEN }}
           github-token: ${{ secrets.GITHUB_TOKEN }}
+          working-dir: project
           fail-on-quality-gate-error: "true"
