@@ -104,8 +104,14 @@
             HTTP_CODE=$(curl -s -o /tmp/sonar.json -w "%{http_code}" \
               -u "${SONAR_TOKEN}:" "${API_URL}")
             RESP=$(cat /tmp/sonar.json)
-            
+
             HAS_MEASURES=$(echo "${RESP}" | jq -r 'if (.component? and .component.measures?) then "yes" else "no" end' 2>/dev/null)
+
+            # Zusätzlich Branch-Daten holen für Metriken, die im PR-Modus leer sind
+            # (z.B. ncloc, complexity, cognitive_complexity – Projekt-strukturelle Werte)
+            BRANCH_URL="${SONAR_HOST}/api/measures/component?component=${PROJECT_KEY}&metricKeys=${METRICS}"
+            curl -s -o /tmp/sonar_branch.json -u "${SONAR_TOKEN}:" "${BRANCH_URL}" >/dev/null
+            BRANCH_RESP=$(cat /tmp/sonar_branch.json)
             
             SUMMARY_FILE="${GITHUB_STEP_SUMMARY}"
             
@@ -122,23 +128,47 @@
               exit 0
             fi
             
+            # Holt Metrik primär aus PR-Response, fällt auf Branch-Response zurück
             get() {
-              echo "${RESP}" | jq -r --arg k "$1" \
+              local v
+              v=$(echo "${RESP}" | jq -r --arg k "$1" \
                 'if (.component? and .component.measures?) then
                    ((.component.measures[] | select(.metric==$k) | .value) // "-")
-                 else "-" end'
+                 else "-" end')
+              if [ "$v" = "-" ] || [ -z "$v" ]; then
+                v=$(echo "${BRANCH_RESP}" | jq -r --arg k "$1" \
+                  'if (.component? and .component.measures?) then
+                     ((.component.measures[] | select(.metric==$k) | .value) // "-")
+                   else "-" end')
+              fi
+              echo "$v"
             }
             
+            # Holt Metrik für Sub-Komponente. Versucht erst PR-Scope, fällt auf Branch zurück.
             get_sub() {
-              local sub_resp curl_args
-              curl_args=(-s -u "${SONAR_TOKEN}:" -G
-                --data-urlencode "component=${PROJECT_KEY}:$1"
-                --data-urlencode "metricKeys=$2")
+              local v sub_resp_pr sub_resp_branch
+              # PR-Versuch (falls PR-Kontext)
               if [ -n "${PR_NUMBER}" ]; then
-                curl_args+=(--data-urlencode "pullRequest=${PR_NUMBER}")
+                sub_resp_pr=$(curl -s -u "${SONAR_TOKEN}:" -G \
+                  --data-urlencode "component=${PROJECT_KEY}:$1" \
+                  --data-urlencode "metricKeys=$2" \
+                  --data-urlencode "pullRequest=${PR_NUMBER}" \
+                  "${SONAR_HOST}/api/measures/component")
+                v=$(echo "${sub_resp_pr}" | jq -r --arg k "$2" \
+                  'if (.component? and .component.measures?) then
+                     ((.component.measures[] | select(.metric==$k) | .value) // "-")
+                   else "-" end' 2>/dev/null)
+                if [ "$v" != "-" ] && [ -n "$v" ]; then
+                  echo "$v"
+                  return
+                fi
               fi
-              sub_resp=$(curl "${curl_args[@]}" "${SONAR_HOST}/api/measures/component")
-              echo "${sub_resp}" | jq -r --arg k "$2" \
+              # Fallback: Branch-/Default-Query ohne PR
+              sub_resp_branch=$(curl -s -u "${SONAR_TOKEN}:" -G \
+                --data-urlencode "component=${PROJECT_KEY}:$1" \
+                --data-urlencode "metricKeys=$2" \
+                "${SONAR_HOST}/api/measures/component")
+              echo "${sub_resp_branch}" | jq -r --arg k "$2" \
                 'if (.component? and .component.measures?) then
                    ((.component.measures[] | select(.metric==$k) | .value) // "-")
                  else "-" end' 2>/dev/null || echo "-"
