@@ -268,9 +268,9 @@ jobs:
 
           {
             echo ""
-            echo "## Top-10 Dateien mit schlechtester Coverage (Backend)"
+            echo "## Coverage-Übersicht aller Backend-Dateien"
             echo ""
-            echo "_Aus \`backend/coverage.xml\`, sortiert aufsteigend nach Coverage._"
+            echo "_Aus \`backend/coverage.xml\`, sortiert aufsteigend nach Coverage (schlechteste zuerst)._"
             echo ""
             echo "| Datei | Coverage | Gedeckte / Deckbare | Ungedeckte Zeilen |"
             echo "|---|---:|---:|---:|"
@@ -293,9 +293,12 @@ jobs:
               uncov = total - covered
               pct = covered / total * 100
               rows.append((pct, fname, covered, total, uncov))
+          # Aufsteigend nach Coverage, bei Gleichstand größere Dateien zuerst
           rows.sort(key=lambda r: (r[0], -r[3]))
-          for pct, fname, cov, total, uncov in rows[:10]:
+          for pct, fname, cov, total, uncov in rows:
               print(f"| {fname} | {pct:.1f}% | {cov} / {total} | {uncov} |")
+          print()
+          print(f"_Insgesamt {len(rows)} Datei(en) mit Coverage-Daten._")
           PYEOF
           else
             echo "_coverage.xml nicht gefunden._" >> "$OUT"
