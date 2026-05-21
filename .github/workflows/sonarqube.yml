@@ -66,4 +66,7 @@ jobs:
           sonar-token: ${{ secrets.SONAR_TOKEN }}
           github-token: ${{ secrets.GITHUB_TOKEN }}
           working-dir: project
+          # Explizit Branch ODER PR mitgeben, damit der API-Query den richtigen Scope trifft
+          branch:       ${{ github.event_name != 'pull_request' && github.ref_name || '' }}
+          pull-request: ${{ github.event.pull_request.number }}
           fail-on-quality-gate-error: "true"
