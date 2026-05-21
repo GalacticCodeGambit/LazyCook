@@ -9,6 +9,8 @@ on:
 
 permissions:
   contents: read
+  pull-requests: write
+  issues: write
 
 jobs:
   sonarcloud:
@@ -52,4 +54,5 @@ jobs:
           sonar-host-url: https://sonarcloud.io
           sonar-project-key: GalacticCodeGambit_LazyCook
           sonar-token: ${{ secrets.SONAR_TOKEN }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
           fail-on-quality-gate-error: "true"
