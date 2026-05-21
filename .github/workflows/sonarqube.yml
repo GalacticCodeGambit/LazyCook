@@ -1,259 +1,240 @@
-name: SonarCloud Analysis
+  name: SonarCloud Analysis
 
-on:
-  push:
-    branches: [main, master, develop]
-  pull_request:
-    branches: [main, master, develop]
-  workflow_dispatch:
+  on:
+    push:
+      branches: [main, master, develop]
+    pull_request:
+      branches: [main, master, develop]
+    workflow_dispatch:
 
-jobs:
-  sonarcloud:
-    name: Build, Test & Sonar Scan
-    runs-on: ubuntu-latest
+  permissions:
+    contents: read
 
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
+  jobs:
+    sonarcloud:
+      name: Build, Test & Sonar Scan
+      runs-on: ubuntu-latest
 
-      # =====================================================
-      # BACKEND (Python / FastAPI) – Tests + Coverage
-      # =====================================================
-      - name: Set up Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: "3.10"
+      steps:
+        - name: Checkout repository
+          uses: actions/checkout@v4
+          with:
+            fetch-depth: 0
 
-      - name: Install backend dependencies
-        working-directory: project/backend
-        run: |
-          python -m pip install --upgrade pip
-          python -m pip install -r requirements.txt
-          python -m pip install "pytest-cov>=5,<7" "coverage>=7"
+        # =====================================================
+        # BACKEND (Python / FastAPI) – Tests + Coverage
+        # =====================================================
+        - name: Set up Python
+          uses: actions/setup-python@v5
+          with:
+            python-version: "3.10"
 
-      - name: Run backend tests with coverage
-        working-directory: project
-        run: |
-          python -m pytest \
-            --cov=backend \
-            --cov-report=xml:backend/coverage.xml \
-            --cov-report=term-missing \
-            backend/tests/
-        continue-on-error: true
+        - name: Install backend dependencies
+          working-directory: project/backend
+          run: |
+            python -m pip install --upgrade pip
+            python -m pip install -r requirements.txt
+            python -m pip install "pytest-cov>=5,<7" "coverage>=7"
 
-      # =====================================================
-      # SONARCLOUD SCAN
-      # =====================================================
-      - name: SonarQube Scan
-        uses: SonarSource/sonarqube-scan-action@v3
-        with:
-          projectBaseDir: project
-          args: >
-            -Dsonar.projectKey=GalacticCodeGambit_LazyCook
-            -Dsonar.organization=galacticcodegambit
-            -Dproject.settings=sonar-project.properties
-            -Dsonar.python.coverage.reportPaths=backend/coverage.xml
-            -Dsonar.python.version=3.10
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          SONAR_TOKEN:  ${{ secrets.SONAR_TOKEN }}
+        - name: Run backend tests with coverage
+          working-directory: project
+          run: |
+            python -m pytest \
+              --cov=backend \
+              --cov-report=xml:backend/coverage.xml \
+              --cov-report=term-missing \
+              backend/tests/
+          continue-on-error: true
 
-      - name: SonarCloud Quality Gate check
-        id: sonar-qg
-        uses: SonarSource/sonarqube-quality-gate-action@master
-        timeout-minutes: 5
-        continue-on-error: true
-        with:
-          scanMetadataReportFile: project/.scannerwork/report-task.txt
-        env:
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        # =====================================================
+        # SONARCLOUD SCAN
+        # =====================================================
+        - name: SonarQube Scan
+          uses: SonarSource/sonarqube-scan-action@v3
+          with:
+            projectBaseDir: project
+            args: >
+              -Dsonar.projectKey=GalacticCodeGambit_LazyCook
+              -Dsonar.organization=galacticcodegambit
+              -Dproject.settings=sonar-project.properties
+              -Dsonar.python.coverage.reportPaths=backend/coverage.xml
+              -Dsonar.python.version=3.10
+          env:
+            GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+            SONAR_TOKEN:  ${{ secrets.SONAR_TOKEN }}
 
-      # =====================================================
-      # METRIKEN ALS MARKDOWN-SUMMARY IN GITHUB AUSGEBEN
-      # =====================================================
-      - name: Render SonarCloud metrics to Job Summary
-        if: always()
-        env:
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-          SONAR_HOST: https://sonarcloud.io
-          QG_STATUS: ${{ steps.sonar-qg.outputs.quality-gate-status }}
-          PR_NUMBER: ${{ github.event.pull_request.number }}
-        run: |
-          set +e
+        - name: SonarCloud Quality Gate check
+          id: sonar-qg
+          uses: SonarSource/sonarqube-quality-gate-action@master
+          timeout-minutes: 5
+          continue-on-error: true
+          with:
+            scanMetadataReportFile: project/.scannerwork/report-task.txt
+          env:
+            SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
 
-          PROJECT_KEY=$(grep -E '^\s*sonar.projectKey\s*=' project/sonar-project.properties \
-            | head -1 | cut -d'=' -f2 | tr -d ' \r\n')
-
-          # PR-Kontext erkennen: dann Daten der PR-Analyse holen, nicht der Main-Branch
-          PR_PARAM=""
-          if [ -n "${PR_NUMBER}" ]; then
-            PR_PARAM="&pullRequest=${PR_NUMBER}"
-            echo "PR-Modus aktiv – Daten werden für PR #${PR_NUMBER} geholt"
-          else
-            echo "Branch-Modus aktiv – Daten werden für den Default-Branch geholt"
-          fi
-
-          METRICS="alert_status,bugs,vulnerabilities,code_smells,coverage,line_coverage,branch_coverage,duplicated_lines_density,duplicated_blocks,duplicated_files,complexity,cognitive_complexity,ncloc,sqale_rating,reliability_rating,security_rating,sqale_index"
-
-          API_URL="${SONAR_HOST}/api/measures/component?component=${PROJECT_KEY}&metricKeys=${METRICS}${PR_PARAM}"
-          HTTP_CODE=$(curl -s -o /tmp/sonar.json -w "%{http_code}" \
-            -u "${SONAR_TOKEN}:" "${API_URL}")
-          RESP=$(cat /tmp/sonar.json)
-
-          HAS_MEASURES=$(echo "${RESP}" | jq -r 'if (.component? and .component.measures?) then "yes" else "no" end' 2>/dev/null)
-
-          # DIAGNOSE – wir wollen sehen, was der Script konkret sieht
-          echo "===== DEBUG ====="
-          echo "PROJECT_KEY = '${PROJECT_KEY}'"
-          echo "API_URL     = ${API_URL}"
-          echo "HTTP_CODE   = ${HTTP_CODE}"
-          echo "HAS_MEASURES= ${HAS_MEASURES}"
-          echo "RESP first 800 chars:"
-          echo "${RESP}" | head -c 800
-          echo ""
-          echo "===== /DEBUG ====="
-
-          SUMMARY_FILE="${GITHUB_STEP_SUMMARY}"
-
-          if [ "${HTTP_CODE}" != "200" ] || [ "${HAS_MEASURES}" != "yes" ]; then
-            {
-              echo "## SonarCloud Analyse"
-              echo ""
-              echo ":warning: Konnte die Metriken nicht abrufen."
-              echo ""
-              echo "- **HTTP Status:** ${HTTP_CODE}"
-              echo "- **Project Key:** ${PROJECT_KEY}"
-              echo "- **Dashboard:** [${SONAR_HOST}/project/overview?id=${PROJECT_KEY}](${SONAR_HOST}/project/overview?id=${PROJECT_KEY})"
-            } >> "$SUMMARY_FILE"
-            exit 0
-          fi
-
-          get() {
-            echo "${RESP}" | jq -r --arg k "$1" \
-              'if (.component? and .component.measures?) then
-                 ((.component.measures[] | select(.metric==$k) | .value) // "-")
-               else "-" end'
-          }
-
-          get_sub() {
-            local sub_resp curl_args
-            curl_args=(-s -u "${SONAR_TOKEN}:" -G
-              --data-urlencode "component=${PROJECT_KEY}:$1"
-              --data-urlencode "metricKeys=$2")
+        # =====================================================
+        # METRIKEN ALS MARKDOWN-SUMMARY IN GITHUB AUSGEBEN
+        # =====================================================
+        - name: Render SonarCloud metrics to Job Summary
+          if: always()
+          env:
+            SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+            SONAR_HOST: https://sonarcloud.io
+            QG_STATUS: ${{ steps.sonar-qg.outputs.quality-gate-status }}
+            PR_NUMBER: ${{ github.event.pull_request.number }}
+          run: |
+            set +e
+            
+            PROJECT_KEY=$(grep -E '^\s*sonar.projectKey\s*=' project/sonar-project.properties \
+              | head -1 | cut -d'=' -f2 | tr -d ' \r\n')
+      
+            # PR-Kontext erkennen: dann Daten der PR-Analyse holen, nicht der Main-Branch
+            PR_PARAM=""
             if [ -n "${PR_NUMBER}" ]; then
-              curl_args+=(--data-urlencode "pullRequest=${PR_NUMBER}")
-            fi
-            sub_resp=$(curl "${curl_args[@]}" "${SONAR_HOST}/api/measures/component")
-            echo "${sub_resp}" | jq -r --arg k "$2" \
-              'if (.component? and .component.measures?) then
-                 ((.component.measures[] | select(.metric==$k) | .value) // "-")
-               else "-" end' 2>/dev/null || echo "-"
-          }
-
-          rating() {
-            case "$(get "$1")" in
-              1.0) echo "A" ;; 2.0) echo "B" ;; 3.0) echo "C" ;;
-              4.0) echo "D" ;; 5.0) echo "E" ;; *) echo "-" ;;
-            esac
-          }
-
-          DEBT_MIN=$(get sqale_index)
-          if [[ "${DEBT_MIN}" =~ ^[0-9]+$ ]]; then
-            DEBT_H=$((DEBT_MIN / 60)); DEBT_REST=$((DEBT_MIN % 60))
-            DEBT_FMT="${DEBT_H}h ${DEBT_REST}min"
-          else
-            DEBT_FMT="-"
-          fi
-
-          if [ "${QG_STATUS}" = "PASSED" ] || [ "$(get alert_status)" = "OK" ]; then
-            QG_ICON="PASSED"; QG_EMOJI=":white_check_mark:"
-          else
-            QG_ICON="FAILED"; QG_EMOJI=":x:"
-          fi
-
-          {
-            echo "## SonarCloud Analyse – LazyCook"
-            echo ""
-            echo "**Quality Gate:** ${QG_EMOJI} **${QG_ICON}**"
-            echo "**Dashboard:** [${SONAR_HOST}/project/overview?id=${PROJECT_KEY}](${SONAR_HOST}/project/overview?id=${PROJECT_KEY})"
-            echo ""
-            echo "<details><summary>Debug-Info (kann später raus)</summary>"
-            echo ""
-            echo "- PROJECT_KEY: ${PROJECT_KEY}"
-            echo "- HTTP_CODE: ${HTTP_CODE}"
-            echo "- HAS_MEASURES: ${HAS_MEASURES}"
-            echo "- coverage value direkt aus get: '$(get coverage)'"
-            echo "- ncloc direkt aus get: '$(get ncloc)'"
-            echo "- duplicated_lines_density direkt aus get: '$(get duplicated_lines_density)'"
-            echo ""
-            echo "</details>"
-            echo ""
-            echo "### Coverage"
-            echo ""
-            echo "| Komponente | Coverage | Line Coverage | Branch Coverage | LoC |"
-            echo "|---|---|---|---|---|"
-            echo "| **Gesamt** | $(get coverage)% | $(get line_coverage)% | $(get branch_coverage)% | $(get ncloc) |"
-            echo "| Backend (Python) | $(get_sub backend coverage)% | $(get_sub backend line_coverage)% | $(get_sub backend branch_coverage)% | $(get_sub backend ncloc) |"
-            echo ""
-
-            echo "### Duplikate & Komplexität"
-            echo ""
-            echo "| Bereich | Metrik | Wert |"
-            echo "|---|---|---|"
-            echo "| Duplikate | Duplizierte Zeilen | $(get duplicated_lines_density)% |"
-            echo "| Duplikate | Duplizierte Blöcke | $(get duplicated_blocks) |"
-            echo "| Duplikate | Betroffene Dateien | $(get duplicated_files) |"
-            echo "| Komplexität | Zyklomatische Komplexität | $(get complexity) |"
-            echo "| Komplexität | Cognitive Complexity | $(get cognitive_complexity) |"
-            echo ""
-
-            echo "### Alle Dateien mit Duplikaten"
-            echo ""
-          } >> "$SUMMARY_FILE"
-
-          TREE_URL="${SONAR_HOST}/api/measures/component_tree?component=${PROJECT_KEY}&metricKeys=duplicated_blocks,duplicated_lines,duplicated_lines_density,ncloc&qualifiers=FIL&ps=500&s=metric&metricSort=duplicated_blocks&asc=false${PR_PARAM}"
-          TREE_RESP=$(curl -s -u "${SONAR_TOKEN}:" "${TREE_URL}")
-
-          FILES_WITH_DUPS=$(echo "${TREE_RESP}" | jq '[.components[]? | select((.measures[]? | select(.metric=="duplicated_blocks") | .value | tonumber) > 0)] | length' 2>/dev/null || echo "0")
-
-          {
-            if [ "${FILES_WITH_DUPS}" = "0" ] || [ -z "${FILES_WITH_DUPS}" ]; then
-              echo "_Keine Datei hat aktuell Duplikate._"
-              echo ""
+              PR_PARAM="&pullRequest=${PR_NUMBER}"
+              echo "PR-Modus aktiv – Daten werden für PR #${PR_NUMBER} geholt"
             else
-              echo "_Insgesamt **${FILES_WITH_DUPS}** Dateien mit mindestens einem Duplikat-Block._"
-              echo ""
-              echo "| Datei | Blöcke | Dupl. Zeilen | Anteil | LoC |"
-              echo "|---|---:|---:|---:|---:|"
-              echo "${TREE_RESP}" | jq -r '
-                .components[]?
-                | (.path // .key) as $p
-                | ((.measures[]? | select(.metric=="duplicated_blocks")          | .value) // "0") as $b
-                | ((.measures[]? | select(.metric=="duplicated_lines")           | .value) // "0") as $l
-                | ((.measures[]? | select(.metric=="duplicated_lines_density")   | .value) // "0") as $pct
-                | ((.measures[]? | select(.metric=="ncloc")                      | .value) // "-") as $n
-                | select(($b | tonumber) > 0)
-                | "| " + $p + " | " + $b + " | " + $l + " | " + $pct + "% | " + $n + " |"
-              '
-              echo ""
+              echo "Branch-Modus aktiv – Daten werden für den Default-Branch geholt"
             fi
-            echo "[Volle Duplikat-Ansicht in SonarCloud öffnen](${SONAR_HOST}/component_measures?id=${PROJECT_KEY}&metric=duplicated_lines_density&view=list)"
-            echo ""
+            
+            METRICS="alert_status,bugs,vulnerabilities,code_smells,coverage,line_coverage,branch_coverage,duplicated_lines_density,duplicated_blocks,duplicated_files,complexity,cognitive_complexity,ncloc,sqale_rating,reliability_rating,security_rating,sqale_index"
+            
+            API_URL="${SONAR_HOST}/api/measures/component?component=${PROJECT_KEY}&metricKeys=${METRICS}${PR_PARAM}"
+            HTTP_CODE=$(curl -s -o /tmp/sonar.json -w "%{http_code}" \
+              -u "${SONAR_TOKEN}:" "${API_URL}")
+            RESP=$(cat /tmp/sonar.json)
+            
+            HAS_MEASURES=$(echo "${RESP}" | jq -r 'if (.component? and .component.measures?) then "yes" else "no" end' 2>/dev/null)
+            
+            SUMMARY_FILE="${GITHUB_STEP_SUMMARY}"
+            
+            if [ "${HTTP_CODE}" != "200" ] || [ "${HAS_MEASURES}" != "yes" ]; then
+              {
+                echo "## SonarCloud Analyse"
+                echo ""
+                echo ":warning: Konnte die Metriken nicht abrufen."
+                echo ""
+                echo "- **HTTP Status:** ${HTTP_CODE}"
+                echo "- **Project Key:** ${PROJECT_KEY}"
+                echo "- **Dashboard:** [${SONAR_HOST}/project/overview?id=${PROJECT_KEY}](${SONAR_HOST}/project/overview?id=${PROJECT_KEY})"
+              } >> "$SUMMARY_FILE"
+              exit 0
+            fi
+            
+            get() {
+              echo "${RESP}" | jq -r --arg k "$1" \
+                'if (.component? and .component.measures?) then
+                   ((.component.measures[] | select(.metric==$k) | .value) // "-")
+                 else "-" end'
+            }
+            
+            get_sub() {
+              local sub_resp curl_args
+              curl_args=(-s -u "${SONAR_TOKEN}:" -G
+                --data-urlencode "component=${PROJECT_KEY}:$1"
+                --data-urlencode "metricKeys=$2")
+              if [ -n "${PR_NUMBER}" ]; then
+                curl_args+=(--data-urlencode "pullRequest=${PR_NUMBER}")
+              fi
+              sub_resp=$(curl "${curl_args[@]}" "${SONAR_HOST}/api/measures/component")
+              echo "${sub_resp}" | jq -r --arg k "$2" \
+                'if (.component? and .component.measures?) then
+                   ((.component.measures[] | select(.metric==$k) | .value) // "-")
+                 else "-" end' 2>/dev/null || echo "-"
+            }
+            
+            rating() {
+              case "$(get "$1")" in
+                1.0) echo "A" ;; 2.0) echo "B" ;; 3.0) echo "C" ;;
+                4.0) echo "D" ;; 5.0) echo "E" ;; *) echo "-" ;;
+              esac
+            }
+            
+            DEBT_MIN=$(get sqale_index)
+            if [[ "${DEBT_MIN}" =~ ^[0-9]+$ ]]; then
+              DEBT_H=$((DEBT_MIN / 60)); DEBT_REST=$((DEBT_MIN % 60))
+              DEBT_FMT="${DEBT_H}h ${DEBT_REST}min"
+            else
+              DEBT_FMT="-"
+            fi
+            
+            if [ "${QG_STATUS}" = "PASSED" ] || [ "$(get alert_status)" = "OK" ]; then
+              QG_ICON="PASSED"; QG_EMOJI=":white_check_mark:"
+            else
+              QG_ICON="FAILED"; QG_EMOJI=":x:"
+            fi
+            
+            {
+              echo "## SonarCloud Analyse – LazyCook"
+              echo ""
+              echo "**Quality Gate:** ${QG_EMOJI} **${QG_ICON}**"
+              echo "**Dashboard:** [${SONAR_HOST}/project/overview?id=${PROJECT_KEY}](${SONAR_HOST}/project/overview?id=${PROJECT_KEY})"
+              echo ""
+              echo "### Coverage"
+              echo ""
+              echo "| Komponente | Coverage | Line Coverage | Branch Coverage | LoC |"
+              echo "|---|---|---|---|---|"
+              echo "| **Gesamt** | $(get coverage)% | $(get line_coverage)% | $(get branch_coverage)% | $(get ncloc) |"
+              echo "| Backend (Python) | $(get_sub backend coverage)% | $(get_sub backend line_coverage)% | $(get_sub backend branch_coverage)% | $(get_sub backend ncloc) |"
+              echo ""
+            
+              echo "### Duplikate & Komplexität"
+              echo ""
+              echo "| Bereich | Metrik | Wert |"
+              echo "|---|---|---|"
+              echo "| Duplikate | Duplizierte Zeilen | $(get duplicated_lines_density)% |"
+              echo "| Duplikate | Duplizierte Blöcke | $(get duplicated_blocks) |"
+              echo "| Duplikate | Betroffene Dateien | $(get duplicated_files) |"
+              echo "| Komplexität | Zyklomatische Komplexität | $(get complexity) |"
+              echo "| Komplexität | Cognitive Complexity | $(get cognitive_complexity) |"
+              echo ""
+            
+              echo "### Alle Dateien mit Duplikaten"
+              echo ""
+            } >> "$SUMMARY_FILE"
+            
+            TREE_URL="${SONAR_HOST}/api/measures/component_tree?component=${PROJECT_KEY}&metricKeys=duplicated_blocks,duplicated_lines,duplicated_lines_density,ncloc&qualifiers=FIL&ps=500&s=metric&metricSort=duplicated_blocks&asc=false${PR_PARAM}"
+            TREE_RESP=$(curl -s -u "${SONAR_TOKEN}:" "${TREE_URL}")
+            
+            FILES_WITH_DUPS=$(echo "${TREE_RESP}" | jq '[.components[]? | select((.measures[]? | select(.metric=="duplicated_blocks") | .value | tonumber) > 0)] | length' 2>/dev/null || echo "0")
+            
+            {
+              if [ "${FILES_WITH_DUPS}" = "0" ] || [ -z "${FILES_WITH_DUPS}" ]; then
+                echo "_Keine Datei hat aktuell Duplikate._"
+                echo ""
+              else
+                echo "_Insgesamt **${FILES_WITH_DUPS}** Dateien mit mindestens einem Duplikat-Block._"
+                echo ""
+                echo "| Datei | Blöcke | Dupl. Zeilen | Anteil | LoC |"
+                echo "|---|---:|---:|---:|---:|"
+                echo "${TREE_RESP}" | jq -r '
+                  .components[]?
+                  | (.path // .key) as $p
+                  | ((.measures[]? | select(.metric=="duplicated_blocks")          | .value) // "0") as $b
+                  | ((.measures[]? | select(.metric=="duplicated_lines")           | .value) // "0") as $l
+                  | ((.measures[]? | select(.metric=="duplicated_lines_density")   | .value) // "0") as $pct
+                  | ((.measures[]? | select(.metric=="ncloc")                      | .value) // "-") as $n
+                  | select(($b | tonumber) > 0)
+                  | "| " + $p + " | " + $b + " | " + $l + " | " + $pct + "% | " + $n + " |"
+                '
+                echo ""
+              fi
+              echo "[Volle Duplikat-Ansicht in SonarCloud öffnen](${SONAR_HOST}/component_measures?id=${PROJECT_KEY}&metric=duplicated_lines_density&view=list)"
+              echo ""
+            
+              echo "### Ratings & Issues"
+              echo ""
+              echo "| Bewertung | Wert | Anzahl |"
+              echo "|---|---|---|"
+              echo "| Reliability Rating | $(rating reliability_rating) | $(get bugs) Bugs |"
+              echo "| Security Rating | $(rating security_rating) | $(get vulnerabilities) Vulnerabilities |"
+              echo "| Maintainability Rating | $(rating sqale_rating) | $(get code_smells) Code Smells |"
+              echo "| Technische Schuld | ${DEBT_FMT} | – |"
+            } >> "$SUMMARY_FILE"
 
-            echo "### Ratings & Issues"
-            echo ""
-            echo "| Bewertung | Wert | Anzahl |"
-            echo "|---|---|---|"
-            echo "| Reliability Rating | $(rating reliability_rating) | $(get bugs) Bugs |"
-            echo "| Security Rating | $(rating security_rating) | $(get vulnerabilities) Vulnerabilities |"
-            echo "| Maintainability Rating | $(rating sqale_rating) | $(get code_smells) Code Smells |"
-            echo "| Technische Schuld | ${DEBT_FMT} | – |"
-          } >> "$SUMMARY_FILE"
-
-      - name: Fail job on Quality Gate failure
-        if: steps.sonar-qg.outputs.quality-gate-status == 'FAILED'
-        run: |
-          echo "::error::SonarCloud Quality Gate ist FAILED – siehe Job Summary."
-          exit 1
+        - name: Fail job on Quality Gate failure
+          if: steps.sonar-qg.outputs.quality-gate-status == 'FAILED'
+          run: |
+            echo "::error::SonarCloud Quality Gate ist FAILED – siehe Job Summary."
+            exit 1
