@@ -59,7 +59,7 @@ class Recipe:
     def setDuration(self, duration: str):
         self.__duration = duration
 
-    def getingredients(self) -> list[Ingredient]:
+    def getIngredients(self) -> list[Ingredient]:
         return self.__ingredients
 
     def setIngredient(self, ingredients: list[Ingredient]):

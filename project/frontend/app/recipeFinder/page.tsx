@@ -332,10 +332,9 @@ export default function RecipeFinder() {
                                 {results.slice(0, visibleCount).map((recipe, idx) => (
                                     <div key={idx} className="recipe-card">
                                         <div className="recipe-card__image-wrapper">
-                                            <div className="recipe-card__image-placeholder">🍽️</div>
                                             <span className="recipe-card__badge">
-                                {Math.round(recipe.rating * 100)}% Match
-                            </span>
+                                            {Math.round(recipe.rating * 100)}% Match
+                                            </span>
                                         </div>
                                         <div className="recipe-card__body">
                                             <h3 className="recipe-card__title">{recipe.name}</h3>
