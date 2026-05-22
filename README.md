@@ -2,8 +2,7 @@
 [![ci.yml](https://github.com/GalacticCodeGambit/LazyCook/actions/workflows/ci.yml/badge.svg)](https://github.com/GalacticCodeGambit/LazyCook/actions/workflows/ci.yml)
 [![lint.yml](https://github.com/GalacticCodeGambit/LazyCook/actions/workflows/lint.yml/badge.svg)](https://github.com/GalacticCodeGambit/LazyCook/actions/workflows/lint.yml)
 
-LazyCook soll eine Webanwendung sein. Die es ermöglichen seine vorhanden Zutaten einzutragen und darauf soll LazyCook dir mögliche Rezepte/Gerichte vorschlagen die du aus diesen Zutaten gemacht werden können.   
-
+LazyCook soll eine Webanwendung sein. Die es ermöglichen, seine vorhandenen Zutaten einzutragen, und darauf soll LazyCook dir mögliche Rezepte/Gerichte vorschlagen, die du aus diesen Zutaten gemacht werden können.
 ## Features
 - [x] [#23](https://github.com/GalacticCodeGambit/LazyCook/issues/23) Zutaten hinzufügen können 
 - [x] [#24](https://github.com/GalacticCodeGambit/LazyCook/issues/24) Zutaten entfernen können  
@@ -26,7 +25,7 @@ LazyCook soll eine Webanwendung sein. Die es ermöglichen seine vorhanden Zutate
 1. Klonen das Repository:  
    `git clone https://github.com/GalacticCodeGambit/LazyCook.git`
 2. Navigieren zum Projektverzeichnis:  
-   `cd LazyCook/Project`
+   `cd LazyCook/project`
 3. Starten der Anwendung mit: Docker Compose:
    `docker compose up --build -d`
 <!--Unterschied zu "docker compose up -d"? -->
@@ -34,7 +33,7 @@ Die Anwendung sollte jetzt unter `http://localhost:8000` erreichbar sein.
 
 Für die Funktion [#115](https://github.com/GalacticCodeGambit/LazyCook/issues/115) von Email Versenden/Empfangen muss im Ordner `project/` eine `.env` Datei mit den folgenden Variablen angelegt werden:
 ```
-EMAIL_HOST=<dein.mail@gmail.com>
+GMAIL_USER=<dein.mail@gmail.com>
 GMAIL_PASSWORD=<dein_gmail_passwort>
 ```
 

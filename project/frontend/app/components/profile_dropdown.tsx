@@ -26,7 +26,7 @@ export default function ProfileDropdown() {
             <div ref={menuRef} className="account-menu">
                 <button
                     onClick={() => setOpen(!open)}
-                    className="account-menu__trigger"
+                    className="account-menu-trigger"
                     aria-label="Account-Menü"
                     aria-expanded={open}
                 >
@@ -34,10 +34,10 @@ export default function ProfileDropdown() {
                 </button>
 
                 {open && (
-                    <div className="account-menu__dropdown" role="menu">
+                    <div className="account-menu-dropdown" role="menu">
                         <button
                             onClick={handleProfil}
-                            className="account-menu__item"
+                            className="account-menu-item"
                             role="menuitem"
                         >
                             <UserCircle size={18} />
@@ -45,7 +45,7 @@ export default function ProfileDropdown() {
                         </button>
                         <button
                             onClick={ handleLogout }
-                            className="account-menu__item"
+                            className="account-menu-item"
                             role="menuitem"
                         >
                             <LogOut size={18} />
