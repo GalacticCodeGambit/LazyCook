@@ -23,16 +23,6 @@ interface Suggestion {
     unit: string | null;
 }
 
-interface Recipe {
-    name: string;
-    description: string;
-    rating: number;
-    duration: string;
-    matching: number;
-    ingredients: { name: string; amount: number }[];
-}
-
-
 // Reine Helper-Funktion auf Modulebene – schließt keinen Component-State ein,
 // damit useEffect/useCallback keine ändernden Closure-Variablen aufnehmen müssen.
 async function loadTopIngredients(): Promise<Suggestion[] | null> {
@@ -72,8 +62,7 @@ export default function RecipeFinder() {
     const [servings, setServings] = useState(1);
 
     const [searching, setSearching] = useState(false);
-    const [results, setResults] = useState<Recipe[] | null>(null);
-    const [visibleCount, setVisibleCount] = useState(12);
+    const [results, setResults] = useState<any[] | null>(null);
 
     const [editingIngredient, setEditingIngredient] = useState<string | null>(null);
     const [editAmount, setEditAmount] = useState("");
@@ -174,7 +163,6 @@ export default function RecipeFinder() {
         }
         setSearchError("");
         setSearching(true);
-        setVisibleCount(12);
         try {
             const res = await fetchWithAuth('/recipes/search', {
                 method: "POST",
@@ -231,56 +219,56 @@ export default function RecipeFinder() {
                                     });
                                 }}
                                 onClick={() => setModalOpen(true)}
-                                className="finder-sidebar__add-btn"
+                                className="finder-sidebar-add-btn"
                             >
                                 <Plus size={15} />
                                 Zutat hinzufügen
                             </Button>
-                            <Button onClick={() => setIngredients([])} className="finder-sidebar__clear-btn">
+                            <Button onClick={() => setIngredients([])} className="finder-sidebar-clear-btn">
                                 Alle entfernen
                             </Button>
                         </div>
 
 
                         {ingredients.length > 0 ? (
-                            <div className="finder-sidebar__ingredient-list">
+                            <div className="finder-sidebar-ingredient-list">
                                 {ingredients.map(i => (
-                                    <div key={i.name} className="finder-sidebar__ingredient">
-                                        <span className="finder-sidebar__ingredient-name">{i.name}</span>
+                                    <div key={i.name} className="finder-sidebar-ingredient">
+                                        <span className="finder-sidebar-ingredient-name">{i.name}</span>
 
                                         {editingIngredient === i.name ? (
                                             // Bearbeitungsmodus
-                                            <div className="finder-sidebar__ingredient-edit">
+                                            <div className="finder-sidebar-ingredient-edit">
                                                 <input
                                                     type="number"
                                                     value={editAmount}
                                                     onChange={e => setEditAmount(e.target.value)}
                                                     onKeyDown={e => e.key === "Enter" && handleEditSave(i.name)}
                                                     min={0}
-                                                    className="finder-sidebar__edit-input"
+                                                    className="finder-sidebar-edit-input"
                                                     autoFocus
                                                 />
                                                 <select
                                                     value={editUnit}
                                                     onChange={e => setEditUnit(e.target.value)}
-                                                    className="finder-sidebar__edit-select"
+                                                    className="finder-sidebar-edit-select"
                                                 >
                                                     {EINHEITEN.map(e => <option key={e} value={e}>{e}</option>)}
                                                 </select>
-                                                <button onClick={() => handleEditSave(i.name)} className="finder-sidebar__edit-save">✓</button>
-                                                <button onClick={() => setEditingIngredient(null)} className="finder-sidebar__edit-cancel">✕</button>
+                                                <button onClick={() => handleEditSave(i.name)} className="finder-sidebar-edit-save">✓</button>
+                                                <button onClick={() => setEditingIngredient(null)} className="finder-sidebar-edit-cancel">✕</button>
                                             </div>
                                         ) : (
                                             // Anzeigemodus — klickbar
-                                            <div className="finder-sidebar__ingredient-right">
+                                            <div className="finder-sidebar-ingredient-right">
                                                 <span
                                                     onClick={() => handleEditStart(i)}
-                                                    className="finder-sidebar__ingredient-amount"
+                                                    className="finder-sidebar-ingredient-amount"
                                                     title="Klicken zum Bearbeiten"
                                                 >
                                                     {i.amount} {i.unit}
                                                 </span>
-                                                <button onClick={() => handleRemoveIngredient(i.name)} className="finder-sidebar__ingredient-remove">
+                                                <button onClick={() => handleRemoveIngredient(i.name)} className="finder-sidebar-ingredient-remove">
                                                     <X size={14} />
                                                 </button>
                                             </div>
@@ -289,75 +277,32 @@ export default function RecipeFinder() {
                                 ))}
                             </div>
                         ) : (
-                            <p className="finder-sidebar__empty">Noch keine Zutaten.</p>
+                            <p className="finder-sidebar-empty">Noch keine Zutaten.</p>
                         )}
                     </div>
 
                     {/* Personenanzahl */}
-                    <div className="finder-sidebar__section">
-                        <p className="finder-sidebar__title">Personen</p>
-                        <div className="finder-sidebar__persons">
-                            <button onClick={() => setServings(Math.max(1, servings - 1))} className="finder-sidebar__persons-btn">−</button>
+                    <div className="finder-sidebar-section">
+                        <p className="finder-sidebar-title">Personen</p>
+                        <div className="finder-sidebar-persons">
+                            <button onClick={() => setServings(Math.max(1, servings - 1))} className="finder-sidebar-persons-btn">−</button>
                             <div>
-                                <div className="finder-sidebar__persons-count">{servings}</div>
-                                <div className="finder-sidebar__persons-label">Personen</div>
+                                <div className="finder-sidebar-persons-count">{servings}</div>
+                                <div className="finder-sidebar-persons-label">Personen</div>
                             </div>
-                            <button onClick={() => setServings(servings + 1)} className="finder-sidebar__persons-btn">+</button>
+                            <button onClick={() => setServings(servings + 1)} className="finder-sidebar-persons-btn">+</button>
                         </div>
                     </div>
 
                     {/* Suche starten */}
-                    <div className="finder-sidebar__section">
+                    <div className="finder-sidebar-section">
                         {searchError && <p style={{ color: '#b91c1c', fontSize: 13, fontFamily: 'system-ui', marginBottom: 8 }}>{searchError}</p>}
-                        <button onClick={handleSearch} disabled={searching || ingredients.length === 0} className="finder-sidebar__search-btn">
+                        <button onClick={handleSearch} disabled={searching || ingredients.length === 0} className="finder-sidebar-search-btn">
                             <Search size={15} />
                             {searching ? "Suche läuft…" : "Rezepte suchen"}
                         </button>
                     </div>
                 </aside>
-
-                {/* Rezepte Anzeige */}
-                <main className="finder-results">
-                    {results === null ? (
-                        <div className="finder-results__empty">
-                            <p className="text-gray-400 text-sm">Zutaten hinzufügen und suchen um Rezepte zu finden.</p>
-                        </div>
-                    ) : results.length === 0 ? (
-                        <div className="finder-results__empty">
-                            <p className="text-gray-400 text-sm">Keine passenden Rezepte gefunden.</p>
-                        </div>
-                    ) : (
-                        <>
-                            <div className="finder-results__grid">
-                                {results.slice(0, visibleCount).map((recipe, idx) => (
-                                    <div key={idx} className="recipe-card">
-                                        <div className="recipe-card__image-wrapper">
-                                            <span className="recipe-card__badge">
-                                            {Math.round(recipe.rating * 100)}% Match
-                                            </span>
-                                        </div>
-                                        <div className="recipe-card__body">
-                                            <h3 className="recipe-card__title">{recipe.name}</h3>
-                                            <p className="recipe-card__description">{recipe.description}</p>
-                                            <div className="recipe-card__meta">
-                                                {recipe.duration && <span>⏱ {recipe.duration}</span>}
-                                                <span>🥦 {recipe.ingredients.length} Zutaten</span>
-                                            </div>
-                                            <button className="recipe-card__btn">Rezept ansehen</button>
-                                        </div>
-                                    </div>
-                                ))}
-                            </div>
-                            {visibleCount < results.length && (
-                                <div className="finder-results__more">
-                                    <button onClick={() => setVisibleCount(v => v + 12)} className="finder-results__more-btn">
-                                        Mehr anzeigen
-                                    </button>
-                                </div>
-                            )}
-                        </>
-                    )}
-                </main>
 
                 <Modal open={modalOpen} onCloseAction={() => setModalOpen(false)}>
                     <AddIngredientsPopup
