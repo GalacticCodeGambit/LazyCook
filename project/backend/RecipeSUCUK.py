@@ -47,15 +47,15 @@ def __formatIngredients(id: int) -> list[Ingredient]:
         Ingredients.append(Ingredient(IngredientRaw["name"], IngredientRaw["amount"]))
     return Ingredients
 
-
-ini = []
-ini.append(Ingredient("Linguine", 10))
-ini.append(Ingredient("Fresh Basil", 10))
-ini.append(Ingredient("Pine Nuts", 10))
-ini.append(Ingredient("Parmesan", 10))
-ini.append(Ingredient("Ground Beef", 10))
-ini.append(Ingredient("Cumin", 10))
-ini.append(Ingredient("Cucumber", 10))
-arr = findRecipes(ini)
-for i in arr:
-    print(i.getName() + " " + str(i.getRating()))
+if __name__ == "__main__":
+    ini = []
+    ini.append(Ingredient("Linguine", 10))
+    ini.append(Ingredient("Fresh Basil", 10))
+    ini.append(Ingredient("Pine Nuts", 10))
+    ini.append(Ingredient("Parmesan", 10))
+    ini.append(Ingredient("Ground Beef", 10))
+    ini.append(Ingredient("Cumin", 10))
+    ini.append(Ingredient("Cucumber", 10))
+    arr = findRecipes(ini)
+    for i in arr:
+        print(i.getName() + " " + str(i.getRating()))

@@ -531,3 +531,109 @@
     color: #ef4444;
     border-color: #ef4444;
 }
+/* ── Rezepte Anzeige ───────────────────────────────────── */
+.finder-results {
+    flex: 1;
+    padding: 24px;
+    overflow-y: auto;
+    background: #fafafa;
+}
+
+.finder-results__empty {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    min-height: 300px;
+}
+
+.finder-results__grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 24px;
+}
+
+.finder-results__more {
+    display: flex;
+    justify-content: center;
+    margin-top: 32px;
+}
+
+.finder-results__more-btn {
+    padding: 10px 32px;
+    background: #030213;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 14px;
+    cursor: pointer;
+    transition: background 0.15s;
+}
+
+.finder-results__more-btn:hover {
+    background: rgb(3 2 19 / 85%);
+}
+
+.recipe-card {
+    border: 1px solid #e5e7eb;
+    border-radius: 12px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    background: #fff;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+}
+
+.recipe-card__body {
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    flex: 1;
+}
+
+.recipe-card__title {
+    font-size: 16px;
+    font-weight: 600;
+    color: #111;
+    margin: 0;
+    font-family: system-ui;
+}
+
+.recipe-card__description {
+    font-size: 13px;
+    color: #6b7280;
+    font-family: system-ui;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    margin: 0;
+}
+
+.recipe-card__meta {
+    display: flex;
+    gap: 12px;
+    font-size: 13px;
+    color: #6b7280;
+    font-family: system-ui;
+    flex-wrap: wrap;
+}
+
+.recipe-card__btn {
+    margin-top: auto;
+    padding: 10px;
+    background: #030213;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 14px;
+    cursor: pointer;
+    text-align: center;
+    font-family: system-ui;
+    transition: background 0.15s;
+}
+
+.recipe-card__btn:hover {
+    background: rgb(3 2 19 / 85%);
+}

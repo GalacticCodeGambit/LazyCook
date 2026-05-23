@@ -12,6 +12,15 @@ import ProfileDropdown from "@/app/components/profile_dropdown";
 
 const EINHEITEN = ["Stück", "g", "kg", "ml", "l", "EL", "TL", "Prise"];
 
+interface Recipe {
+    name: string;
+    description: string;
+    rating: number;
+    duration: string;
+    matching: number;
+    ingredients: { name: string; amount: number }[];
+}
+
 interface IngredientInput {
     name: string;
     amount: number;
@@ -62,7 +71,8 @@ export default function RecipeFinder() {
     const [servings, setServings] = useState(1);
 
     const [searching, setSearching] = useState(false);
-    const [results, setResults] = useState<any[] | null>(null);
+    const [results, setResults] = useState<Recipe[] | null>(null);
+    const [visibleCount, setVisibleCount] = useState(12);
 
     const [editingIngredient, setEditingIngredient] = useState<string | null>(null);
     const [editAmount, setEditAmount] = useState("");
@@ -163,6 +173,7 @@ export default function RecipeFinder() {
         }
         setSearchError("");
         setSearching(true);
+        setVisibleCount(12);
         try {
             const res = await fetchWithAuth('/recipes/search', {
                 method: "POST",
@@ -303,6 +314,45 @@ export default function RecipeFinder() {
                         </button>
                     </div>
                 </aside>
+
+                {/* Rezepte Anzeige */}
+                <main className="finder-results">
+                    {results === null ? (
+                        <div className="finder-results__empty">
+                            <p className="text-gray-400 text-sm">Zutaten hinzufügen und suchen um Rezepte zu finden.</p>
+                        </div>
+                    ) : results.length === 0 ? (
+                        <div className="finder-results__empty">
+                            <p className="text-gray-400 text-sm">Keine passenden Rezepte gefunden.</p>
+                        </div>
+                    ) : (
+                        <>
+                            <div className="finder-results__grid">
+                                {results.slice(0, visibleCount).map((recipe, idx) => (
+                                    <div key={idx} className="recipe-card">
+                                        <div className="recipe-card__body">
+                                            <h3 className="recipe-card__title">{recipe.name}</h3>
+                                            <p className="recipe-card__description">{recipe.description}</p>
+                                            <div className="recipe-card__meta">
+                                                <span>🎯 {Math.round(recipe.rating * 100)}% Match</span>
+                                                {recipe.duration && <span>⏱ {recipe.duration}</span>}
+                                                <span>🥦 {recipe.ingredients.length} Zutaten</span>
+                                            </div>
+                                            <button className="recipe-card__btn">Rezept ansehen</button>
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
+                            {visibleCount < results.length && (
+                                <div className="finder-results__more">
+                                    <button onClick={() => setVisibleCount(v => v + 12)} className="finder-results__more-btn">
+                                        Mehr anzeigen
+                                    </button>
+                                </div>
+                            )}
+                        </>
+                    )}
+                </main>
 
                 <Modal open={modalOpen} onCloseAction={() => setModalOpen(false)}>
                     <AddIngredientsPopup
