@@ -34,3 +34,9 @@ class Ingredient:
                 return False
             else:
                 return True
+    def formatIngredients(id: int) -> list[Ingredient]:
+        IngredientsRaw = getAllIngredientsForRecipe(id)
+        Ingredients = []
+        for IngredientRaw in IngredientsRaw:
+            Ingredients.append(Ingredient(IngredientRaw["name"], IngredientRaw["amount"]))
+        return Ingredients

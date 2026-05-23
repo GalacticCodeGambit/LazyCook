@@ -33,19 +33,13 @@ def __initRecipes() -> list[Recipe]:
     for recipeRaw in recipesRaw:
         recipe = Recipe(
             recipeRaw["name"],
-            __formatIngredients(recipeRaw["id"]),
+            Ingredient.formatIngredients(recipeRaw["id"]),
             recipeRaw["description"],
         )
         recipes.append(recipe)
     return recipes
 
 
-def __formatIngredients(id: int) -> list[Ingredient]:
-    IngredientsRaw = getAllIngredientsForRecipe(id)
-    Ingredients = []
-    for IngredientRaw in IngredientsRaw:
-        Ingredients.append(Ingredient(IngredientRaw["name"], IngredientRaw["amount"]))
-    return Ingredients
 
 
 ini = []
