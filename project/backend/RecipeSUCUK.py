@@ -1,7 +1,7 @@
 # SUCUK = Search for Uncomplicated Cooking and User-friendly Kitchen recipes
 from Ingredient import Ingredient
 from Recipe import Recipe
-from Database import getAllRecipes, getAllIngredientsForRecipe
+from Database import getAllRecipes
 
 
 def findRecipes(ingredients: list[Ingredient]) -> list[Recipe]:

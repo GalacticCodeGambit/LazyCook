@@ -1,4 +1,4 @@
-from Database import getAllRecipes, getAllIngredientsForRecipe
+from Database import getAllRecipes
 from Ingredient import Ingredient
 from Recipe import Recipe
 

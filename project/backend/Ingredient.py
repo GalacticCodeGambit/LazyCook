@@ -1,5 +1,5 @@
 from typing import List, Dict, Any
-from Database import addIngredient
+from Database import addIngredient, getAllIngredientsForRecipe
 
 
 class Ingredient:
