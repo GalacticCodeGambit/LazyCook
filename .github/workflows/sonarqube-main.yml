@@ -25,7 +25,7 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
-          python-version: "3.11"
+          python-version: "3.10"
 
       - name: Install backend deps
         working-directory: project/backend
@@ -33,7 +33,6 @@ jobs:
           python -m pip install --upgrade pip
           python -m pip install -r requirements.txt
           python -m pip install "pytest-cov>=5,<7" "coverage>=7"
-
       - name: Run backend tests with coverage
         working-directory: project
         run: |
@@ -44,7 +43,7 @@ jobs:
             backend/tests/
         continue-on-error: true
 
-            # =====================================================
+        # =====================================================
       # SonarCloud Scan
       # =====================================================
       - name: SonarQube Scan
@@ -56,7 +55,7 @@ jobs:
             -Dsonar.organization=galacticcodegambit
             -Dproject.settings=sonar-project.properties
             -Dsonar.python.coverage.reportPaths=backend/coverage.xml
-            -Dsonar.python.version=3.11
+            -Dsonar.python.version=3.10
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
 
@@ -83,25 +82,20 @@ jobs:
           set +e
           KEY="GalacticCodeGambit_LazyCook"
           OUT="$GITHUB_STEP_SUMMARY"
-
           # Alle relevanten Branch-Metriken auf einen Schwung holen
           METRICS="alert_status,bugs,vulnerabilities,code_smells,security_hotspots,security_hotspots_reviewed,coverage,line_coverage,branch_coverage,lines_to_cover,uncovered_lines,duplicated_lines_density,duplicated_blocks,duplicated_files,duplicated_lines,complexity,cognitive_complexity,classes,functions,statements,files,ncloc,comment_lines,comment_lines_density,sqale_rating,reliability_rating,security_rating,security_review_rating,sqale_index,sqale_debt_ratio,reliability_remediation_effort,security_remediation_effort"
-
           URL="${SONAR_HOST}/api/measures/component?component=${KEY}&metricKeys=${METRICS}"
           RESP=$(curl -s -u "${SONAR_TOKEN}:" "${URL}")
-
           # Mini-Diagnose im Log
           echo "Anfrage: ${URL}"
           echo "Response (erste 300 Zeichen):"
           echo "${RESP}" | head -c 300
           echo ""
-
           # Hilfsfunktion: Metrik-Wert holen, "-" als Fallback
           get() {
             echo "${RESP}" | jq -r --arg k "$1" \
               '(.component.measures[]? | select(.metric==$k) | .value) // "-"' 2>/dev/null
           }
-
           # Rating-Buchstabe (1.0..5.0 → A..E)
           rating() {
             case "$(get "$1")" in
@@ -109,7 +103,6 @@ jobs:
               4.0) echo "D" ;; 5.0) echo "E" ;; *) echo "-" ;;
             esac
           }
-
           # Minuten → Stunden + Minuten
           fmt_debt() {
             local m=$1
@@ -120,18 +113,15 @@ jobs:
               echo "-"
             fi
           }
-
           # Quality-Gate-Icon
           if [ "${QG_STATUS}" = "PASSED" ] || [ "$(get alert_status)" = "OK" ]; then
             QG_ICON=":white_check_mark:"; QG_TXT="PASSED"
           else
             QG_ICON=":x:"; QG_TXT="FAILED"
           fi
-
           DEBT_FMT=$(fmt_debt "$(get sqale_index)")
           REL_EFF_FMT=$(fmt_debt "$(get reliability_remediation_effort)")
           SEC_EFF_FMT=$(fmt_debt "$(get security_remediation_effort)")
-
           # ===== Backend-Coverage direkt aus coverage.xml =====
           COV_FILE="project/backend/coverage.xml"
           if [ -f "${COV_FILE}" ]; then
@@ -160,7 +150,6 @@ jobs:
             LINES_VALID="-"; LINES_COVERED="-"; BRANCHES_VALID="-"; BRANCHES_COVERED="-"
             UNCOVERED_LINES="-"; UNCOVERED_BRANCHES="-"
           fi
-
           # ===== Summary schreiben =====
           {
             echo "# SonarCloud – Voller Projekt-Report"
@@ -170,7 +159,6 @@ jobs:
             echo "**Commit:** ${GITHUB_SHA:0:7}  "
             echo "**Dashboard:** [${SONAR_HOST}/project/overview?id=${KEY}](${SONAR_HOST}/project/overview?id=${KEY})"
             echo ""
-
             # --- Übersicht ---
             echo "## Projekt-Übersicht"
             echo ""
@@ -184,7 +172,6 @@ jobs:
             echo "| Funktionen | $(get functions) |"
             echo "| Statements | $(get statements) |"
             echo ""
-
             # --- Coverage (aus pytest-cov coverage.xml, nicht aus Sonar-API) ---
             echo "## Test-Coverage (Backend / Python)"
             echo ""
@@ -202,7 +189,6 @@ jobs:
             echo "| Gedeckte Branches | ${BRANCHES_COVERED} |"
             echo "| Ungedeckte Branches | ${UNCOVERED_BRANCHES} |"
             echo ""
-
             # --- Duplikate ---
             echo "## Duplikate"
             echo ""
@@ -213,7 +199,6 @@ jobs:
             echo "| Duplikat-Blöcke | $(get duplicated_blocks) |"
             echo "| Betroffene Dateien | $(get duplicated_files) |"
             echo ""
-
             # --- Komplexität ---
             echo "## Komplexität"
             echo ""
@@ -222,7 +207,6 @@ jobs:
             echo "| Zyklomatische Komplexität | $(get complexity) |"
             echo "| Cognitive Complexity | $(get cognitive_complexity) |"
             echo ""
-
             # --- Issues & Ratings ---
             echo "## Issues & Bewertungen"
             echo ""
@@ -233,7 +217,6 @@ jobs:
             echo "| Maintainability (Code Smells) | $(rating sqale_rating) | $(get code_smells) | ${DEBT_FMT} |"
             echo "| Security Hotspots | $(rating security_review_rating) | $(get security_hotspots) | $(get security_hotspots_reviewed)% reviewed |"
             echo ""
-
             # --- Technische Schuld ---
             echo "## Technische Schuld"
             echo ""
@@ -243,7 +226,6 @@ jobs:
             echo "| Debt Ratio | $(get sqale_debt_ratio)% |"
             echo ""
           } >> "$OUT"
-
           # =====================================================
           # Top-10 Files: höchste Komplexität, schlechteste Coverage
           # =====================================================
@@ -253,7 +235,6 @@ jobs:
             echo "| Datei | Komplexität | Cognitive | LoC |"
             echo "|---|---:|---:|---:|"
           } >> "$OUT"
-
           curl -s -u "${SONAR_TOKEN}:" \
             "${SONAR_HOST}/api/measures/component_tree?component=${KEY}&metricKeys=complexity,cognitive_complexity,ncloc&qualifiers=FIL&ps=10&s=metric&metricSort=complexity&asc=false" \
             | jq -r '.components[]?
@@ -263,7 +244,6 @@ jobs:
                 | ((.measures[]? | select(.metric=="ncloc")               | .value) // "-") as $n
                 | "| " + $p + " | " + $c + " | " + $cog + " | " + $n + " |"' \
             >> "$OUT"
-
           {
             echo ""
             echo "## Coverage-Übersicht aller Backend-Dateien"
@@ -273,7 +253,6 @@ jobs:
             echo "| Datei | Coverage | Gedeckte / Deckbare | Ungedeckte Zeilen |"
             echo "|---|---:|---:|---:|"
           } >> "$OUT"
-
           if [ -f "${COV_FILE}" ]; then
             python3 - "${COV_FILE}" >> "$OUT" <<'PYEOF'
           import sys, xml.etree.ElementTree as ET
@@ -301,7 +280,6 @@ jobs:
           else
             echo "_coverage.xml nicht gefunden._" >> "$OUT"
           fi
-
           {
             echo ""
             echo "## Top-10 Dateien mit den meisten Duplikat-Blöcken"
@@ -309,7 +287,6 @@ jobs:
             echo "| Datei | Blöcke | Dupl. Zeilen | LoC |"
             echo "|---|---:|---:|---:|"
           } >> "$OUT"
-
           curl -s -u "${SONAR_TOKEN}:" \
             "${SONAR_HOST}/api/measures/component_tree?component=${KEY}&metricKeys=duplicated_blocks,duplicated_lines,ncloc&qualifiers=FIL&ps=10&s=metric&metricSort=duplicated_blocks&asc=false" \
             | jq -r '.components[]?
@@ -320,9 +297,18 @@ jobs:
                 | select(($b | tonumber) > 0)
                 | "| " + $p + " | " + $b + " | " + $l + " | " + $n + " |"' \
             >> "$OUT"
-
           {
             echo ""
             echo "---"
             echo "_Generiert von SonarCloud-Analyse aus Push auf \`${GITHUB_REF_NAME}\`._"
           } >> "$OUT"
+          
+      - name: Fail job on Quality Gate failure
+        if: always()
+        env:
+          QG_STATUS: ${{ steps.sonar-qg.outputs.quality-gate-status }}
+        run: |
+          if [ "${QG_STATUS}" != "PASSED" ]; then
+            echo "::error::SonarCloud Quality Gate ist FAILED – siehe Job Summary."
+            exit 1
+          fi

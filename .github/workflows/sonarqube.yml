@@ -259,6 +259,7 @@ jobs:
             echo "| Maintainability Rating | $(rating sqale_rating) | $(get code_smells) Code Smells |"
             echo "| Technische Schuld | ${DEBT_FMT} | – |"
           } >> "$SUMMARY_FILE"
+
       - name: Fail job on Quality Gate failure
         if: always()
         env:
