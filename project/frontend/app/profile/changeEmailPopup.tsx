@@ -3,7 +3,6 @@ import {fetchWithAuth} from "@/lib/auth";
 import {useState} from "react";
 import "../recipeFinder/style.css"
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:3000";
 export default function ChangeEmail (){
 
 
@@ -13,7 +12,7 @@ export default function ChangeEmail (){
     async function handleEmailChange() {
         setEmailMsg("");
         try {
-            const res = await fetchWithAuth(`${API_URL}/users/me`, {
+            const res = await fetchWithAuth(`/users/me`, {
                 method: "PATCH",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ email: newEmail }),

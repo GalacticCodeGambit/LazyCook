@@ -16,7 +16,7 @@ class Recipe:
     def saveInDB(self) -> bool:
         rid = addRecipe(self.__name, self.__description, None)
         for ingridient in self.__ingredients:
-            zid = getIngridientByName(ingridient.getName())
+            zid = getIngridientByName(ingridient.getName())['id']
             if not zid:
                 return False
             else:
@@ -59,7 +59,7 @@ class Recipe:
     def setDuration(self, duration: str):
         self.__duration = duration
 
-    def getingredients(self) -> list[Ingredient]:
+    def getIngredients(self) -> list[Ingredient]:
         return self.__ingredients
 
     def setIngredient(self, ingredients: list[Ingredient]):
