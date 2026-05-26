@@ -16,11 +16,11 @@ class Recipe:
     def saveInDB(self) -> bool:
         rid = addRecipe(self.__name, self.__description, None)
         for ingridient in self.__ingredients:
-            zid = getIngridientByName(ingridient.getName())['id']
-            if not zid:
+            result = getIngridientByName(ingridient.getName())
+            if not result:
                 return False
-            else:
-                addIngredientToRecipe(zid, rid, ingridient.getAmount())
+            zid = result['id']
+            addIngredientToRecipe(zid, rid, ingridient.getAmount())
         return True
 
     def getName(self) -> str:

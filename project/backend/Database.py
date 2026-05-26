@@ -275,7 +275,7 @@ def getIngridientByName(name: str):
                     FROM Ingredient
                     WHERE name = ?
                     """,
-            (name),
+            (name,),
         )
         row = cur.fetchone()
         return dict(row) if row else None

@@ -19,13 +19,19 @@
           with:
             fetch-depth: 0
 
+        - name: Python-Version aus Dockerfile lesen
+          id: pyver
+          run: |
+            VERSION=$(grep -oP '(?<=python:)\d+\.\d+' project/Dockerfile-backend | head -1)
+            echo "version=$VERSION" >> $GITHUB_OUTPUT
+
         # =====================================================
         # BACKEND (Python / FastAPI) – Tests + Coverage
         # =====================================================
         - name: Set up Python
           uses: actions/setup-python@v5
           with:
-            python-version: "3.10"
+            python-version: ${{ steps.pyver.outputs.version }}
 
         - name: Install backend dependencies
           working-directory: project/backend
@@ -56,16 +62,15 @@
               -Dsonar.organization=galacticcodegambit
               -Dproject.settings=sonar-project.properties
               -Dsonar.python.coverage.reportPaths=backend/coverage.xml
-              -Dsonar.python.version=3.10
+              -Dsonar.python.version=${{ steps.pyver.outputs.version }}
           env:
             GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
             SONAR_TOKEN:  ${{ secrets.SONAR_TOKEN }}
 
         - name: SonarCloud Quality Gate check
           id: sonar-qg
-          uses: SonarSource/sonarqube-quality-gate-action@master
+          uses: SonarSource/sonarqube-quality-gate-action@v1.2.0
           timeout-minutes: 5
-          continue-on-error: true
           with:
             scanMetadataReportFile: project/.scannerwork/report-task.txt
           env:

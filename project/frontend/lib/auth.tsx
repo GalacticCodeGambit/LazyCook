@@ -6,7 +6,6 @@ import {
     useState,
     useEffect,
     useCallback,
-    useMemo,
     type ReactNode,
 } from "react";
 
@@ -222,7 +221,7 @@ export function AuthProvider({ children }: Readonly<{ children: ReactNode }>) {
         setUser(null);
     }, []);
 
-     return (
+    return (
         <AuthContext.Provider value={{ user, loading, login, register, logout }}>
             {children}
         </AuthContext.Provider>

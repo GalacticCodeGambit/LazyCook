@@ -1,7 +1,7 @@
 name: SonarCloud Full Metrics (main branch)
 
 on:
-  pull_request:
+  push:
     branches: [main, master]
   workflow_dispatch:
 
@@ -19,13 +19,19 @@ jobs:
         with:
           fetch-depth: 0
 
+      - name: Python-Version aus Dockerfile lesen
+        id: pyver
+        run: |
+          VERSION=$(grep -oP '(?<=python:)\d+\.\d+' project/Dockerfile-backend | head -1)
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+
       # =====================================================
       # Backend-Tests + Coverage
       # =====================================================
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
-          python-version: "3.10"
+          python-version: ${{ steps.pyver.outputs.version }}
 
       - name: Install backend deps
         working-directory: project/backend
@@ -56,15 +62,14 @@ jobs:
             -Dsonar.organization=galacticcodegambit
             -Dproject.settings=sonar-project.properties
             -Dsonar.python.coverage.reportPaths=backend/coverage.xml
-            -Dsonar.python.version=3.10
+            -Dsonar.python.version=${{ steps.pyver.outputs.version }}
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
 
       - name: Wait for analysis
         id: qg
-        uses: SonarSource/sonarqube-quality-gate-action@master
+        uses: SonarSource/sonarqube-quality-gate-action@v1.2.0
         timeout-minutes: 5
-        continue-on-error: true
         with:
           scanMetadataReportFile: project/.scannerwork/report-task.txt
         env:
