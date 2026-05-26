@@ -266,7 +266,7 @@ def addIngredient(name: str, amountType: str) -> int:
         return cur.lastrowid
 
 
-def getIngridientByName(name: str):
+def getIngredientByName(name: str):
     with getDB() as con:
         cur = con.cursor()
         cur.execute(

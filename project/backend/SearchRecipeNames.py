@@ -1,4 +1,4 @@
-from Database import getAllRecipes, getAllIngredientsForRecipe
+from Database import getAllRecipes
 from Ingredient import Ingredient
 from Recipe import Recipe
 
@@ -12,16 +12,11 @@ def getMatchingRecipeNames(searchTerm: str) -> list[Recipe]:
             matchingRecipes.append(
                 Recipe(
                     recipe["name"],
-                    __formatIngredients(recipe["id"]),
+                    Ingredient.formatIngredients(recipe["id"]),
                     recipe["description"],
                 )
             )
     return matchingRecipes
 
 
-def __formatIngredients(id: int) -> list[Ingredient]:
-    IngredientsRaw = getAllIngredientsForRecipe(id)
-    Ingredients = []
-    for IngredientRaw in IngredientsRaw:
-        Ingredients.append(Ingredient(IngredientRaw["name"], IngredientRaw["amount"]))
-    return Ingredients
+
