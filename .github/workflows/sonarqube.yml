@@ -19,19 +19,13 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Python-Version aus Dockerfile lesen
-        id: pyver
-        run: |
-          VERSION=$(grep -oP '(?<=python:)\d+\.\d+' project/Dockerfile-backend | head -1)
-          echo "version=$VERSION" >> $GITHUB_OUTPUT
-
       # =====================================================
       # BACKEND (Python / FastAPI) – Tests + Coverage
       # =====================================================
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
-          python-version: ${{ steps.pyver.outputs.version }}
+          python-version: "3.11"
 
       - name: Install backend dependencies
         working-directory: project/backend
@@ -39,7 +33,6 @@ jobs:
           python -m pip install --upgrade pip
           python -m pip install -r requirements.txt
           python -m pip install "pytest-cov>=5,<7" "coverage>=7"
-
       - name: Run backend tests with coverage
         working-directory: project
         run: |
@@ -62,7 +55,7 @@ jobs:
             -Dsonar.organization=galacticcodegambit
             -Dproject.settings=sonar-project.properties
             -Dsonar.python.coverage.reportPaths=backend/coverage.xml
-            -Dsonar.python.version=${{ steps.pyver.outputs.version }}
+            -Dsonar.python.version=3.11
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SONAR_TOKEN:  ${{ secrets.SONAR_TOKEN }}
@@ -92,7 +85,7 @@ jobs:
           
           PROJECT_KEY=$(grep -E '^\s*sonar.projectKey\s*=' project/sonar-project.properties \
             | head -1 | cut -d'=' -f2 | tr -d ' \r\n')
-    
+          
           # PR-Kontext erkennen: dann Daten der PR-Analyse holen, nicht der Main-Branch
           PR_PARAM=""
           if [ -n "${PR_NUMBER}" ]; then
@@ -262,4 +255,17 @@ jobs:
             echo "| Bewertung | Wert | Anzahl |"
             echo "|---|---|---|"
             echo "| Reliability Rating | $(rating reliability_rating) | $(get bugs) Bugs |"
-            echo "| Security Rating | $(rat
+            echo "| Security Rating | $(rating security_rating) | $(get vulnerabilities) Vulnerabilities |"
+            echo "| Maintainability Rating | $(rating sqale_rating) | $(get code_smells) Code Smells |"
+            echo "| Technische Schuld | ${DEBT_FMT} | – |"
+          } >> "$SUMMARY_FILE"
+
+      - name: Fail job on Quality Gate failure
+        if: always()
+        env:
+          QG_STATUS: ${{ steps.sonar-qg.outputs.quality-gate-status }}
+        run: |
+          if [ "${QG_STATUS}" != "PASSED" ]; then
+            echo "::error::SonarCloud Quality Gate ist FAILED – siehe Job Summary."
+            exit 1
+          fi
