@@ -306,7 +306,7 @@ jobs:
       - name: Fail job on Quality Gate failure
         if: always()
         env:
-          QG_STATUS: ${{ steps.sonar-qg.outputs.quality-gate-status }}
+          QG_STATUS: ${{ steps.qg.outputs.quality-gate-status }}
         run: |
           if [ "${QG_STATUS}" != "PASSED" ]; then
             echo "::error::SonarCloud Quality Gate ist FAILED – siehe Job Summary."
