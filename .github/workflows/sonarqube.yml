@@ -63,7 +63,7 @@ jobs:
 
       - name: SonarCloud Quality Gate check
         id: sonar-qg
-        uses: SonarSource/sonarqube-quality-gate-action@v1.2.0
+        uses: SonarSource/sonarqube-quality-gate-action@master
         timeout-minutes: 5
         continue-on-error: true
         with:

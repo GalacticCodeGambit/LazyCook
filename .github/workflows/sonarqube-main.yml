@@ -62,7 +62,7 @@ jobs:
 
       - name: Wait for analysis
         id: qg
-        uses: SonarSource/sonarqube-quality-gate-action@v1.2.0
+        uses: SonarSource/sonarqube-quality-gate-action@master
         timeout-minutes: 5
         continue-on-error: true
         with:
