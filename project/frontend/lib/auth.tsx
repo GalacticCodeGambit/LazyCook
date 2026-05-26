@@ -108,7 +108,7 @@ async function fetchWithAuth(url: string, options: RequestInit = {}): Promise<Re
     if (!accessToken) throw new Error("Nicht eingeloggt");
 
     // Erster Versuch mit aktuellem Access Token
-    const fullUrl = url.startsWith('http') ? url : `${API_URL}${url}`;
+    const fullUrl = `${API_URL}${url}`;
     let res = await fetch(fullUrl, {
         ...options,
         headers: {

@@ -7,7 +7,7 @@ import Field from "@/app/components/fields";
 
 function PasswordInput({ value, onChange, placeholder, onKeyDown, ariaLabel }: {
     readonly value: string;
-    readonly  onChange: (v: string) => void;
+    readonly onChange: (v: string) => void;
     readonly placeholder: string;
     readonly onKeyDown?: (e: React.KeyboardEvent) => void;
     readonly ariaLabel?: string;
