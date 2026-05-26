@@ -19,19 +19,13 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Python-Version aus Dockerfile lesen
-        id: pyver
-        run: |
-          VERSION=$(grep -oP '(?<=python:)\d+\.\d+' project/Dockerfile-backend | head -1)
-          echo "version=$VERSION" >> $GITHUB_OUTPUT
-
       # =====================================================
       # BACKEND (Python / FastAPI) – Tests + Coverage
       # =====================================================
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
-          python-version: ${{ steps.pyver.outputs.version }}
+          python-version: "3.11"
 
       - name: Install backend dependencies
         working-directory: project/backend
@@ -62,7 +56,7 @@ jobs:
             -Dsonar.organization=galacticcodegambit
             -Dproject.settings=sonar-project.properties
             -Dsonar.python.coverage.reportPaths=backend/coverage.xml
-            -Dsonar.python.version=${{ steps.pyver.outputs.version }}
+            -Dsonar.python.version=3.11
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SONAR_TOKEN:  ${{ secrets.SONAR_TOKEN }}
