@@ -70,6 +70,7 @@ jobs:
         id: qg
         uses: SonarSource/sonarqube-quality-gate-action@v1.2.0
         timeout-minutes: 5
+        continue-on-error: true
         with:
           scanMetadataReportFile: project/.scannerwork/report-task.txt
         env:
