@@ -64,16 +64,16 @@ export default function AddIngredientsPopup({ ingredients, onAdd, suggestions = 
 
     return (
         <div className="popup">
-            <h2 className="popup__title">Zutaten Hinzufügen</h2>
+            <h2 className="popup-title">Zutaten Hinzufügen</h2>
 
-            <div className="popup__fields">
+            <div className="popup-fields">
                 <input
                     type="text"
                     value={ingredientName}
                     onChange={e => setIngredientName(e.target.value)}
                     onKeyDown={e => e.key === "Enter" && handleAddIngredient()}
                     placeholder="z.B. Tomaten"
-                    className="popup__input"
+                    className="popup-input"
                 />
                 <input
                     ref={amountInputRef}
@@ -83,21 +83,21 @@ export default function AddIngredientsPopup({ ingredients, onAdd, suggestions = 
                     onKeyDown={e => e.key === "Enter" && handleAddIngredient()}
                     placeholder="Menge"
                     min={0}
-                    className="popup__input popup__input--amount"
+                    className="popup-input popup-input-amount"
                 />
                 <select
                     value={ingredientUnit}
                     onChange={e => setIngredientUnit(e.target.value)}
-                    className="popup__select"
+                    className="popup-select"
                 >
                     {EINHEITEN.map(e => <option key={e} value={e}>{e}</option>)}
                 </select>
             </div>
 
             {suggestions.length > 0 && (
-                <div className="popup__suggestions">
-                    <p className="popup__suggestions-label">Häufig verwendet</p>
-                    <div className="popup__suggestions-list">
+                <div className="popup-suggestions">
+                    <p className="popup-suggestions-label">Häufig verwendet</p>
+                    <div className="popup-suggestions-list">
                         {suggestions.map(s => {
                             const added = isAlreadyAdded(s);
                             return (
@@ -106,7 +106,7 @@ export default function AddIngredientsPopup({ ingredients, onAdd, suggestions = 
                                     type="button"
                                     disabled={added}
                                     onClick={() => !added && handleSuggestionClick(s)}
-                                    className={`popup__suggestion-badge${added ? " popup__suggestion-badge--added" : ""}`}
+                                    className={`popup-suggestion-badge${added ? " popup-suggestion-badge-added" : ""}`}
                                     title={added ? "Bereits hinzugefügt" : (s.unit ? `${s.name} (${s.unit})` : s.name)}
                                 >
                                     {s.name}
@@ -117,9 +117,9 @@ export default function AddIngredientsPopup({ ingredients, onAdd, suggestions = 
                 </div>
             )}
 
-            {inputError && <p className="popup__error">{inputError}</p>}
+            {inputError && <p className="popup-error">{inputError}</p>}
 
-            <button onClick={handleAddIngredient} className="popup__btn">
+            <button onClick={handleAddIngredient} className="popup-btn">
                 Hinzufügen
             </button>
         </div>

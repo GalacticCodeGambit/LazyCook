@@ -6,6 +6,7 @@ class Ingredient:
     def __init__(self, name: str, amount: float):
         self.__name = name
         self.__amount = amount
+        self.__amountType = None
 
     def getName(self) -> str:
         return self.__name

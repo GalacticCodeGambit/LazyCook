@@ -12,7 +12,6 @@ import ChangePassword from "@/app/profile/changePasswordPopup";
 
 import "../recipeFinder/style.css"
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:3000";
 
 export default function Profile() {
     const { user, loading, logout } = useAuth();
@@ -40,7 +39,7 @@ export default function Profile() {
     if (!user) return null;
 
     async function handleAccountDeletion() {
-        const res = await fetchWithAuth(`${API_URL}/users/me`, { method: "DELETE" });
+        const res = await fetchWithAuth(`/users/me`, { method: "DELETE" });
         if (!res.ok) throw new Error("Konto löschen fehlgeschlagen");
         logout();
         router.push("/");
@@ -124,7 +123,7 @@ export default function Profile() {
             </Modal>
 
             <Modal open={showPasswordModal} onCloseAction={() => setShowPasswordModal(false)}>
-                <ChangePassword modus="change"></ChangePassword>
+                <ChangePassword></ChangePassword>
             </Modal>
         </div>
     );
