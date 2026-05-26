@@ -222,9 +222,8 @@ export function AuthProvider({ children }: Readonly<{ children: ReactNode }>) {
         setUser(null);
     }, []);
 
-    const obj = useMemo(() => ({ user, loading, login, register, logout }), []);
-    return (
-        <AuthContext.Provider value={obj}>
+     return (
+        <AuthContext.Provider value={{ user, loading, login, register, logout }}>
             {children}
         </AuthContext.Provider>
     );
