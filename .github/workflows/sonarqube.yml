@@ -260,7 +260,11 @@ jobs:
             echo "| Technische Schuld | ${DEBT_FMT} | – |"
           } >> "$SUMMARY_FILE"
       - name: Fail job on Quality Gate failure
-        if: steps.sonar-qg.outputs.quality-gate-status == 'FAILED'
+        if: always()
+        env:
+          QG_STATUS: ${{ steps.sonar-qg.outputs.quality-gate-status }}
         run: |
-          echo "::error::SonarCloud Quality Gate ist FAILED – siehe Job Summary."
-          exit 1
+          if [ "${QG_STATUS}" != "PASSED" ]; then
+            echo "::error::SonarCloud Quality Gate ist FAILED – siehe Job Summary."
+            exit 1
+          fi
