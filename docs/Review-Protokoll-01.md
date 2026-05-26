@@ -1,6 +1,6 @@
 # Review-Protokoll-01 
 ### **Datum** (Startzeit und Endzeit):  
-12.05.2026 16.:00 bis 16:20
+12.05.2026 16:00 bis 16:20
 
 ### **Teilnehmende**: 
 - Moderator: PrussianBaron 

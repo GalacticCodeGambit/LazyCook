@@ -5,14 +5,12 @@ import {Eye, EyeOff} from "lucide-react";
 import "../recipeFinder/style.css"
 import Field from "@/app/components/fields";
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:3000";
-
 function PasswordInput({ value, onChange, placeholder, onKeyDown, ariaLabel }: {
-    value: string;
-    onChange: (v: string) => void;
-    placeholder: string;
-    onKeyDown?: (e: React.KeyboardEvent) => void;
-    ariaLabel?: string;
+    readonly value: string;
+    readonly  onChange: (v: string) => void;
+    readonly placeholder: string;
+    readonly onKeyDown?: (e: React.KeyboardEvent) => void;
+    readonly ariaLabel?: string;
 }) {
     const [show, setShow] = useState(false);
     return (
@@ -52,14 +50,11 @@ function PasswordInput({ value, onChange, placeholder, onKeyDown, ariaLabel }: {
     );
 }
 
-type Modus = "change" | "forgot";
-
 interface ChangePasswordProps {
-    modus: Modus;
     onSuccess?: () => void;
 }
 
-export default function ChangePassword({ modus, onSuccess }: ChangePasswordProps) {
+export default function ChangePassword({ onSuccess }: Readonly<ChangePasswordProps>) {
 
     const [currentPassword, setCurrentPassword] = useState("");
     const [newPassword, setNewPassword] = useState("");
@@ -67,13 +62,10 @@ export default function ChangePassword({ modus, onSuccess }: ChangePasswordProps
     const [passwordMsg, setPasswordMsg] = useState("");
     const [pwBlurred, setPwBlurred] = useState(false);
 
-    const isForgot = modus === "forgot";
-
     async function handlePasswordChange() {
         setPasswordMsg("");
 
-        // Pflichtfelder im "change"-Modus
-        if (!isForgot && !currentPassword) {
+        if (!currentPassword) {
             setPasswordMsg("Bitte das aktuelle Passwort eingeben.");
             return;
         }
@@ -86,27 +78,16 @@ export default function ChangePassword({ modus, onSuccess }: ChangePasswordProps
             return;
         }
 
-        // Bestätigung prüfen
         if (newPassword !== confirmPassword) {
             setPasswordMsg("Die Passwörter stimmen nicht überein.");
             return;
         }
 
         try {
-            const endpoint = isForgot
-                ? `${API_URL}/users/forgot-password`
-                : `${API_URL}/users/me`;
-
-            const body = isForgot
-                ? { newPassword }
-                : { currentPassword, newPassword };
-
-            const fetcher = isForgot ? fetch : fetchWithAuth;
-
-            const res = await fetcher(endpoint, {
+            const res = await fetchWithAuth("/users/me", {
                 method: "PATCH",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(body),
+                body: JSON.stringify({ currentPassword, newPassword }),
             });
 
             if (!res.ok) {
@@ -115,11 +96,7 @@ export default function ChangePassword({ modus, onSuccess }: ChangePasswordProps
                 return;
             }
 
-            setPasswordMsg(
-                isForgot
-                    ? "Passwort erfolgreich zurückgesetzt."
-                    : "Passwort erfolgreich geändert."
-            );
+            setPasswordMsg("Passwort erfolgreich geändert.");
             setCurrentPassword("");
             setNewPassword("");
             setConfirmPassword("");
@@ -131,13 +108,10 @@ export default function ChangePassword({ modus, onSuccess }: ChangePasswordProps
 
     return (
         <div className="popup w-[480px] max-w-full">
-            <h2 className="popup__title">
-                {isForgot ? "Passwort zurücksetzen" : "Passwort ändern"}
-            </h2>
+            <h2 className="popup__title">Passwort ändern</h2>
 
             <div className="popup__fields popup__fields--stacked">
-                {!isForgot && (
-                    <Field label="Aktuelles Passwort" type="password" value={currentPassword} onChange={setCurrentPassword} placeholder="••••••••" onBlur={() => setPwBlurred(true)} onKeyDown={(e) => e.key === "Enter" && handlePasswordChange()} state={pwBlurred && !currentPassword? "error" : "default"} />)}
+                <Field label="Aktuelles Passwort" type="password" value={currentPassword} onChange={setCurrentPassword} placeholder="••••••••" onBlur={() => setPwBlurred(true)} onKeyDown={(e) => e.key === "Enter" && handlePasswordChange()} state={pwBlurred && !currentPassword? "error" : "default"} />
 
 
                 <PasswordInput
@@ -162,7 +136,7 @@ export default function ChangePassword({ modus, onSuccess }: ChangePasswordProps
                     className="px-4 py-2 rounded-lg bg-black text-white hover:bg-gray-800 text-sm font-medium"
                     onClick={handlePasswordChange}
                 >
-                    {isForgot ? "Zurücksetzen" : "Speichern"}
+                    Speichern
                 </Button>
             </div>
         </div>

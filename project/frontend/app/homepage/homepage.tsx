@@ -28,7 +28,6 @@ export default function Homepage() {
                     </div>
 
                     <nav className="hidden md:flex items-center gap-6">
-                        {/* Datenschutz & Impressum */}
                         <Link href="/datenschutz" className="text-gray-700 hover:text-black">Datenschutz</Link>
                         <Link href="/impressum" className="text-gray-700 hover:text-black">Impressum</Link>
                     </nav>
