@@ -16,10 +16,6 @@ import hashlib
 
 PASSWORD_RESET_EXPIRE_MINUTES = 30
 
-import hashlib
-
-PASSWORD_RESET_EXPIRE_MINUTES = 30
-
 from Models import Token, User
 
 from Database import getAccountByEmail, saveRefreshToken, getRefreshToken

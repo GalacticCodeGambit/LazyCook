@@ -17,6 +17,3 @@ def getMatchingRecipeNames(searchTerm: str) -> list[Recipe]:
                 )
             )
     return matchingRecipes
-
-
-
