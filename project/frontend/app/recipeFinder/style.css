@@ -81,7 +81,8 @@
     gap: 20px;
 }
 
-.popup-title {
+.popup-title,
+.popup__title {
     font-size: 20px;
     font-weight: 600;
     color: #111;
@@ -90,16 +91,19 @@
     margin: 0;
 }
 
-.popup-fields {
+.popup-fields,
+.popup__fields {
     display: flex;
     gap: 10px;
 }
 
-.popup-fields-stacked {
+.popup-fields-stacked,
+.popup__fields--stacked {
     flex-direction: column;
 }
 
-.popup-input {
+.popup-input,
+.popup__input {
     flex: 1;
     padding: 10px 12px;
     border-radius: 6px;
