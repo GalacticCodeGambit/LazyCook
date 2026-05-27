@@ -108,9 +108,9 @@ export default function ChangePassword({ onSuccess }: Readonly<ChangePasswordPro
 
     return (
         <div className="popup w-[480px] max-w-full">
-            <h2 className="popup__title">Passwort ändern</h2>
+            <h2 className="popup-title">Passwort ändern</h2>
 
-            <div className="popup__fields popup__fields--stacked">
+            <div className="popup-fields popup-fields-stacked">
                 <Field label="Aktuelles Passwort" type="password" value={currentPassword} onChange={setCurrentPassword} placeholder="••••••••" onBlur={() => setPwBlurred(true)} onKeyDown={(e) => e.key === "Enter" && handlePasswordChange()} state={pwBlurred && !currentPassword? "error" : "default"} />
 
 
