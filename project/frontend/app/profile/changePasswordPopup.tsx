@@ -22,7 +22,7 @@ function PasswordInput({ value, onChange, placeholder, onKeyDown, ariaLabel }: {
                 value={value}
                 onChange={(e) => onChange(e.target.value)}
                 onKeyDown={onKeyDown}
-                className="popup__input"
+                className="popup-input"
                 style={{ width: "100%", paddingRight: 38 }}
             />
             <button

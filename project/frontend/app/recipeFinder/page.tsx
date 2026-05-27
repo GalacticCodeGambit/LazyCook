@@ -209,8 +209,8 @@ export default function RecipeFinder() {
                 <aside className="finder-sidebar">
 
                     {/* Zutaten hinzufügen */}
-                    <div className="finder-sidebar__section">
-                        <p className="finder-sidebar__title">Zutaten</p>
+                    <div className="finder-sidebar-section">
+                        <p className="finder-sidebar-title">Zutaten</p>
                         <div style={{ display: "flex", gap: 8 }}>
                             <Button
                                 onPointerDown={() => {
