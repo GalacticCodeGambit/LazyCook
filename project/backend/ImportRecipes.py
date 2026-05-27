@@ -1,11 +1,22 @@
+import json
 from Recipe import Recipe
 from Ingredient import Ingredient
 from Database import getAllIngredients
 
 EXCLUDE_INGREDIENTS = ["Salz", "Pfeffer", "Zucker"]
 
-def extractRecipesFromJSON():
-    pass
+def extractRecipesFromJSON(jsonData: str) -> list[Recipe]:
+    recipesRaw = json.loads(jsonData)
+    recipes = []
+    for recipeData in recipesRaw:
+        recipe = __formatRecipe(
+            recipeData["Name"],
+            recipeData["Ingredients"],
+            recipeData["Instructions"]
+        )
+        recipe.saveInDB()
+        recipes.append(recipe)
+    return recipes
 
 def __formatRecipe(name: str,ingredientsRaw: dict, description: str)-> Recipe:
     ingredients = []
@@ -49,7 +60,3 @@ def __saveIngridientInDB(ingredient: Ingredient) -> bool:
         if ingredient.getName() == ingredients["name"]:
             return False
     return ingredient.saveInDB()
-
-
-
-
