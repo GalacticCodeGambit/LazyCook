@@ -26,7 +26,7 @@ class Ingredient:
     def getAmountType(self):
         return self.__amountType
 
-    def saveInDB(self):
+    def saveInDB(self) -> bool:
         if not self.__amountType:
             return False
         else:

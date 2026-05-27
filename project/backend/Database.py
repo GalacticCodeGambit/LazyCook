@@ -344,6 +344,15 @@ def getAllocatedRecipes(name: str) -> list[dict]:
         rows = cur.fetchall()
         return [dict(row) for row in rows]
 
+def getAllIngredients() -> list[dict]:
+    with getDB() as con:
+        cur = con.cursor()
+        cur.execute("""
+                    SELECT id, name, amountType
+                    FROM Ingredient
+                    """)
+        rows = cur.fetchall()
+        return [dict(row) for row in rows]
 
 """
 # --- 1. Fresh Pesto Pasta ---
