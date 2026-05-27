@@ -247,7 +247,7 @@ def addRecipe(name: str, description: str, vid: int) -> int:
         return cur.lastrowid
 
 
-def addIngredientToRecipe(zid: int, rid: int, amount: float) -> int:
+def addIngredientToRecipe(zid: int, rid: int, amount: float) -> None:
     with getDB() as con:
         cur = con.cursor()
         cur.execute(
@@ -266,16 +266,16 @@ def addIngredient(name: str, amountType: str) -> int:
         return cur.lastrowid
 
 
-def getIngridientByName(name: str):
+def getIngredientByName(name: str):
     with getDB() as con:
         cur = con.cursor()
         cur.execute(
             """
                     SELECT id, amountType
-                    FROM Recipe
-                    WHERE id = ?
+                    FROM Ingredient
+                    WHERE name = ?
                     """,
-            (name),
+            (name,),
         )
         row = cur.fetchone()
         return dict(row) if row else None
@@ -336,8 +336,8 @@ def getAllocatedRecipes(name: str) -> list[dict]:
             """
                     SELECT rid 
                     FROM Exists_from
-                    Inner Join Ingredient on rid=id,
-                    Where Exists_from.id = ?
+                    Inner Join Ingredient on rid=id
+                    Where Ingrediant.name = ?
                     """,
             (name,),
         )

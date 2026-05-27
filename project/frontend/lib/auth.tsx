@@ -108,7 +108,8 @@ async function fetchWithAuth(url: string, options: RequestInit = {}): Promise<Re
     if (!accessToken) throw new Error("Nicht eingeloggt");
 
     // Erster Versuch mit aktuellem Access Token
-    let res = await fetch(`${API_URL}`+url, {
+    const fullUrl = `${API_URL}${url}`;
+    let res = await fetch(fullUrl, {
         ...options,
         headers: {
             ...options.headers,
@@ -130,7 +131,7 @@ async function fetchWithAuth(url: string, options: RequestInit = {}): Promise<Re
         }
         saveTokens(tokens.access_token, tokens.refresh_token);
 
-        res = await fetch(url, {
+        res = await fetch(fullUrl, {
             ...options,
             headers: {
                 ...options.headers,
@@ -145,7 +146,7 @@ async function fetchWithAuth(url: string, options: RequestInit = {}): Promise<Re
 // ── Context ───────────────────────────────────────────────────
 const AuthContext = createContext<AuthContextType | null>(null);
 
-export function AuthProvider({ children }: { children: ReactNode }) {
+export function AuthProvider({ children }: Readonly<{ children: ReactNode }>) {
     const [user, setUser] = useState<User | null>(null);
     const [loading, setLoading] = useState(true);
 
@@ -195,8 +196,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
                 setUser(null);
             }
         };
-        window.addEventListener("storage", handleStorageChange);
-        return () => window.removeEventListener("storage", handleStorageChange);
+        globalThis.addEventListener("storage", handleStorageChange);
+        return () => globalThis.removeEventListener("storage", handleStorageChange);
     }, []);
 
     const login = useCallback(async (email: string, password: string) => {

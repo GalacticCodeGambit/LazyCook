@@ -184,17 +184,23 @@ export default function RecipeFinder() {
     };
 
     const handleSearch = async () => {
+        if (ingredients.length === 0) {
+            setSearchError("Bitte mindestens eine Zutat hinzufügen.");
+            return;
+        }
         setSearchError("");
         setSearching(true);
         setVisibleCount(12);
         try {
-            const res = await fetchWithAuth(`/recipes/search`, {
+            const res = await fetchWithAuth('/recipes/search', {
                 method: "POST",
                 headers: {"Content-Type": "application/json"},
                 body: JSON.stringify({zutaten: ingredients, servings}),
             });
             const data = await res.json();
             setResults(data.rezepte ?? []);
+            // Aktualisierte Top 5 direkt aus der Search-Response übernehmen –
+            // beim nächsten Popup-Öffnen sind die Vorschläge sofort aktuell, ohne extra Roundtrip
             if (Array.isArray(data.topIngredients)) {
                 setSuggestions(data.topIngredients);
                 localStorage.setItem("ingredientSuggestions", JSON.stringify(data.topIngredients));
@@ -319,7 +325,7 @@ export default function RecipeFinder() {
                     {/* Suche starten */}
                     <div className="finder-sidebar-section">
                         {searchError && <p style={{ color: '#b91c1c', fontSize: 13, fontFamily: 'system-ui', marginBottom: 8 }}>{searchError}</p>}
-                        <button onClick={handleSearch} disabled={searching} className="finder-sidebar-search-btn">
+                        <button onClick={handleSearch} disabled={searching || ingredients.length === 0} className="finder-sidebar__search-btn">
                             <Search size={15} />
                             {searching ? "Suche läuft…" : "Rezepte suchen"}
                         </button>

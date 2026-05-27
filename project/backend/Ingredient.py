@@ -1,11 +1,12 @@
 from typing import List, Dict, Any
-from Database import addIngredient
+from Database import addIngredient, getAllIngredientsForRecipe
 
 
 class Ingredient:
     def __init__(self, name: str, amount: float):
         self.__name = name
         self.__amount = amount
+        self.__amountType = None
 
     def getName(self) -> str:
         return self.__name
@@ -34,3 +35,12 @@ class Ingredient:
                 return False
             else:
                 return True
+
+    def formatIngredients(id: int) -> list[Ingredient]:
+        IngredientsRaw = getAllIngredientsForRecipe(id)
+        Ingredients = []
+        for IngredientRaw in IngredientsRaw:
+            Ingredients.append(
+                Ingredient(IngredientRaw["name"], IngredientRaw["amount"])
+            )
+        return Ingredients

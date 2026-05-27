@@ -1,8 +1,9 @@
 # LazyCook
 [![ci.yml](https://github.com/GalacticCodeGambit/LazyCook/actions/workflows/ci.yml/badge.svg)](https://github.com/GalacticCodeGambit/LazyCook/actions/workflows/ci.yml)
 [![lint.yml](https://github.com/GalacticCodeGambit/LazyCook/actions/workflows/lint.yml/badge.svg)](https://github.com/GalacticCodeGambit/LazyCook/actions/workflows/lint.yml)
+[![SonarCloud Full Metrics (main branch)](https://github.com/GalacticCodeGambit/LazyCook/actions/workflows/sonarqube-main.yml/badge.svg)](https://github.com/GalacticCodeGambit/LazyCook/actions/workflows/sonarqube-main.yml)
 
-LazyCook soll eine Webanwendung sein. Die es ermöglichen, seine vorhandenen Zutaten einzutragen, und darauf soll LazyCook dir mögliche Rezepte/Gerichte vorschlagen, die du aus diesen Zutaten gemacht werden können.
+LazyCook soll eine Webanwendung sein, die es ermöglicht, vorhandene Zutaten einzutragen. Darauf basierend soll LazyCook mögliche Rezepte/Gerichte vorschlagen, die du aus diesen Zutaten machen kannst.
 ## Features
 - [x] [#23](https://github.com/GalacticCodeGambit/LazyCook/issues/23) Zutaten hinzufügen können 
 - [x] [#24](https://github.com/GalacticCodeGambit/LazyCook/issues/24) Zutaten entfernen können  

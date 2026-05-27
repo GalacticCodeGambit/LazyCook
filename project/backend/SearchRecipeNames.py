@@ -2,7 +2,6 @@ from Database import getAllRecipes, getAllIngredientsForRecipe
 from Ingredient import Ingredient
 from Recipe import Recipe
 
-
 def getMatchingRecipeNames(searchTerm: str) -> list[Recipe]:
     """Gibt eine Liste von Rezepten zurück, die den Suchbegriff enthalten."""
     searchTerm = searchTerm.lower()
@@ -12,7 +11,7 @@ def getMatchingRecipeNames(searchTerm: str) -> list[Recipe]:
             matchingRecipes.append(
                 Recipe(
                     recipe["name"],
-                    __formatIngredients(recipe["id"]),
+                    Ingredient.formatIngredients(recipe["id"]),
                     recipe["description"],
                 )
             )
