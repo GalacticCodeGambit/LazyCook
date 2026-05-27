@@ -72,4 +72,3 @@ def sendPasswordResetEmail(to_email: str, name: str, resetLink: str) -> None:
     except Exception as e:
         print(f"E-Mail Fehler: {e}")
         raise
-
