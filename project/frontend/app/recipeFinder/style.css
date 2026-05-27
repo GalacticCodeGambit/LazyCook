@@ -637,3 +637,35 @@
 .recipe-card__btn:hover {
     background: rgb(3 2 19 / 85%);
 }
+.finder-results__search {
+    margin-bottom: 24px;
+}
+
+.finder-results__search-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.finder-results__search-icon {
+    position: absolute;
+    left: 12px;
+    color: #9ca3af;
+}
+
+.finder-results__search-input {
+    width: 100%;
+    padding: 10px 12px 10px 38px;
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    font-size: 14px;
+    font-family: system-ui;
+    outline: none;
+    background: #f9fafb;
+    transition: border-color 0.15s;
+}
+
+.finder-results__search-input:focus {
+    border-color: #030213;
+    background: #fff;
+}

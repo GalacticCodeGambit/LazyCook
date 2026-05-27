@@ -11,7 +11,7 @@ import AddIngredientsPopup from "@/app/recipeFinder/popup";
 import ProfileDropdown from "@/app/components/profile_dropdown";
 
 const EINHEITEN = ["Stück", "g", "kg", "ml", "l", "EL", "TL", "Prise"];
-
+const API_URL = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:3000";
 interface Recipe {
     name: string;
     description: string;
@@ -74,6 +74,9 @@ export default function RecipeFinder() {
     const [results, setResults] = useState<Recipe[] | null>(null);
     const [visibleCount, setVisibleCount] = useState(12);
 
+    const [searchText, setSearchText] = useState("");
+
+
     const [editingIngredient, setEditingIngredient] = useState<string | null>(null);
     const [editAmount, setEditAmount] = useState("");
     const [editUnit, setEditUnit] = useState("Stück");
@@ -133,6 +136,20 @@ export default function RecipeFinder() {
         localStorage.setItem("ingredients", JSON.stringify(ingredients));
     }, [ingredients]);
 
+    // Beim ersten Laden alle Rezepte anzeigen
+    useEffect(() => {
+        if (!user) return;
+        console.log("Lade Rezepte...", API_URL); // NEU
+        fetchWithAuth(`/recipes/search`, {
+            method: "POST",
+            headers: {"Content-Type": "application/json"},
+            body: JSON.stringify({zutaten: [], servings: 1}),
+        })
+            .then(res => res.json())
+            .then(data => setResults(data.rezepte ?? []))
+            .catch(() => {});
+    }, [user]);
+
     if (loading) {
         return (
             <div className="min-h-screen flex items-center justify-center">
@@ -167,23 +184,17 @@ export default function RecipeFinder() {
     };
 
     const handleSearch = async () => {
-        if (ingredients.length === 0) {
-            setSearchError("Bitte mindestens eine Zutat hinzufügen.");
-            return;
-        }
         setSearchError("");
         setSearching(true);
         setVisibleCount(12);
         try {
-            const res = await fetchWithAuth('/recipes/search', {
+            const res = await fetchWithAuth(`/recipes/search`, {
                 method: "POST",
                 headers: {"Content-Type": "application/json"},
                 body: JSON.stringify({zutaten: ingredients, servings}),
             });
             const data = await res.json();
             setResults(data.rezepte ?? []);
-            // Aktualisierte Top 5 direkt aus der Search-Response übernehmen –
-            // beim nächsten Popup-Öffnen sind die Vorschläge sofort aktuell, ohne extra Roundtrip
             if (Array.isArray(data.topIngredients)) {
                 setSuggestions(data.topIngredients);
                 localStorage.setItem("ingredientSuggestions", JSON.stringify(data.topIngredients));
@@ -308,7 +319,7 @@ export default function RecipeFinder() {
                     {/* Suche starten */}
                     <div className="finder-sidebar-section">
                         {searchError && <p style={{ color: '#b91c1c', fontSize: 13, fontFamily: 'system-ui', marginBottom: 8 }}>{searchError}</p>}
-                        <button onClick={handleSearch} disabled={searching || ingredients.length === 0} className="finder-sidebar-search-btn">
+                        <button onClick={handleSearch} disabled={searching} className="finder-sidebar-search-btn">
                             <Search size={15} />
                             {searching ? "Suche läuft…" : "Rezepte suchen"}
                         </button>
@@ -317,9 +328,23 @@ export default function RecipeFinder() {
 
                 {/* Rezepte Anzeige */}
                 <main className="finder-results">
+                    {/* Suchleiste */}
+                    <div className="finder-results__search">
+                        <div className="finder-results__search-wrapper">
+                            <Search size={16} className="finder-results__search-icon" />
+                            <input
+                                type="text"
+                                placeholder="Rezept suchen…"
+                                value={searchText}
+                                onChange={e => setSearchText(e.target.value)}
+                                className="finder-results__search-input"
+                            />
+                        </div>
+                    </div>
+
                     {results === null ? (
                         <div className="finder-results__empty">
-                            <p className="text-gray-400 text-sm">Zutaten hinzufügen und suchen um Rezepte zu finden.</p>
+                            <p className="text-gray-400 text-sm">Laden…</p>
                         </div>
                     ) : results.length === 0 ? (
                         <div className="finder-results__empty">
@@ -328,22 +353,25 @@ export default function RecipeFinder() {
                     ) : (
                         <>
                             <div className="finder-results__grid">
-                                {results.slice(0, visibleCount).map((recipe, idx) => (
-                                    <div key={idx} className="recipe-card">
-                                        <div className="recipe-card__body">
-                                            <h3 className="recipe-card__title">{recipe.name}</h3>
-                                            <p className="recipe-card__description">{recipe.description}</p>
-                                            <div className="recipe-card__meta">
-                                                <span>🎯 {Math.round(recipe.rating * 100)}% Match</span>
-                                                {recipe.duration && <span>⏱ {recipe.duration}</span>}
-                                                <span>🥦 {recipe.ingredients.length} Zutaten</span>
+                                {results
+                                    .filter(r => r.name.toLowerCase().includes(searchText.toLowerCase()))
+                                    .slice(0, visibleCount)
+                                    .map((recipe, idx) => (
+                                        <div key={idx} className="recipe-card">
+                                            <div className="recipe-card__body">
+                                                <h3 className="recipe-card__title">{recipe.name}</h3>
+                                                <p className="recipe-card__description">{recipe.description}</p>
+                                                <div className="recipe-card__meta">
+                                                    <span>🎯 {Math.round(recipe.rating * 100)}% Match</span>
+                                                    {recipe.duration && <span>⏱ {recipe.duration}</span>}
+                                                    <span>🥦 {recipe.ingredients.length} Zutaten</span>
+                                                </div>
+                                                <button className="recipe-card__btn">Rezept ansehen</button>
                                             </div>
-                                            <button className="recipe-card__btn">Rezept ansehen</button>
                                         </div>
-                                    </div>
-                                ))}
+                                    ))}
                             </div>
-                            {visibleCount < results.length && (
+                            {visibleCount < results.filter(r => r.name.toLowerCase().includes(searchText.toLowerCase())).length && (
                                 <div className="finder-results__more">
                                     <button onClick={() => setVisibleCount(v => v + 12)} className="finder-results__more-btn">
                                         Mehr anzeigen
