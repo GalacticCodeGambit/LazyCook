@@ -73,6 +73,6 @@ def __saveRecipeInDB(recipe: Recipe):
         
 
 if __name__ =="__main__":
-    recipes = extractRecipesFromJSON("project\\data\\recipes_perfect.json")
+    recipes = extractRecipesFromJSON("project\\recipes_perfect.json")
     for r in recipes:
         print(r.getName())
