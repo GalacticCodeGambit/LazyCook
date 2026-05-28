@@ -248,12 +248,17 @@ def addRecipe(name: str, description: str, vid: int) -> int:
 
 
 def addIngredientToRecipe(zid: int, rid: int, amount: float) -> None:
-    with getDB() as con:
-        cur = con.cursor()
-        cur.execute(
-            "INSERT INTO Exists_from (zid, rid, amount) VALUES (?, ?, ?)",
-            (zid, rid, amount),
-        )
+    if not zid or not rid:
+        return False
+    try:
+        with getDB() as con:
+            cur = con.cursor()
+            cur.execute(
+                "INSERT INTO Exists_from (zid, rid, amount) VALUES (?, ?, ?)",
+                (zid, rid, amount),
+            )
+    except Exception as e:
+        return False
 
 
 def addIngredient(name: str, amountType: str) -> int:
