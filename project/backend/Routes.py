@@ -232,7 +232,7 @@ async def searchRecipes(
 
     # Echte Rezept-Suche
     ingredients = [Ingredient(z.name, z.amount) for z in body.zutaten]
-    recipes = findRecipes(ingredients)
+    recipes = findRecipes(ingredients,0)
 
     # Top 5 Zutaten
     topRows = getTopIngredients(Account["id"], limit=5)

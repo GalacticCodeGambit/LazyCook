@@ -36,7 +36,7 @@ class Ingredient:
             else:
                 return True
 
-    def formatIngredients(id: int) -> list[Ingredient]:
+    def formatIngredients(id: int) :
         IngredientsRaw = getAllIngredientsForRecipe(id)
         Ingredients = []
         for IngredientRaw in IngredientsRaw:

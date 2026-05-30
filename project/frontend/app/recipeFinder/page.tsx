@@ -325,7 +325,7 @@ export default function RecipeFinder() {
                     {/* Suche starten */}
                     <div className="finder-sidebar-section">
                         {searchError && <p style={{ color: '#b91c1c', fontSize: 13, fontFamily: 'system-ui', marginBottom: 8 }}>{searchError}</p>}
-                        <button onClick={handleSearch} disabled={searching || ingredients.length === 0} className="finder-sidebar__search-btn">
+                        <button onClick={handleSearch} disabled={searching || ingredients.length === 0} className="finder-sidebar-search-btn">
                             <Search size={15} />
                             {searching ? "Suche läuft…" : "Rezepte suchen"}
                         </button>

@@ -4,7 +4,8 @@ from Recipe import Recipe
 from Database import getAllRecipes, getAllIngredientsForRecipe
 
 
-def findRecipes(ingredients: list[Ingredient]) -> list[Recipe]:
+def findRecipes(ingredients: list[Ingredient], index: int) -> list[Recipe]:
+
     recipes = __initRecipes()
 
     for ingredient in ingredients:
@@ -12,10 +13,9 @@ def findRecipes(ingredients: list[Ingredient]) -> list[Recipe]:
 
     recipes.sort(key=lambda x: x.getRating(), reverse=True)
 
-    if len(recipes) > 98:
-        return recipes[:98]
 
-    return recipes
+    return recipes[12*index:12*(index+1)]
+
 
 
 def __filterRecipes(recipes: list[Recipe], ingredient: Ingredient) -> list[Recipe]:
