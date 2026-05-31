@@ -12,6 +12,7 @@ import ProfileDropdown from "@/app/components/profile_dropdown";
 
 const EINHEITEN = ["Stück", "g", "kg", "ml", "l", "EL", "TL", "Prise"];
 const API_URL = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:3000";
+
 interface Recipe {
     name: string;
     description: string;
@@ -84,6 +85,7 @@ export default function RecipeFinder() {
     const [searchError, setSearchError] = useState("");
 
     const [modalOpen, setModalOpen] = useState(false);
+    const [selectedRecipe, setSelectedRecipe] = useState<Recipe | null>(null);
 
     // Vorschläge: localStorage als sofortiger Initialwert (instant beim Öffnen),
     // im Hintergrund per useEffect aktualisiert.
@@ -372,7 +374,9 @@ export default function RecipeFinder() {
                                                     {recipe.duration && <span>⏱ {recipe.duration}</span>}
                                                     <span>🥦 {recipe.ingredients.length} Zutaten</span>
                                                 </div>
-                                                <button className="recipe-card__btn">Rezept ansehen</button>
+                                                <button className="recipe-card__btn" onClick={() => setSelectedRecipe(recipe)}>
+                                                    Rezept ansehen
+                                                </button>
                                             </div>
                                         </div>
                                     ))}
@@ -397,6 +401,62 @@ export default function RecipeFinder() {
                         suggestions={suggestions}
                     />
                 </Modal>
+                {/* Rezept Detail Popup */}
+                {selectedRecipe && (
+                    <div
+                        className="fixed inset-0 z-50 flex items-center justify-center bg-black/50"
+                        onClick={() => setSelectedRecipe(null)}
+                    >
+                        <div
+                            className="bg-white rounded-2xl shadow-xl w-full max-w-lg mx-4 flex flex-col max-h-[80vh] overflow-hidden"
+                            onClick={e => e.stopPropagation()}
+                        >
+                            {/* Header */}
+                            <div className="p-6 border-b">
+                                <h2 className="text-xl font-semibold">{selectedRecipe.name}</h2>
+                                <p className="text-sm text-gray-500 mt-1">{selectedRecipe.description}</p>
+                                <div className="flex gap-4 mt-2 text-sm text-gray-500">
+                                    <span>🎯 {Math.round(selectedRecipe.rating * 100)}% Match</span>
+                                    <span>🥦 {selectedRecipe.ingredients.length} Zutaten</span>
+                                </div>
+                            </div>
+
+                            {/* Inhalt scrollbar */}
+                            <div className="p-6 overflow-y-auto flex flex-col gap-6">
+                                {/* Zutaten */}
+                                <div>
+                                    <h3 className="font-semibold mb-3">Zutaten</h3>
+                                    <ul className="flex flex-col gap-2">
+                                        {selectedRecipe.ingredients.map((ing, idx) => (
+                                            <li key={idx} className="flex justify-between text-sm border-b pb-2">
+                                                <span>{ing.name}</span>
+                                                <span className="text-gray-500">{ing.amount}</span>
+                                            </li>
+                                        ))}
+                                    </ul>
+                                </div>
+
+                                {/* Zubereitung */}
+                                <div>
+                                    <h3 className="font-semibold mb-3">Zubereitung</h3>
+                                    <p className="text-sm text-gray-600 leading-relaxed">
+                                        {selectedRecipe.description}
+                                    </p>
+                                </div>
+                            </div>
+
+                            {/* Footer */}
+                            <div className="p-4 border-t">
+                                <button
+                                    className="w-full py-2 bg-black text-white rounded-lg text-sm"
+                                    onClick={() => setSelectedRecipe(null)}
+                                >
+                                    Schließen
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                )}
             </div>
         </div>
     );
