@@ -40,8 +40,8 @@ def initDB():
 
         cur.execute("""
                     CREATE TABLE IF NOT EXISTS Account (
-                                                         id INTEGER PRIMARY KEY AUTOINCREMENT,
-                                                         email VARCHAR(250) NOT NULL UNIQUE,
+                        id INTEGER PRIMARY KEY AUTOINCREMENT,
+                        email VARCHAR(250) NOT NULL UNIQUE,
                         name TEXT NOT NULL,
                         hashedPassword TEXT NOT NULL,
                         createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP
@@ -87,9 +87,9 @@ def initDB():
 
         cur.execute("""
                     CREATE TABLE IF NOT EXISTS Exists_from (
-                                                               zid INTEGER NOT NULL,
-                                                               rid INTEGER NOT NULL,
-                                                               amount DECIMAL(10,2) NOT NULL,
+                        zid INTEGER NOT NULL,
+                        rid INTEGER NOT NULL,
+                        amount DECIMAL(10,2) NOT NULL,
                         FOREIGN KEY (zid) REFERENCES Ingredient (id) ON DELETE CASCADE,
                         FOREIGN KEY (rid) REFERENCES Recipe (id) ON DELETE CASCADE,
                         UNIQUE (zid, rid)
@@ -98,9 +98,9 @@ def initDB():
 
         cur.execute("""
                     CREATE TABLE IF NOT EXISTS Favorites (
-                                                             AccountID INTEGER NOT NULL,
-                                                             rid INTEGER NOT NULL,
-                                                             FOREIGN KEY (AccountID) REFERENCES Account (id) ON DELETE CASCADE,
+                        AccountID INTEGER NOT NULL,
+                        rid INTEGER NOT NULL,
+                        FOREIGN KEY (AccountID) REFERENCES Account (id) ON DELETE CASCADE,
                         FOREIGN KEY (rid) REFERENCES Recipe (id) ON DELETE CASCADE,
                         UNIQUE (AccountID, rid)
                         )
