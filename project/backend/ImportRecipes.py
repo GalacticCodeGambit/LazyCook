@@ -2,8 +2,10 @@ import json
 from Recipe import Recipe
 from Ingredient import Ingredient
 from Database import getAllIngredients, getAllRecipes
+from pathlib import Path
 
 EXCLUDE_INGREDIENTS = ["Salz", "Pfeffer", "Zucker"]
+PATH = Path(__file__).parent.parent /"recipes_perfect.json"
 
 def extractRecipesFromJSON(filePath: str) -> list[Recipe]:
     recipesRaw = json.loads(__readJsonFile(filePath=filePath))
@@ -73,6 +75,6 @@ def __saveRecipeInDB(recipe: Recipe):
         
 
 if __name__ =="__main__":
-    recipes = extractRecipesFromJSON("project\\recipes_perfect.json")
+    recipes = extractRecipesFromJSON(str(PATH))
     for r in recipes:
         print(r.getName())

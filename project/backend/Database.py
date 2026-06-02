@@ -313,6 +313,7 @@ def getAllRecipes() -> list[dict]:
         return [dict(row) for row in rows]
 
 
+
 def getAllIngredientsForRecipe(rid: int):
     with getDB() as con:
         cur = con.cursor()
@@ -570,3 +571,4 @@ def getAccountById(konto_id: int) -> dict | None:
         return dict(row) if row else None
     finally:
         con.close()
+
