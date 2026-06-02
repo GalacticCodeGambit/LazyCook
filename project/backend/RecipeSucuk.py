@@ -46,6 +46,6 @@ if __name__ == "__main__":
     ini.append(Ingredient("Ground Beef", 10))
     ini.append(Ingredient("Cumin", 10))
     ini.append(Ingredient("Cucumber", 10))
-    arr = findRecipes(ini)
+    arr = findRecipes(ini, 0)
     for i in arr:
         print(i.getName() + " " + str(i.getRating()))
