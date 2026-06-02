@@ -1,7 +1,10 @@
 import sqlite3
+import logging
 from contextlib import contextmanager
 from pathlib import Path
 import os
+
+logger = logging.getLogger(__name__)
 
 # Verwende die Datenbank aus dem data-Ordner
 DB_PATH = Path(__file__).parent.parent / "data" / "LazyCookDB.sqlite3"
@@ -40,8 +43,8 @@ def initDB():
 
         cur.execute("""
                     CREATE TABLE IF NOT EXISTS Account (
-                                                         id INTEGER PRIMARY KEY AUTOINCREMENT,
-                                                         email VARCHAR(250) NOT NULL UNIQUE,
+                        id INTEGER PRIMARY KEY AUTOINCREMENT,
+                        email VARCHAR(250) NOT NULL UNIQUE,
                         name TEXT NOT NULL,
                         hashedPassword TEXT NOT NULL,
                         createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP
@@ -87,9 +90,9 @@ def initDB():
 
         cur.execute("""
                     CREATE TABLE IF NOT EXISTS Exists_from (
-                                                               zid INTEGER NOT NULL,
-                                                               rid INTEGER NOT NULL,
-                                                               amount DECIMAL(10,2) NOT NULL,
+                        zid INTEGER NOT NULL,
+                        rid INTEGER NOT NULL,
+                        amount DECIMAL(10,2) NOT NULL,
                         FOREIGN KEY (zid) REFERENCES Ingredient (id) ON DELETE CASCADE,
                         FOREIGN KEY (rid) REFERENCES Recipe (id) ON DELETE CASCADE,
                         UNIQUE (zid, rid)
@@ -98,9 +101,9 @@ def initDB():
 
         cur.execute("""
                     CREATE TABLE IF NOT EXISTS Favorites (
-                                                             AccountID INTEGER NOT NULL,
-                                                             rid INTEGER NOT NULL,
-                                                             FOREIGN KEY (AccountID) REFERENCES Account (id) ON DELETE CASCADE,
+                        AccountID INTEGER NOT NULL,
+                        rid INTEGER NOT NULL,
+                        FOREIGN KEY (AccountID) REFERENCES Account (id) ON DELETE CASCADE,
                         FOREIGN KEY (rid) REFERENCES Recipe (id) ON DELETE CASCADE,
                         UNIQUE (AccountID, rid)
                         )
@@ -130,7 +133,7 @@ def initDB():
                         )
                     """)
 
-    print("✅ Datenbank-Tabellen erfolgreich initialisiert")
+    logger.info("Datenbank-Tabellen erfolgreich initialisiert")
 
 
 # ── Account-Operationen ──────────────────────────────────────────
@@ -296,7 +299,7 @@ def getRecipe(recipeID: int) -> dict | None:
                     FROM Recipe
                     WHERE id = ?
                     """,
-            (recipeID),
+            (recipeID,),
         )
         row = cur.fetchone()
         return dict(row) if row else None
@@ -311,6 +314,7 @@ def getAllRecipes() -> list[dict]:
                     """)
         rows = cur.fetchall()
         return [dict(row) for row in rows]
+
 
 
 def getAllIngredientsForRecipe(rid: int):
@@ -339,10 +343,10 @@ def getAllocatedRecipes(name: str) -> list[dict]:
         cur = con.cursor()
         cur.execute(
             """
-                    SELECT rid 
+                    SELECT rid
                     FROM Exists_from
-                    Inner Join Ingredient on rid=id
-                    Where Ingrediant.name = ?
+                    INNER JOIN Ingredient ON Exists_from.zid = Ingredient.id
+                    WHERE Ingredient.name = ?
                     """,
             (name,),
         )
@@ -570,3 +574,4 @@ def getAccountById(konto_id: int) -> dict | None:
         return dict(row) if row else None
     finally:
         con.close()
+
