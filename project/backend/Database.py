@@ -1,7 +1,10 @@
 import sqlite3
+import logging
 from contextlib import contextmanager
 from pathlib import Path
 import os
+
+logger = logging.getLogger(__name__)
 
 # Verwende die Datenbank aus dem data-Ordner
 DB_PATH = Path(__file__).parent.parent / "data" / "LazyCookDB.sqlite3"
@@ -130,7 +133,7 @@ def initDB():
                         )
                     """)
 
-    print("✅ Datenbank-Tabellen erfolgreich initialisiert")
+    logger.info("Datenbank-Tabellen erfolgreich initialisiert")
 
 
 # ── Account-Operationen ──────────────────────────────────────────

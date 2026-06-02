@@ -19,18 +19,23 @@ PASSWORD_RESET_EXPIRE_MINUTES = 30
 
 from Models import Token, User
 
-from Database import getAccountByEmail, saveRefreshToken, getRefreshToken
+from Database import (
+    getAccountByEmail,
+    saveRefreshToken,
+    getRefreshToken,
+    savePasswordResetToken,
+    getPasswordResetToken,
+)
 
 # ── Konfiguration ──────────────────────────────────────────────
 SECRET_KEY = os.environ.get("JWT_SECRET_KEY")
-
-if not SECRET_KEY:
-    raise RuntimeError("JWT_SECRET_KEY ist nicht gesetzt!")
 
 ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = 10  # kurze Laufzeit für Access Token
 refreshToken_EXPIRE_DAYS = 7  # lange Laufzeit für Refresh Token
 
+if not SECRET_KEY:
+    raise RuntimeError("JWT_SECRET_KEY ist nicht gesetzt!")
 
 # ── Passwort-Hashing ──────────────────────────────────────────
 def hashPassword(password: str) -> str:
@@ -150,8 +155,6 @@ def hashResetToken(token: str) -> str:
 
 def createPasswordResetToken(kontoId: int) -> str:
     """Generiert Klartext-Token (geht per Mail) und speichert nur den Hash in der DB."""
-    from Database import savePasswordResetToken
-
     token = secrets.token_urlsafe(48)
     expiresAt = datetime.now(timezone.utc) + timedelta(
         minutes=PASSWORD_RESET_EXPIRE_MINUTES
@@ -161,8 +164,6 @@ def createPasswordResetToken(kontoId: int) -> str:
 
 
 def validatePasswordResetToken(token: str) -> dict | None:
-    from Database import getPasswordResetToken
-
     entry = getPasswordResetToken(hashResetToken(token))
     if entry is None or entry["usedAt"] is not None:
         return None

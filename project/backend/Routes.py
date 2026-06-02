@@ -1,7 +1,10 @@
 import os
+import logging
 from typing import Annotated
 from fastapi import APIRouter, Depends, HTTPException, status, Response
 from fastapi.security import OAuth2PasswordRequestForm
+
+logger = logging.getLogger(__name__)
 from EmailService import sendPasswordChangedEmail, sendPasswordResetEmail
 
 
@@ -62,26 +65,26 @@ async def register(user: UserCreate):
     if pwError:
         raise HTTPException(status_code=400, detail=pwError)
 
-    Account = createAccount(
+    account = createAccount(
         email=user.email,
         name=user.name,
         hashedPassword=hashPassword(user.password),
     )
-    if Account is None:
+    if account is None:
         raise HTTPException(status_code=400, detail="E-Mail bereits registriert")
 
-    return User(email=Account["email"], name=Account["name"])
+    return User(email=account["email"], name=account["name"])
 
 
 @router.post("/auth/login", response_model=Token)
 async def login(formData: Annotated[OAuth2PasswordRequestForm, Depends()]):
-    Account = getAccountByEmail(formData.username)
-    if not Account or not verifyPassword(formData.password, Account["hashedPassword"]):
+    account = getAccountByEmail(formData.username)
+    if not account or not verifyPassword(formData.password, account["hashedPassword"]):
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="E-Mail oder Passwort falsch",
         )
-    return createTokenPair(Account)
+    return createTokenPair(account)
 
 
 @router.post("/auth/refresh", response_model=Token)
@@ -98,8 +101,8 @@ async def refresh(body: RefreshRequest):
     deleteRefreshToken(body.refresh_token)
 
     # Account-Daten für neues Token-Paar zusammenstellen
-    Account = {"id": entry["AccountID"], "email": entry["email"]}
-    return createTokenPair(Account)
+    account = {"id": entry["AccountID"], "email": entry["email"]}
+    return createTokenPair(account)
 
 
 @router.post("/auth/logout")
@@ -130,18 +133,18 @@ async def deleteCurrentUser(currentUser: Annotated[User, Depends(getCurrentUser)
 async def updateCurrentUser(
     data: UpdateUser, currentUser: Annotated[User, Depends(getCurrentUser)]
 ):
-    Account = getAccountByEmail(currentUser.email)
+    account = getAccountByEmail(currentUser.email)
 
     # E-Mail ändern
     if data.email:
         error = validateEmail(data.email)
         if error:
             raise HTTPException(status_code=400, detail=error)
-        updateAccount(Account["id"], email=data.email)
+        updateAccount(account["id"], email=data.email)
 
     # Passwort ändern
     if data.currentPassword and data.newPassword:
-        if not verifyPassword(data.currentPassword, Account["hashedPassword"]):
+        if not verifyPassword(data.currentPassword, account["hashedPassword"]):
             raise HTTPException(status_code=400, detail="Aktuelles Passwort ist falsch")
 
         error = validatePassword(data.newPassword)
@@ -149,14 +152,13 @@ async def updateCurrentUser(
             raise HTTPException(status_code=400, detail=error)
 
         newHash = hashPassword(data.newPassword)
-        updateAccount(Account["id"], password_hash=newHash)
+        updateAccount(account["id"], password_hash=newHash)
 
-        # NEU: try/catch um echten Fehler zu sehen
-        RecieverEmail = data.email if data.email else Account["email"]
+        receiverEmail = data.email if data.email else account["email"]
         try:
-            sendPasswordChangedEmail(RecieverEmail, Account["name"])
+            sendPasswordChangedEmail(receiverEmail, account["name"])
         except Exception as e:
-            print(f"E-Mail konnte nicht gesendet werden: {e}")
+            logger.warning("E-Mail konnte nicht gesendet werden: %s", e)
 
     return {"success": True}
 
@@ -177,7 +179,7 @@ async def forgotPassword(body: ForgotPasswordRequest):
             sendPasswordResetEmail(body.email, konto["name"], resetLink)
         except Exception as e:
             # Mail-Fehler darf das Response nicht beeinflussen → User-Enumeration vermeiden
-            print(f"Reset-Mail konnte nicht gesendet werden: {e}")
+            logger.warning("Reset-Mail konnte nicht gesendet werden: %s", e)
 
     return {"detail": "Falls die E-Mail existiert, wurde ein Link versendet."}
 
@@ -207,7 +209,7 @@ async def resetPassword(body: ResetPasswordRequest):
         try:
             sendPasswordChangedEmail(konto["email"], konto["name"])
         except Exception as e:
-            print(f"Bestätigungsmail konnte nicht gesendet werden: {e}")
+            logger.warning("Bestätigungsmail konnte nicht gesendet werden: %s", e)
 
     return {"detail": "Passwort erfolgreich zurückgesetzt."}
 
@@ -227,16 +229,16 @@ async def searchRecipes(
     des Users (IngredientUsage), damit später die Top-5-Vorschläge daraus
     abgeleitet werden können.
     """
-    Account = getAccountByEmail(currentUser.email)
-    if Account is None:
+    account = getAccountByEmail(currentUser.email)
+    if account is None:
         raise HTTPException(status_code=404, detail="Account nicht gefunden")
 
     # Usage-Tracking: jede gesuchte Zutat hochzählen (Hybrid: count + lastUsedAt + lastUnit)
     for zutat in body.zutaten:
-        incrementIngredientUsage(Account["id"], zutat.name, zutat.unit)
+        incrementIngredientUsage(account["id"], zutat.name, zutat.unit)
 
     # Aktualisierte Top 5 direkt mit zurückgeben → Frontend muss keinen Extra-Request machen
-    topRows = getTopIngredients(Account["id"], limit=5)
+    topRows = getTopIngredients(account["id"], limit=5)
     topIngredients = [
         {"name": r["displayName"], "unit": r["lastUnit"]} for r in topRows
     ]
@@ -255,15 +257,15 @@ async def getTopIngredientsForUser(
     limit: int = 5,
 ):
     """Liefert die meistgenutzten Zutaten des aktuellen Users für die Vorschlags-Badges."""
-    Account = getAccountByEmail(currentUser.email)
-    if Account is None:
+    account = getAccountByEmail(currentUser.email)
+    if account is None:
         raise HTTPException(status_code=404, detail="Account nicht gefunden")
 
     # Caching unterbinden – die Liste ändert sich mit jeder Suche
     response.headers["Cache-Control"] = "no-store, no-cache, must-revalidate"
     response.headers["Pragma"] = "no-cache"
 
-    rows = getTopIngredients(Account["id"], limit=limit)
+    rows = getTopIngredients(account["id"], limit=limit)
     return {
         "ingredients": [{"name": r["displayName"], "unit": r["lastUnit"]} for r in rows]
     }
