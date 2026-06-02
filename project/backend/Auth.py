@@ -3,6 +3,7 @@ Auth.py – Authentifizierungslogik (JWT, Passwort-Hashing, Refresh Tokens, Depe
 """
 
 import re
+import os
 import secrets
 from datetime import datetime, timedelta, timezone
 from typing import Annotated
@@ -21,9 +22,11 @@ from Models import Token, User
 from Database import getAccountByEmail, saveRefreshToken, getRefreshToken
 
 # ── Konfiguration ──────────────────────────────────────────────
-SECRET_KEY = (
-    "dein-geheimer-schlüssel-hier-ändern"  # In Produktion: aus Umgebungsvariable laden!
-)
+SECRET_KEY = os.environ.get("JWT_SECRET_KEY")
+
+if not SECRET_KEY:
+    raise RuntimeError("JWT_SECRET_KEY ist nicht gesetzt!")
+
 ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = 10  # kurze Laufzeit für Access Token
 refreshToken_EXPIRE_DAYS = 7  # lange Laufzeit für Refresh Token

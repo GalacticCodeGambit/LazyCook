@@ -296,7 +296,7 @@ def getRecipe(recipeID: int) -> dict | None:
                     FROM Recipe
                     WHERE id = ?
                     """,
-            (recipeID),
+            (recipeID,),
         )
         row = cur.fetchone()
         return dict(row) if row else None
@@ -340,10 +340,10 @@ def getAllocatedRecipes(name: str) -> list[dict]:
         cur = con.cursor()
         cur.execute(
             """
-                    SELECT rid 
+                    SELECT rid
                     FROM Exists_from
-                    Inner Join Ingredient on rid=id
-                    Where Ingrediant.name = ?
+                    INNER JOIN Ingredient ON Exists_from.zid = Ingredient.id
+                    WHERE Ingredient.name = ?
                     """,
             (name,),
         )
