@@ -12,8 +12,8 @@ Anforderungen:
 - Eingabe von Zutaten, Menge und Personenanzahl
 - Entfernen von falschen Eingaben
 - Automatisches Suchen und Filtern der Rezepte anhand der Eingaben
-- Anzeigen von 9 Rezepten auf einer Seite
-- Anzeige von mehr Rezepten bei Bedarf
+- Anzeigen von 12 Rezepten auf einer Seite
+- Anzeige von mehr Rezepten bei Bedarf (maximal 96)
 - Vorschläge von häufigen Zutaten
 - Rezepte auch ohne eingetragenen Zutaten suchen können
 
@@ -101,7 +101,7 @@ Der Nutzer interagiert mit LazyCook über den Browser. Die fachliche Schnittstel
 
 ## Technischer Kontext
 
-Die Anwendung besteht aus einem Next.js/React-Frontend, das über eine REST-Schnittstelle mit einem FastAPI-Backend kommuniziert. Das Backend greift auf eine SQLite-Datenbank zur Speicherung von Rezepten und Nutzerdaten zu und kann optional externe Rezept-APIs einbinden. Die Kommunikation erfolgt über HTTPS und JSON.
+Die Anwendung besteht aus einem Next.js/React-Frontend, das über eine REST-Schnittstelle mit einem FastAPI-Backend kommuniziert. Das Backend greift auf eine SQLite-Datenbank zur Speicherung von Rezepten und Nutzerdaten zu und kann optional externe Rezept-APIs einbinden. Die Kommunikation erfolgt über HTTP und JSON.
 
 | Technische Schnittstelle | Technologie | Protokoll |
 |--------------------------|-------------|-----------|
@@ -139,7 +139,7 @@ Technologieentscheidungen:
 | Schichtbasierter Architekturstil (ADR04) | Einfache Umsetzung, klare Trennung der Verantwortlichkeiten zwischen Frontend, Backend und Datenbank |
 | PBKDF2-HMAC mit SHA256 für Passwort-Hashing (ADR01) | Hohe Sicherheit gegen Brute-Force-Angriffe, Unterstützung durch Python hashlib |
 | Direkte Weiterleitung nach Registrierung (ADR02) | Erhöht Benutzerfreundlichkeit, vermeidet unnötige Schritte |
-| 3x3 Matrix für Rezeptanzeige (ADR03) | Verhindert Informationsüberladung, Rezeptkacheln sind groß genug für Bilder und Infos |
+| 3x4 Matrix für Rezeptanzeige (ADR03) | Verhindert Informationsüberladung, Rezeptkacheln sind groß genug für Bilder und Infos |
 | Liskov Substitution Principle (ADR05) | Ermöglicht späteren Austausch der Datenquelle ohne Änderung der Geschäftslogik |
 
 Unsere Architekturentscheidungen sind [hier](https://github.com/GalacticCodeGambit/LazyCook/tree/4710a641f177a29e59067edf688781efb3b03a3d/docs/adr) zu finden.
@@ -170,22 +170,23 @@ Das Gesamtsystem besteht aus drei Hauptbausteinen: dem Frontend, dem Backend und
 ┌────────────────────────▼────────────────────────────────┐
 │              Backend (FastAPI/Python)                   │
 │  ┌──────────────────┐  ┌────────────────────────────┐   │
-│  │ LazyCookVerwaltung│ │ Geschäftslogik             │   │
-│  │ (API-Endpunkte)  │  │ (Person, Benutzer, Admin,  │   │
-│  │ /api/login       │  │  Rezept, Zutat)            │   │
-│  │ /api/register    │  └────────────────────────────┘   │
+│  │ Routes.py        │  │ Geschäftslogik             │   │
+│  │ (API-Endpunkte)  │  │                            |   |
+│  │                  │  │                            │   │
+│  │                  │  └────────────────────────────┘   │
 │  └──────────┬───────┘                                   │
 │             │                                           │
 │  ┌──────────▼───────┐                                   │
-│  │ Datenbank.py     │                                   │
+│  │ Database.py      │                                   │
 │  │ (Datenzugriff)   │                                   │
 │  └──────────┬───────┘                                   │
 └─────────────┼───────────────────────────────────────────┘
               │ SQLite3
 ┌─────────────▼───────────────────────────────────────────┐
 │           SQLite-Datenbank (LazyCookDB.sqlite3)         │
-│  Tabellen: Konto, Nutzer, Rezept, Zutat,                │
-│            Besteht_Aus, Verfasser                       │
+│  Tabellen: Account, User, Recipe, Ingredient,           |
+|  IngredientUsage, Exists_from, Author, RefreshToken,    |
+|  PasswordResetToken, Favorites                          │
 └─────────────────────────────────────────────────────────┘
 ```
 
@@ -204,8 +205,10 @@ Die Zerlegung folgt dem schichtbasierten Architekturstil (ADR04). Das Frontend i
 
 | Schnittstelle | Beschreibung |
 |---------------|--------------|
-| POST /api/login | Anmeldung mit E-Mail und Passwort. Gibt Erfolgsmeldung oder Fehlermeldung zurück |
-| POST /api/register | Registrierung mit E-Mail und Passwort. Passwort wird mit PBKDF2-HMAC gehasht |
+| POST /auth/login | Anmeldung mit E-Mail und Passwort. Gibt Erfolgsmeldung oder Fehlermeldung zurück |
+| POST /auth/register | Registrierung mit E-Mail und Passwort. Passwort wird mit PBKDF2-HMAC gehasht |
+| POST /auth/logout | Abmeldung |
+| POST /users/me | Profil anzeigen, updaten und löschen |
 
 ### Frontend (Next.js/React)
 
@@ -221,21 +224,25 @@ Die Zerlegung folgt dem schichtbasierten Architekturstil (ADR04). Das Frontend i
 
 **Zweck/Verantwortung:** Das Backend bildet die Geschäftslogik-Schicht. Es verarbeitet API-Anfragen, führt Authentifizierung durch, filtert Rezepte und greift auf die Datenbank zu.
 
-**Schnittstellen:** Stellt REST-Endpunkte bereit (`/api/login`, `/api/register`). Kommuniziert direkt mit der SQLite-Datenbank.
+**Schnittstellen:** Stellt REST-Endpunkte bereit. Kommuniziert direkt mit der SQLite-Datenbank.
 
 **Technologie:** Python, FastAPI, Gunicorn mit UvicornWorker (4 Worker-Prozesse), Passlib (bcrypt), hashlib (PBKDF2).
 
 **Ablageort:** `project/backend/`
 
 **Klassenstruktur:**
-- `LazyCookVerwaltung` – Hauptmodul mit FastAPI-App und API-Endpunkten
-- `Datenbank` – Datenzugriffsschicht (DAO), verwaltet SQLite-Verbindungen und CRUD-Operationen
+- `LazyCookAdministartion` – Hauptmodul startet die FastAPI-App
+- `Database` – Datenzugriffsschicht (DAO), verwaltet SQLite-Verbindungen und CRUD-Operationen
 - `Person` – Abstrakte Basisklasse für Nutzer (Name, E-Mail, Passwort, Rolle)
-- `Benutzer` – Erbt von Person, Rolle "User"
-- `Admin` – Erbt von Person, Rolle "Admin", kann Rezepte hinzufügen
-- `Rezept` – Repräsentiert ein Rezept (Name, Zutaten, Zubereitung, Dauer, Bewertung)
-- `Zutat` – Repräsentiert eine Zutat (Name, Menge)
-- `models.py` – Pydantic-Modelle für API-Validierung (UserSignUpIn, UserResponse, SessionResponse)
+- `Routes` – Definition der Fast-API Schnittstellen
+- `Auth` – Authentifizierungslogik mit Tokens 
+- `Recipe` – Repräsentiert ein Rezept (Name, Zutaten, Zubereitung, Dauer, Bewertung)
+- `Ingredient` – Repräsentiert eine Zutat (Name, Menge)
+- `Models` – Pydantic-Modelle für API-Validierung (e.g. UserSignUpIn, UserResponse, SessionResponse)
+- `ImportRecipe` - Einmaliges Einfügen von Rezepten in die Datenbank
+- `EmailService` - Logik zum versenden automatischer Email bei der "Passwort vergessen" Funktion
+- `RecipeSUCUK` - Logik zum Filtern der Rezepte
+- `SearchRecipeNames` - Gezieltes Suchen nach Rezepten durch Rezeptname
 
 ### Datenbank (SQLite)
 
@@ -245,12 +252,13 @@ Die Zerlegung folgt dem schichtbasierten Architekturstil (ADR04). Das Frontend i
 
 | Tabelle | Spalten | Beschreibung |
 |---------|---------|--------------|
-| Konto | id, email, passwort, salt | Benutzerkonten mit gehashten Passwörtern |
-| Nutzer | id, name, kid (FK → Konto) | Nutzerprofile |
-| Rezept | id, name, vid (FK → Verfasser) | Rezepte |
-| Zutat | id, name, mengenArt | Verfügbare Zutaten |
-| Besteht_Aus | zid (FK → Zutat), rid (FK → Rezept), menge | N:M-Beziehung Zutat-Rezept |
-| Verfasser | id, name | Rezeptautoren |
+| Account | id, email, name, hashedPassword, createdAt | Benutzerkonten mit gehashten Passwörtern |
+| RefreshToken | id, AccountID, token, expiresAt, createdAt | Token für die Authentifizierung |
+| Recipe | id, name, description, vid | Rezepte |
+| Ingredient | id, name, mengenArt | Verfügbare Zutaten |
+| Exists_from | zid (FK → Zutat), rid (FK → Rezept), menge | N:M-Beziehung Zutat-Rezept |
+| Author | id, name | Rezeptautoren |
+| Favorites | AccountID, rid | Favoriten jedes Accounts |
 
 **Ablageort:** `LazyCookDB.sqlite3` (persistiert in Docker-Volume `data`)
 
@@ -272,11 +280,13 @@ Das Backend folgt einer dreischichtigen Struktur innerhalb des Backends:
 
 | Baustein | Verantwortung |
 |----------|---------------|
-| `LazyCookVerwaltung.py` | API-Schicht: FastAPI-Endpunkte, CORS-Middleware, Passwort-Hashing/Verifizierung |
-| `Datenbank.py` | Datenzugriffsschicht: SQLite-Verbindung, Tabellenerstellung, CRUD-Operationen |
-| `Person.py`, `Benutzer.py`, `Admin.py` | Domänenmodelle: Vererbungshierarchie für Nutzerrollen |
-| `Rezept.py`, `Zutat.py` | Domänenmodelle: Rezept- und Zutaten-Entitäten |
-| `models.py` | API-Modelle: Pydantic-Schemas für Request/Response-Validierung |
+| `LazyCookAdministration.py` | Entry-Point, CORS-Middleware, FastAPI-Start |
+| `Routes.py` | API-Schicht: FastAPI-Endpunkte, Passwort-Hashing/Verifizierung |
+| `Database.py` | Datenzugriffsschicht: SQLite-Verbindung, Tabellenerstellung, CRUD-Operationen |
+| `Recipe.py`, `Ingredient.py` | Domänenmodelle: Rezept- und Zutaten-Entitäten |
+| `Models.py` | API-Modelle: Pydantic-Schemas für Request/Response-Validierung |
+| `RecipeSUCUK.py` | Geschäftslogik: Filtern der Rezepte anhand der Zutateneingabe |
+| `SearchRecipeNames.py` | Geschäftslogik: Suchen von Rezepten anhand eines Rezeptnamens |
 
 ---
 
@@ -285,18 +295,19 @@ Das Backend folgt einer dreischichtigen Struktur innerhalb des Backends:
 ## Szenario 1: Benutzerregistrierung
 
 1. Nutzer gibt E-Mail und Passwort auf der Registrierungsseite ein
-2. Frontend sendet POST-Request an `/api/register` mit E-Mail und Passwort als JSON
-3. Backend (`LazyCookVerwaltung.registrieren()`) erzeugt ein 16-Byte zufälliges Salt
+2. Frontend sendet POST-Request an `/auth/register` mit E-Mail und Passwort als JSON
+3. Backend (`Routes.registrieren()`) erzeugt ein 16-Byte zufälliges Salt
 4. Backend hasht das Passwort mit PBKDF2-HMAC (SHA256, 100.000 Iterationen)
-5. Backend speichert E-Mail, gehashtes Passwort und Salt (jeweils Base64-kodiert) in der Konto-Tabelle via `Datenbank.addNutzer()`
+5. Backend speichert E-Mail, gehashtes Passwort und Salt (jeweils Base64-kodiert) in der Konto-Tabelle via `Database.createAccount()`
 6. Backend prüft ob E-Mail bereits existiert und gibt entsprechende Meldung zurück
 7. Frontend zeigt Erfolgsmeldung und leitet direkt zum RecipeFinder weiter (ADR02)
+
 
 ## Szenario 2: Benutzeranmeldung
 
 1. Nutzer gibt E-Mail und Passwort auf der Anmeldeseite ein
-2. Frontend sendet POST-Request an `/api/login`
-3. Backend ruft `Datenbank.anmeldenNutzer(email)` auf, um Salt und gehashtes Passwort aus der Datenbank zu laden
+2. Frontend sendet POST-Request an `/auth/login`
+3. Backend ruft `Database.getAccountByEmail(email)` auf, um Salt und gehashtes Passwort aus der Datenbank zu laden
 4. Backend hasht das eingegebene Passwort mit dem gespeicherten Salt und vergleicht das Ergebnis
 5. Bei Übereinstimmung: Erfolgsmeldung; bei Fehler: Fehlermeldung ("Falsches Passwort" oder "Kein Konto hinterlegt")
 
@@ -307,13 +318,52 @@ Das Backend folgt einer dreischichtigen Struktur innerhalb des Backends:
 3. Frontend sendet die Zutatenliste und Personenanzahl als JSON an das Backend
 4. Backend filtert die Rezepte in der Datenbank anhand der eingegebenen Zutaten über die Besteht_Aus-Tabelle
 5. Backend gibt passende Rezepte als JSON zurück
-6. Frontend zeigt maximal 9 Rezepte als 3x3 Matrix an (ADR03)
+6. Frontend zeigt maximal 12 Rezepte als 3x4 Matrix auf einer Seite an. Weitere können über einen Button geladen werden (maximal 96 Rezepte) (ADR03)
+
+![UML-Sequenzdiagramm_Rezepte-filtern.drawio.png](https://github.com/GalacticCodeGambit/LazyCook/blob/49d82de42d345200ba9f4e0ddb18b2245cba3c40/docs/UML/UML-Sequenzdiagramm_Rezepte-filtern.drawio.png)
 
 ## Szenario 4: Benutzerabmeldung
 
 1. Nutzer klickt auf "Abmelden"
 2. Frontend löscht die Sitzungsdaten
 3. Nutzer wird zur Startseite weitergeleitet
+
+## Szenario 5: Konto löschen
+
+1. Nutzer klickt auf "Konto löschen"
+2. Nutzer erhält einen Bestätigungsdialog
+3. Nutzer klickt auf "Bestätigen"
+4. Konto ist gelöscht (keine Daten mehr in der Datenbank), Nutzer wird ausgeloggt
+
+## Szenario 6: Email ändern
+
+1. Nutzer klickt auf "Email ändern"
+2. Nutzer gibt neue Email ein
+3. Neue Email wird hinterlegt
+4. Bei neuer Anmeldung muss neue Email eingegeben werden. Die alte ist nicht mehr möglich.
+
+## Szenario 6: Passwort ändern
+
+1. Nutzer klickt auf "Passwort ändern"
+2. Nutzer gibt altes Passwort und neues Passwort (zweimal) ein
+3. Nuter erhält eine Bestätigunsemail an die hinterlegte Email
+4. Bei neuer Anmeldung muss das neue Passwort eingegeben werden
+
+## Szenario 7: Passwort vergessen
+
+1. Nutzer klickt auf "Passwort vergessen"
+2. Nutzer gibt seine Email ein
+3. Es wird geprüft ob für die Email ein Account hinterlegt ist
+4. Nutzer erhält Email mit Link zur Passwortänderungsseite
+5. Nutzer gibt neues Passwort ein
+
+## Szenario 8: Rezept suchen nach Titel
+
+1. Nutzer gibt Rezeptnamen in Suchfeld ein
+2. Rezepte mit ähnlichem Titel werden in der Datenbank gesucht
+3. Rezepte werden im Frontend angezeigt
+
+![UML-Sequenzdiagramm_automatischer-Rezeptvorschlag.png](https://github.com/GalacticCodeGambit/LazyCook/blob/49d82de42d345200ba9f4e0ddb18b2245cba3c40/docs/UML/UML-Sequenzdiagramm_automatischer-Rezeptvorschlag.png)
 
 ---
 
@@ -435,10 +485,11 @@ Alle ADRs sind [hier](https://github.com/GalacticCodeGambit/LazyCook/tree/4710a6
 
 | Risiko/Schuld | Beschreibung | Priorität | Maßnahme |
 |---------------|-------------|-----------|----------|
-| SQLite-Skalierbarkeit | SQLite unterstützt keine parallelen Schreibzugriffe; bei hoher Nutzerzahl kann es zu Engpässen kommen | Mittel | Mittelfristig Migration auf PostgreSQL oder MySQL möglich dank LSP (ADR05) |
+| SQLite-Skalierbarkeit | SQLite unterstützt keine parallelen Schreibzugriffe; bei hoher Nutzerzahl kann es zu Engpässen kommen | Gering | Mittelfristig Migration auf PostgreSQL oder MySQL möglich dank LSP (ADR05) |
 | Fehlende maximale Rezeptbegrenzung | Bei vielen Rezepten in der Datenbank gibt es keine Begrenzung der Ergebnisanzahl, was zu langen Ladezeiten führen kann (ADR03) | Mittel | Pagination implementieren |
+| Rechtliche Probleme durch Urheberrecht bei Rezepten | Rezepte sind urheberrechtlich geschützt. Rezepte einfach ohen Erlaubnis bereitszustellen könnte zu Rechtlichen Problemen führen | Mittel |  Vorhandene AGBs und Meldebutton, Verlinkung auf Original Rezept in Rezeptansichts zu sehen |
 | TODO-Kommentare im Code | Mehrere offene TODOs: Datenbank-Speicherort, E-Mail-Validierung, Passwortstärke, Error Messages generalisieren | Mittel | Systematisch abarbeiten |
-| Fehlende Frontend-Tests | Aktuell nur Backend-Unittests in der CI-Pipeline, keine Frontend-Tests | Mittel | Jest/React Testing Library integrieren |
+| Fehlende Backend-Tests & Frontend-Tests| Einige Backend-Dateien sind nicht mit Tests abgedeckt, Frontend-Tests fehlen vollständig | Hoch | Unittests erweitern, Frontend-Tests hinzufügen |
 
 ---
 
