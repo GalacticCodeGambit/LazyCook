@@ -208,7 +208,7 @@ mittel
 ##### UML:
 <img width="1218" height="574" alt="image" src="https://github.com/user-attachments/assets/f75238d5-9e98-4262-8fd1-5d60b26f86a0" />
 
-![UML-Aktivitaetsdiagramm_Rezept-filtern.png](https://github.com/GalacticCodeGambit/LazyCook/blob/72c5aa65cddebc6d879e9e9607d70cd5e8d9f17d/docs/UML/UML-Aktivitaetsdiagramm_Rezept-filtern.png)
+![UML-Aktivitaetsdiagramm_Rezept-filtern.png](https://github.com/GalacticCodeGambit/LazyCook/blob/b8ef582b0acfb24330bf633ca6b506a8c8c81868/docs/UML/UML-Aktivitaetsdiagramm_Rezept-filtern.png)
 ![UML-Sequenzdiagramm_Rezepte-filtern.png](https://github.com/GalacticCodeGambit/LazyCook/blob/d772973d1593eff5b39f49ad2cee79598b3d55dd/docs/UML/UML-Sequenzdiagramm_Rezepte-filtern.png)
 
 Rezepte sollen auch ohne den Eintrag von Zutaten suchbar sein.
