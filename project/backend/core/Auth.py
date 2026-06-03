@@ -1,10 +1,8 @@
 """
-Auth.py – Authentifizierungslogik (JWT, Passwort-Hashing, Refresh Tokens, Dependencies)
+Auth.py – Kryptographie, Validierung, JWT-Encoding und FastAPI-Dependency
 """
-
 import re
 import os
-import secrets
 from datetime import datetime, timedelta, timezone
 from typing import Annotated
 
@@ -13,29 +11,17 @@ from fastapi.security import OAuth2PasswordBearer
 from jose import JWTError, jwt
 import bcrypt
 
-import hashlib
-
-PASSWORD_RESET_EXPIRE_MINUTES = 30
-
-from Models import Token, User
-
-from Database import (
-    getAccountByEmail,
-    saveRefreshToken,
-    getRefreshToken,
-    savePasswordResetToken,
-    getPasswordResetToken,
-)
+from core.Models import User
+from dao import AccountDAO
 
 # ── Konfiguration ──────────────────────────────────────────────
 SECRET_KEY = os.environ.get("JWT_SECRET_KEY")
-
 ALGORITHM = "HS256"
-ACCESS_TOKEN_EXPIRE_MINUTES = 10  # kurze Laufzeit für Access Token
-refreshToken_EXPIRE_DAYS = 7  # lange Laufzeit für Refresh Token
+ACCESS_TOKEN_EXPIRE_MINUTES = 10
 
 if not SECRET_KEY:
     raise RuntimeError("JWT_SECRET_KEY ist nicht gesetzt!")
+
 
 # ── Passwort-Hashing ──────────────────────────────────────────
 def hashPassword(password: str) -> str:
@@ -63,41 +49,6 @@ def decodeToken(token: str) -> str | None:
         return payload.get("sub")
     except JWTError:
         return None
-
-
-# ── Refresh Token ──────────────────────────────────────────────
-def createRefreshToken(konto_id: int) -> str:
-    """Erstellt einen kryptografisch sicheren Refresh Token und speichert ihn in der DB."""
-    token = secrets.token_urlsafe(64)
-    expiresAt = datetime.now(timezone.utc) + timedelta(days=refreshToken_EXPIRE_DAYS)
-    saveRefreshToken(konto_id, token, expiresAt.isoformat())
-    return token
-
-
-def validateRefreshToken(token: str) -> dict | None:
-    """Prüft ob ein Refresh Token gültig und nicht abgelaufen ist. Gibt Konto-Daten zurück."""
-    entry = getRefreshToken(token)
-    if entry is None:
-        return None
-    expiresAt = datetime.fromisoformat(entry["expiresAt"])
-    if expiresAt.tzinfo is None:
-        expiresAt = expiresAt.replace(tzinfo=timezone.utc)
-    if expiresAt < datetime.now(timezone.utc):
-        return None
-    return entry
-
-
-# ── Token-Paar erstellen ──────────────────────────────────────
-def createTokenPair(konto: dict) -> Token:
-    """Erstellt ein Access + Refresh Token-Paar für ein Konto."""
-    access_token = createAccessToken(
-        data={"sub": konto["email"]},
-        expires_delta=timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES),
-    )
-    refreshToken = createRefreshToken(konto["id"])
-    return Token(
-        access_token=access_token, refresh_token=refreshToken, token_type="bearer"
-    )
 
 
 # ── Validierung ────────────────────────────────────────────────
@@ -138,38 +89,8 @@ async def getCurrentUser(token: Annotated[str, Depends(oauth2_scheme)]) -> User:
     if email is None:
         raise credentials_exception
 
-    konto = getAccountByEmail(email)
+    konto = AccountDAO.getAccountByEmail(email)
     if konto is None:
         raise credentials_exception
 
     return User(email=konto["email"], name=konto["name"])
-
-
-# --- Reset Password --- #
-
-
-def hashResetToken(token: str) -> str:
-    """SHA-256 Hash – für Reset-Tokens reicht das, sie sind ohnehin hochentropisch."""
-    return hashlib.sha256(token.encode()).hexdigest()
-
-
-def createPasswordResetToken(kontoId: int) -> str:
-    """Generiert Klartext-Token (geht per Mail) und speichert nur den Hash in der DB."""
-    token = secrets.token_urlsafe(48)
-    expiresAt = datetime.now(timezone.utc) + timedelta(
-        minutes=PASSWORD_RESET_EXPIRE_MINUTES
-    )
-    savePasswordResetToken(kontoId, hashResetToken(token), expiresAt.isoformat())
-    return token
-
-
-def validatePasswordResetToken(token: str) -> dict | None:
-    entry = getPasswordResetToken(hashResetToken(token))
-    if entry is None or entry["usedAt"] is not None:
-        return None
-    expiresAt = datetime.fromisoformat(entry["expiresAt"])
-    if expiresAt.tzinfo is None:
-        expiresAt = expiresAt.replace(tzinfo=timezone.utc)
-    if expiresAt < datetime.now(timezone.utc):
-        return None
-    return entry

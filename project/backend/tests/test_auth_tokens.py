@@ -6,10 +6,11 @@ from unittest.mock import patch
 
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 
-import Database
-from Auth import (
-    createAccessToken,
-    decodeToken,
+import core.Database as Database
+import services.AuthService as auth_service_module
+from dao import AccountDAO
+from core.Auth import createAccessToken, decodeToken
+from services.AuthService import (
     hashResetToken,
     createPasswordResetToken,
     validatePasswordResetToken,
@@ -54,7 +55,7 @@ class TestHashResetToken:
 
 class TestPasswordResetToken:
     def testTokenErstellen(self):
-        with patch.object(Database, "savePasswordResetToken") as mockSave:
+        with patch.object(auth_service_module.AccountDAO, "savePasswordResetToken") as mockSave:
             token = createPasswordResetToken(42)
             assert isinstance(token, str)
             mockSave.assert_called_once()
@@ -63,31 +64,31 @@ class TestPasswordResetToken:
     def testGueltigerToken(self):
         expires = (datetime.now(timezone.utc) + timedelta(hours=1)).isoformat()
         mockEntry = {"id": 1, "kontoID": 42, "expiresAt": expires, "usedAt": None}
-        with patch.object(Database, "getPasswordResetToken", return_value=mockEntry):
+        with patch.object(auth_service_module.AccountDAO, "getPasswordResetToken", return_value=mockEntry):
             result = validatePasswordResetToken("irgendeintoken")
             assert result is not None
             assert result["kontoID"] == 42
 
     def testUngueltigerToken(self):
-        with patch.object(Database, "getPasswordResetToken", return_value=None):
+        with patch.object(auth_service_module.AccountDAO, "getPasswordResetToken", return_value=None):
             assert validatePasswordResetToken("nichtvorhanden") is None
 
     def testBereitsVerwendeterToken(self):
         expires = (datetime.now(timezone.utc) + timedelta(hours=1)).isoformat()
         mockEntry = {"id": 1, "kontoID": 42, "expiresAt": expires, "usedAt": "2024-01-01"}
-        with patch.object(Database, "getPasswordResetToken", return_value=mockEntry):
+        with patch.object(auth_service_module.AccountDAO, "getPasswordResetToken", return_value=mockEntry):
             assert validatePasswordResetToken("token") is None
 
     def testAbgelaufenerResetToken(self):
         expires = (datetime.now(timezone.utc) - timedelta(hours=1)).isoformat()
         mockEntry = {"id": 1, "kontoID": 42, "expiresAt": expires, "usedAt": None}
-        with patch.object(Database, "getPasswordResetToken", return_value=mockEntry):
+        with patch.object(auth_service_module.AccountDAO, "getPasswordResetToken", return_value=mockEntry):
             assert validatePasswordResetToken("token") is None
 
 
 class TestRefreshToken:
     def testRefreshTokenErstellen(self):
-        with patch("Auth.saveRefreshToken") as mockSave:
+        with patch.object(auth_service_module.AccountDAO, "saveRefreshToken") as mockSave:
             token = createRefreshToken(99)
             assert isinstance(token, str)
             mockSave.assert_called_once()
@@ -96,17 +97,17 @@ class TestRefreshToken:
     def testGueltigerRefreshToken(self):
         expires = (datetime.now(timezone.utc) + timedelta(days=7)).isoformat()
         mockEntry = {"id": 1, "AccountID": 99, "token": "abc", "expiresAt": expires}
-        with patch("Auth.getRefreshToken", return_value=mockEntry):
+        with patch.object(auth_service_module.AccountDAO, "getRefreshToken", return_value=mockEntry):
             result = validateRefreshToken("abc")
             assert result is not None
             assert result["AccountID"] == 99
 
     def testUngueltigerRefreshToken(self):
-        with patch("Auth.getRefreshToken", return_value=None):
+        with patch.object(auth_service_module.AccountDAO, "getRefreshToken", return_value=None):
             assert validateRefreshToken("ungueltig") is None
 
     def testAbgelaufenerRefreshToken(self):
         expires = (datetime.now(timezone.utc) - timedelta(days=1)).isoformat()
         mockEntry = {"id": 1, "AccountID": 99, "token": "alt", "expiresAt": expires}
-        with patch("Auth.getRefreshToken", return_value=mockEntry):
+        with patch.object(auth_service_module.AccountDAO, "getRefreshToken", return_value=mockEntry):
             assert validateRefreshToken("alt") is None

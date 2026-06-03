@@ -5,9 +5,6 @@ class Person:
         self.__password = password
         self.__role = "User"
 
-    def saveInDB(self) -> bool:
-        return True
-
     def getName(self) -> str:
         return self.__name
 

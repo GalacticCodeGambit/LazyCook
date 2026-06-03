@@ -1,11 +1,12 @@
 import json
-from Recipe import Recipe
-from Ingredient import Ingredient
-from Database import getAllIngredients, getAllRecipes
+from domain.recipe import Recipe
+from domain.ingredient import Ingredient
+from dao import IngredientDAO, RecipeDAO
 from pathlib import Path
 
 EXCLUDE_INGREDIENTS = ["Salz", "Pfeffer", "Zucker"]
-PATH = Path(__file__).parent.parent /"recipes_perfect.json"
+PATH = Path(__file__).parent.parent / "recipes_perfect.json"
+
 
 def extractRecipesFromJSON(filePath: str) -> list[Recipe]:
     recipesRaw = json.loads(__readJsonFile(filePath=filePath))
@@ -14,27 +15,28 @@ def extractRecipesFromJSON(filePath: str) -> list[Recipe]:
         recipe = __formatRecipe(
             recipeData["Name"],
             recipeData["Ingredients"],
-            recipeData["Instructions"]
+            recipeData["Instructions"],
         )
         __saveRecipeInDB(recipe)
         recipes.append(recipe)
     return recipes
 
+
 def __readJsonFile(filePath: str) -> str:
-    # Hier encoding="utf-8" hinzufügen!
     with open(filePath, "r", encoding="utf-8") as file:
         return file.read()
 
-def __formatRecipe(name: str,ingredientsRaw: dict, description: str)-> Recipe:
+
+def __formatRecipe(name: str, ingredientsRaw: dict, description: str) -> Recipe:
     ingredients = []
     for ingredient in ingredientsRaw:
         formattedIngredient = __formatIngredient(ingredient)
         if formattedIngredient:
             ingredients.append(formattedIngredient)
-    recipe = Recipe(name, ingredients, description)
-    return recipe
+    return Recipe(name, ingredients, description)
 
-def __formatIngredient(rawText: str) -> Ingredient:
+
+def __formatIngredient(rawText: str) -> Ingredient | None:
     for exclude in EXCLUDE_INGREDIENTS:
         if exclude in rawText:
             return None
@@ -43,38 +45,43 @@ def __formatIngredient(rawText: str) -> Ingredient:
         return None
     ingredient = Ingredient(name, amount)
     ingredient.setAmountType(amountType)
-    __saveIngridientInDB(ingredient)
+    __saveIngredientInDB(ingredient)
     return ingredient
 
-def __formatIngredientText(rawText: str) -> str:
+
+def __formatIngredientText(rawText: str) -> tuple:
     rawText = rawText.replace(",", "")
     sliced = rawText.split(" ")
     if len(sliced) < 2:
         return None, None, None
     elif sliced[0].isnumeric():
-        amount = float(sliced[0])
-        amountType = sliced[1]
-        name = " ".join(sliced[2:])
+        return float(sliced[0]), sliced[1], " ".join(sliced[2:])
     else:
-        amount = 1
-        amountType = ""
-        name = rawText
-    return amount, amountType, name
+        return 1, "", rawText
 
-def __saveIngridientInDB(ingredient: Ingredient) -> bool:
-    for ingredients in getAllIngredients():
-        if ingredient.getName() == ingredients["name"]:
+
+def __saveIngredientInDB(ingredient: Ingredient) -> bool:
+    if IngredientDAO.getIngredientByName(ingredient.getName()):
+        return False
+    if not ingredient.getAmountType():
+        return False
+    IngredientDAO.addIngredient(ingredient.getName(), ingredient.getAmountType())
+    return True
+
+
+def __saveRecipeInDB(recipe: Recipe) -> bool:
+    for existing in RecipeDAO.getAllRecipes():
+        if recipe.getName().lower().strip() == existing["name"].lower().strip():
             return False
-    return ingredient.saveInDB()
+    rid = RecipeDAO.addRecipe(recipe.getName(), recipe.getDescription(), None)
+    for ingredient in recipe.getIngredients():
+        result = IngredientDAO.getIngredientByName(ingredient.getName())
+        if result:
+            RecipeDAO.addIngredientToRecipe(result["id"],                             ingredient.getAmount())
+    return True
 
-def __saveRecipeInDB(recipe: Recipe):
-    for recipes in getAllRecipes():
-        if recipe.getName().lower().strip() == recipes["name"].lower().strip():
-            return False
-    return recipe.saveInDB()
-        
 
-if __name__ =="__main__":
+if __name__ == "__main__":
     recipes = extractRecipesFromJSON(str(PATH))
     for r in recipes:
         print(r.getName())

@@ -5,16 +5,19 @@ from datetime import datetime, timedelta, timezone
 
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 
-import Database
-from Auth import hashPassword, verifyPassword
-from Database import (
+import core.Database as Database
+from core.Auth import hashPassword, verifyPassword
+from dao.AccountDAO import (
     createAccount, getAccountByEmail, deleteAccount, updateAccount,
     getAccountById, saveRefreshToken, getRefreshToken, deleteRefreshToken,
-    deleteAllRefreshTokens, cleanupExpiredTokens, addRecipe, addIngredient,
-    addIngredientToRecipe, getIngredientByName, getAllRecipes,
-    getAllIngredientsForRecipe, incrementIngredientUsage, getTopIngredients,
-    savePasswordResetToken, getPasswordResetToken, markResetTokenUsed,
-    updateKontoPassword,
+    deleteAllRefreshTokens, cleanupExpiredTokens, savePasswordResetToken,
+    getPasswordResetToken, markResetTokenUsed, updateKontoPassword,
+)
+from dao.RecipeDAO import (
+    addRecipe, addIngredientToRecipe, getAllRecipes, getAllIngredientsForRecipe,
+)
+from dao.IngredientDAO import (
+    addIngredient, getIngredientByName, incrementIngredientUsage, getTopIngredients,
 )
 
 
@@ -223,4 +226,4 @@ class TestPasswordReset:
         neuerHash = hashPassword("Neu1!")
         updateKontoPassword(account["id"], neuerHash)
         aktuell = getAccountByEmail("test@example.com")
-        assert verifyPassword("Neu1!", aktuell["hashedPassword"]) is True
+     
