@@ -108,7 +108,7 @@ hoch
 ##### UML:
 <img width="1151" height="599" alt="image" src="https://github.com/user-attachments/assets/e9d58164-48cf-4007-a4bd-af42841ef019" />
 
-![UML-Aktivitaetsdiagramm_Registrieren.png](https://github.com/GalacticCodeGambit/LazyCook/blob/0eabc6e46a15b27392564b1048302d814c896cfd/docs/UML/UML-Aktivitaetsdiagramm_Registrieren.png)
+![UML-Aktivitaetsdiagramm_Registrieren.png](https://github.com/GalacticCodeGambit/LazyCook/blob/67a0d1eb83579b722101e673a20299f604ce1624/docs/UML/UML_Aktivitaetsdiagramm_Registrieren.png)
 
 Die Eingabe für die Registrierung soll im Frontend und im Backend Validiert werden, ob sich bei dieser um eine gültige handelt.  
 
@@ -130,7 +130,7 @@ mittel
 ##### UML:
 <img width="1029" height="491" alt="image" src="https://github.com/user-attachments/assets/31a4661b-3b8f-441f-ba3d-121a4c254923" />
 
-![UML-Aktivitaetsdiagramm_Anmelden.png](https://github.com/GalacticCodeGambit/LazyCook/blob/0eabc6e46a15b27392564b1048302d814c896cfd/docs/UML/UML-Aktivitaetsdiagramm_Anmelden.png)
+![UML-Aktivitaetsdiagramm_Anmelden.png](https://github.com/GalacticCodeGambit/LazyCook/blob/7f0363e294598124b287a6df9c696d727409f4d0/docs/UML/UML-Aktivitaetsdiagramm_Anmelden.png)
 
 Als Nutzer soll man sich auf der Webseite Anmelden können um alle Funktionen der Seite nutzen zu können. 
 
