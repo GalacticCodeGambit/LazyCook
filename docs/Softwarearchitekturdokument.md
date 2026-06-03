@@ -451,7 +451,7 @@ Die wichtigsten Architekturentscheidungen sind als ADRs (Architecture Decision R
 | ADR02 | Intuitive Nutzbarkeit | Direkte Weiterleitung von Registrierung zum RecipeFinder (ohne erneute Anmeldung) |
 | ADR03 | Verhinderung von Informationsüberladung | 3x3-Matrix für Rezeptanzeige, keine maximale Begrenzung |
 | ADR04 | Architekturstil | Schichtbasierter Architekturstil (Frontend → Backend → Datenbank) |
-| ADR05 | Designprinzipien | Liskov Substitution Principle (LSP) für austauschbare Speicher-Implementierungen |
+| ADR05 | Designprinzipien | Single Responsibility Principle (SRP) für klare Trennung der Verantwortlichkeiten und Funktionalität |
 
 Alle ADRs sind [hier](https://github.com/GalacticCodeGambit/LazyCook/tree/4710a641f177a29e59067edf688781efb3b03a3d/docs/adr) zu finden.
 
@@ -485,7 +485,7 @@ Alle ADRs sind [hier](https://github.com/GalacticCodeGambit/LazyCook/tree/4710a6
 
 | Risiko/Schuld | Beschreibung | Priorität | Maßnahme |
 |---------------|-------------|-----------|----------|
-| SQLite-Skalierbarkeit | SQLite unterstützt keine parallelen Schreibzugriffe; bei hoher Nutzerzahl kann es zu Engpässen kommen | Gering | Mittelfristig Migration auf PostgreSQL oder MySQL möglich dank LSP (ADR05) |
+| SQLite-Skalierbarkeit | SQLite unterstützt keine parallelen Schreibzugriffe; bei hoher Nutzerzahl kann es zu Engpässen kommen | Gering | Mittelfristig Migration auf PostgreSQL oder MySQL möglich dank SRP (ADR05) |
 | Fehlende maximale Rezeptbegrenzung | Bei vielen Rezepten in der Datenbank gibt es keine Begrenzung der Ergebnisanzahl, was zu langen Ladezeiten führen kann (ADR03) | Mittel | Pagination implementieren |
 | Rechtliche Probleme durch Urheberrecht bei Rezepten | Rezepte sind urheberrechtlich geschützt. Rezepte einfach ohen Erlaubnis bereitszustellen könnte zu Rechtlichen Problemen führen | Mittel |  Vorhandene AGBs und Meldebutton, Verlinkung auf Original Rezept in Rezeptansichts zu sehen |
 | TODO-Kommentare im Code | Mehrere offene TODOs: Datenbank-Speicherort, E-Mail-Validierung, Passwortstärke, Error Messages generalisieren | Mittel | Systematisch abarbeiten |
@@ -504,7 +504,7 @@ Alle ADRs sind [hier](https://github.com/GalacticCodeGambit/LazyCook/tree/4710a6
 | SRS | Software Requirements Specification; Softwareanforderungsspezifikation |
 | REST | Representational State Transfer; Architekturstil für Web-APIs |
 | CORS | Cross-Origin Resource Sharing; Mechanismus zum Erlauben von Cross-Origin-Anfragen im Browser |
-| LSP | Liskov Substitution Principle; Designprinzip, das sicherstellt, dass Unterklassen die Basisklasse ersetzen können |
+| SRP | Single Responsibility Principle; Designprinzip, das sicherstellt, dass Verantwortlichkeiten in Klassen getrennt werden |
 | Docker Compose | Tool zur Definition und Verwaltung von Multi-Container-Docker-Anwendungen |
 | FastAPI | Modernes Python-Web-Framework für den Aufbau von APIs |
 | Next.js | React-Framework für serverseitiges Rendering und statische Seitengenerierung |
