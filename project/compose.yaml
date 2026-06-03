@@ -19,7 +19,7 @@ services:
       - GMAIL_PASSWORD=${GMAIL_PASSWORD}
       # Lokaler Dev-Fallback, damit `docker compose up` beim ersten Start nicht scheitert.
       # Für produktive Umgebungen per .env oder Deployment-Secret überschreiben.
-      - JWT_SECRET_KEY=${JWT_SECRET_KEY:-dev-only-change-me}
+      - JWT_SECRET_KEY=${JWT_SECRET_KEY}
       - FRONTEND_URL=${FRONTEND_URL:-http://localhost:8000}
     volumes:
       - ./data:/data
