@@ -86,8 +86,17 @@ Quantitative Kennzahlen des aktuellen Teststands:
 - **Anzahl Testmodule:** 6 Backend-Testmodule
 - **CI-Smoke-Tests für das Frontend:** 1
 - **Bekannte Fehler im betrachteten Testumfang:** 0
-- **Automatisierte Code-Coverage-Messung:** derzeit im Workflow dokumentiert als "SonarCloud Full Metrics (main branch)"
 - **Mittlere Fehlerbehebungszeit:** nicht gemessen
+- **Automatisierte Code-Coverage-Messung:** derzeit im Workflow dokumentiert als "SonarCloud Full Metrics (main branch)"
+- **Code-Coverage (gesamt Backend):**	48.3%
+- **Line Coverage:**	50.8% 
+- **Branch Coverage:**	34.6% 
+- **Deckbare Zeilen:**	711 
+- **Gedeckte Zeilen:**	361 
+- **Ungedeckte Zeilen:**	350 
+- **Deckbare Branches:**	130 
+- **Gedeckte Branches:**	45 
+- **Ungedeckte Branches:**	85
 
 Weitere sinnvolle Metriken für zukünftige Testläufe wären Code-Coverage in Prozent, Laufzeit pro Testmodul und die Anzahl fehlschlagender CI-Läufe pro Sprint (siehe GitHub Actions).
 
