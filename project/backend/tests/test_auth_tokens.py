@@ -6,9 +6,7 @@ from unittest.mock import patch
 
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 
-import core.Database as Database
 import services.AuthService as auth_service_module
-from dao import AccountDAO
 from core.Auth import createAccessToken, decodeToken
 from services.AuthService import (
     hashResetToken,
