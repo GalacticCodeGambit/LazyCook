@@ -8,9 +8,6 @@ export default function ImpressumPage() {
         <main className="min-h-screen bg-white px-6 py-12">
             <div className="mx-auto max-w-4xl">
                 <h1 className="text-3xl font-semibold mb-6">Impressum</h1>
-                <p className="text-gray-600 mb-8">
-                    Das vollständige Impressum wird hier aus der bestehenden Markdown-Datei angezeigt.
-                </p>
                 <MarkdownRenderer content={content} />
             </div>
         </main>
