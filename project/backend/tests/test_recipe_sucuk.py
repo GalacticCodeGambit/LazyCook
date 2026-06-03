@@ -4,9 +4,10 @@ from unittest.mock import patch
 
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 
-import services.RecipeSUCUK as recipe_service_module
-from domain.ingredient import Ingredient
-from services.RecipeSUCUK import findRecipes
+import RecipeSucuk
+import Ingredient as IngredientModule
+from Ingredient import Ingredient
+from RecipeSucuk import findRecipes
 
 
 # ── Hilfsfunktionen ────────────────────────────────────────────

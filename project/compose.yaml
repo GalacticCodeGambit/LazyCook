@@ -17,7 +17,7 @@ services:
       - PYTHONUNBUFFERED=1
       - GMAIL_USER=${GMAIL_USER}
       - GMAIL_PASSWORD=${GMAIL_PASSWORD}
-      - JWT_SECRET_KEY=${JWT_SECRET_KEY}
+      - JWT_SECRET_KEY=${JWT_SECRET_KEY:-dev-secret-change-me}
       - FRONTEND_URL=${FRONTEND_URL:-http://localhost:8000}
     volumes:
       - ./data:/data
