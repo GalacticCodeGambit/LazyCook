@@ -87,7 +87,7 @@ niedrig
 
 ![UML-Sequenzdiagramm_automatischer-Rezeptvorschlag.png](https://github.com/GalacticCodeGambit/LazyCook/blob/0eabc6e46a15b27392564b1048302d814c896cfd/docs/UML/UML-Sequenzdiagramm_automatischer-Rezeptvorschlag.png)
 
-Die hinzugefügte Zutaten sollen auswirkung auf den Rezeptvorschlag haben und dem Backend zugesendet werden. 
+Die hinzugefügte Zutaten sollen Auswirkung auf den Rezeptvorschlag haben und dem Backend zugesendet werden. 
 Die Anzahl der Personen soll hier noch keine Auswirkung auf den automatischen Rezeptvorschlag haben. 
 
 ##### Voraussetzungen:
@@ -170,12 +170,12 @@ niedrig
 
 ##### UML:
 <img width="1404" height="669" alt="image" src="https://github.com/user-attachments/assets/10cea492-6933-4d3d-9839-5889a14f20f2" />
-Die angegebene Personenanzahl soll sich auf den automatischen Rezeptvorschlag auswirken und auch mit den Zutaten zum Backend gesendet werden. 
+Die angegebene Personenanzahl soll bei der Anzeige der fehlenden Rezepte zum tragen kommen, indem die Menge in den Rezepten auf die Personenanzhal hochgerechnet wird. 
 
 ##### Voraussetzungen:
 Der Nutzer muss angemeldet sein und sich auf der Seite befinden für Zutaten eintragen, um die Personenanzahl eintragen zu können.
 ##### Nachbedingungen:
-Die eingetragene Personenanzahl wir gespeichert. Bei dem automatischen Rezeptvorschlag wird die Personenanzahl berücksichtigt und passt entsprechend angepasst.
+Die eingetragene Personenanzahl wird gespeichert. Die Menge der Zutaten werden im Frontend entsprechend der Personenanzahl hochskaliert.
 ##### Geschätzter Aufwand: 
 mittel
 
@@ -208,7 +208,7 @@ mittel
 ##### UML:
 <img width="1218" height="574" alt="image" src="https://github.com/user-attachments/assets/f75238d5-9e98-4262-8fd1-5d60b26f86a0" />
 
-![UML-Aktivitaetsdiagramm_Rezept-filtern.png](https://github.com/GalacticCodeGambit/LazyCook/blob/72c5aa65cddebc6d879e9e9607d70cd5e8d9f17d/docs/UML/UML-Aktivitaetsdiagramm_Rezept-filtern.png)
+![UML-Aktivitaetsdiagramm_Rezept-filtern.png](https://github.com/GalacticCodeGambit/LazyCook/blob/b8ef582b0acfb24330bf633ca6b506a8c8c81868/docs/UML/UML-Aktivitaetsdiagramm_Rezept-filtern.png)
 ![UML-Sequenzdiagramm_Rezepte-filtern.png](https://github.com/GalacticCodeGambit/LazyCook/blob/d772973d1593eff5b39f49ad2cee79598b3d55dd/docs/UML/UML-Sequenzdiagramm_Rezepte-filtern.png)
 
 Rezepte sollen auch ohne den Eintrag von Zutaten suchbar sein.
