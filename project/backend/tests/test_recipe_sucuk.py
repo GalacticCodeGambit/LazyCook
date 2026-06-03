@@ -4,10 +4,9 @@ from unittest.mock import patch
 
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 
-import RecipeSucuk
-import Ingredient as IngredientModule
-from Ingredient import Ingredient
-from RecipeSucuk import findRecipes
+import services.RecipeSUCUK as recipe_service_module
+from domain.ingredient import Ingredient
+from services.RecipeSUCUK import findRecipes
 
 
 # ── Hilfsfunktionen ────────────────────────────────────────────
@@ -57,7 +56,7 @@ class TestFindRecipesTreffer:
         result = runFindRecipes(raw, ing, [Ingredient("Nudeln", 1)])
         assert len(result) == 1
         assert result[0].getName() == "Pasta"
-        assert result[0].getRating() == 0.5  # 1 von 2 Zutaten
+        assert result[0].getRating() == 0.5
 
     def testMehrereTrefferSortierungNachRating(self):
         raw = [makeRawRecipe(1, "Pasta"), makeRawRecipe(2, "Pizza")]
@@ -66,8 +65,8 @@ class TestFindRecipesTreffer:
             2: makeIngredients(["Teig"]),
         }
         result = runFindRecipes(raw, ing, [Ingredient("Nudeln", 1), Ingredient("Teig", 1)])
-        assert result[0].getName() == "Pizza"  # Rating 1.0
-        assert result[1].getName() == "Pasta"  # Rating 0.5
+        assert result[0].getName() == "Pizza"
+        assert result[1].getName() == "Pasta"
 
     def testRatingBerechnung(self):
         raw = [makeRawRecipe(1, "Pasta")]

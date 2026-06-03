@@ -4,7 +4,7 @@ import os
 
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 
-from Auth import validatePassword, hashPassword, verifyPassword
+from core.Auth import validatePassword, hashPassword, verifyPassword
 
 
 class TestValidatePassword:
