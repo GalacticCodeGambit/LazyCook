@@ -4,10 +4,10 @@ from unittest.mock import patch
 
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 
-import RecipeSucuk
+import RecipeSUCUK
 import Ingredient as IngredientModule
 from Ingredient import Ingredient
-from RecipeSucuk import findRecipes
+from RecipeSUCUK import findRecipes
 
 
 # ── Hilfsfunktionen ────────────────────────────────────────────
@@ -23,7 +23,7 @@ def mockIngredients(mapping: dict):
 
 def runFindRecipes(rawRecipes, ingredientMapping, searchIngredients, index=0):
     """Hilfsfunktion: patcht beide DB-Aufrufe und ruft findRecipes auf."""
-    with patch.object(RecipeSucuk, "getAllRecipes", return_value=rawRecipes), \
+    with patch.object(RecipeSUCUK, "getAllRecipes", return_value=rawRecipes), \
          patch.object(IngredientModule, "getAllIngredientsForRecipe",
                       side_effect=mockIngredients(ingredientMapping)):
         return findRecipes(searchIngredients, index)
