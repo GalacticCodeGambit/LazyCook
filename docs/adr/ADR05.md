@@ -15,7 +15,7 @@ Welcher Designprinzipien soll für das Projekt verwendet werden? Um eine einheit
 
 ## Entscheidung
 
-Gewählte Variante: "Liskov Substitution Principle (LSP)", denn damit stellen wir sicher, dass sich alle unsere Speicher-Implementierung gegenüber der Geschäftslogik gleich verhalten. Diese Variante, erlaubt uns es die Datenquelle später auszutauschen, ohne den Code im Service ändern zu müssen
+Gewählte Variante: "Single Responsibility Principle (SRP)", da wir als Architekturentscheideung das Schichtenmodell gewählt haben, passt SRP perfekt dazu. Wir möchten einen klare Trennung der Verantwortlichkeiten und Funktionalitäten, sodass Codeänderungen nicht an mehreren Stellen passieren müssen und Fehler weitreichend das ganze Projekt beeinflussen. Zudem möchten wir ELemente in der Datenpersistenz und dem Frontend einfach bei Bedarf austauschen können.
 
 ## Status
 
@@ -23,7 +23,5 @@ Angenommen
 
 ## Konsequenzen
 
-* Gut, weil die Wartbarkeit erhöht wird. 
-* Gut, weil die Testbarkeit verbessert wird.
-* Schlecht, weil der initiale Entwicklungsaufwand leicht steigt, da wir erst Interfaces definieren müssen, bevor wir die Logik implementieren können.
-* Schlecht, weil wir beim Design der Schnittstellen sehr sorgfältig sein müssen, um sicherzustellen, dass zukünftige Implementierungen (z. B. eine API, die Netzwerkfehler werfen kann) das Prinzip nicht verletzen.
+- Wechsel von LSP auf SRP. Da wir keinen Vererbung haben und auch keine Datenlogik mit Vererbung geplant ist ist LSP als Designprinzip sinnfrei
+- Einbindung von Service-Dateien für klare Trenneung der Aufgabenbereiche
