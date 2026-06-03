@@ -108,7 +108,7 @@ hoch
 ##### UML:
 <img width="1151" height="599" alt="image" src="https://github.com/user-attachments/assets/e9d58164-48cf-4007-a4bd-af42841ef019" />
 
-![UML-Aktivitaetsdiagramm_Registrieren.jpg](https://github.com/GalacticCodeGambit/LazyCook/blob/0eabc6e46a15b27392564b1048302d814c896cfd/docs/UML/UML-Aktivitaetsdiagramm_Registrieren.jpg)
+![UML-Aktivitaetsdiagramm_Registrieren.png](https://github.com/GalacticCodeGambit/LazyCook/blob/0eabc6e46a15b27392564b1048302d814c896cfd/docs/UML/UML-Aktivitaetsdiagramm_Registrieren.png)
 
 Die Eingabe für die Registrierung soll im Frontend und im Backend Validiert werden, ob sich bei dieser um eine gültige handelt.  
 
