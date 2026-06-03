@@ -224,7 +224,7 @@ niedrig
 ___
 ### 3. Nicht-funktionale Anforderungen
 Das Projekt muss zum Ende des 4. Semesters abgegeben werden, genaueres wird noch bekannt gegeben. <br>
-Sollte die Zeit nicht ausreichen, um alle geplanten Features zu implementieren, sollen die Kernfunktionen (Zutaten hinzufügen/entfernen, Rezeptsuche und Rezeptvorschläge) Priorität haben.
+Sollte die Zeit nicht ausreichen, um alle geplanten Features zu implementieren, sollen die Kernfunktionen (Zutaten hinzufügen/entfernen, Rezeptsuche und Rezeptvorschläge) Priorität haben. Das Projekt soll dem schichtenbasierten Architekturstil und dem Liskov Substitution Designprinzip entsprechen. 
 #### 3.1 Technische Einschränkungen
 - **TE-1 (Architektur):** Das System muss als Web-Applikation realisiert werden. Eine native Installation auf dem Endgerät des Nutzers ist nicht vorgesehen.
 - **TE-2 (Laufzeitumgebung/Browser):** Die Anwendung muss auf den aktuellsten stabilen Versionen der Browser Google Chrome, Mozilla Firefox und Safari lauffähig sein. Eine Optimierung für veraltete Browser (z.B. Internet Explorer) oder Browser-Versionen erfolgt nicht.
