@@ -36,7 +36,10 @@ Für die Funktion [#115](https://github.com/GalacticCodeGambit/LazyCook/issues/1
 ```
 GMAIL_USER=<dein.mail@gmail.com>
 GMAIL_PASSWORD=<dein_gmail_passwort>
+JWT_SECRET_KEY=<ein_langes_zufallssecret>
 ```
+
+Hinweis: `JWT_SECRET_KEY` sollte in produktiven Umgebungen immer gesetzt und einzigartig sein. Für lokale Tests nutzt `compose.yaml` einen Dev-Default, damit der erste Start nicht abbricht.
 
 ## Verwendete Technologien
 - Frontend: HTML, CSS, TypeScript/React
