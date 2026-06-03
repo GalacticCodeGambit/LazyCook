@@ -74,7 +74,7 @@ def __saveRecipeInDB(recipe: Recipe):
     return recipe.saveInDB()
         
 
-if __name__ =="__main__":
+if __name__ == "__main__":
     recipes = extractRecipesFromJSON(str(PATH))
     for r in recipes:
         print(r.getName())
