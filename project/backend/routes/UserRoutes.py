@@ -1,6 +1,7 @@
 """
 routes/users.py – Geschützte User-Endpunkte (/users/me)
 """
+
 from typing import Annotated
 
 from fastapi import APIRouter, Depends, HTTPException, status

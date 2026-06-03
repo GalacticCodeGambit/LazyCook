@@ -8,16 +8,32 @@ sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..")
 import core.Database as Database
 from core.Auth import hashPassword, verifyPassword
 from dao.AccountDAO import (
-    createAccount, getAccountByEmail, deleteAccount, updateAccount,
-    getAccountById, saveRefreshToken, getRefreshToken, deleteRefreshToken,
-    deleteAllRefreshTokens, cleanupExpiredTokens, savePasswordResetToken,
-    getPasswordResetToken, markResetTokenUsed, updateKontoPassword,
+    createAccount,
+    getAccountByEmail,
+    deleteAccount,
+    updateAccount,
+    getAccountById,
+    saveRefreshToken,
+    getRefreshToken,
+    deleteRefreshToken,
+    deleteAllRefreshTokens,
+    cleanupExpiredTokens,
+    savePasswordResetToken,
+    getPasswordResetToken,
+    markResetTokenUsed,
+    updateKontoPassword,
 )
 from dao.RecipeDAO import (
-    addRecipe, addIngredientToRecipe, getAllRecipes, getAllIngredientsForRecipe,
+    addRecipe,
+    addIngredientToRecipe,
+    getAllRecipes,
+    getAllIngredientsForRecipe,
 )
 from dao.IngredientDAO import (
-    addIngredient, getIngredientByName, incrementIngredientUsage, getTopIngredients,
+    addIngredient,
+    getIngredientByName,
+    incrementIngredientUsage,
+    getTopIngredients,
 )
 
 
@@ -226,4 +242,3 @@ class TestPasswordReset:
         neuerHash = hashPassword("Neu1!")
         updateKontoPassword(account["id"], neuerHash)
         aktuell = getAccountByEmail("test@example.com")
-     

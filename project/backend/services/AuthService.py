@@ -1,6 +1,7 @@
 """
 auth_service.py – Token-Orchestrierung (Refresh Tokens, Password Reset Tokens, Token-Paare)
 """
+
 import secrets
 import hashlib
 from datetime import datetime, timedelta, timezone
@@ -20,7 +21,9 @@ def createTokenPair(konto: dict) -> Token:
         expires_delta=timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES),
     )
     refresh_token = createRefreshToken(konto["id"])
-    return Token(access_token=access_token, refresh_token=refresh_token, token_type="bearer")
+    return Token(
+        access_token=access_token, refresh_token=refresh_token, token_type="bearer"
+    )
 
 
 def createRefreshToken(konto_id: int) -> str:
@@ -46,8 +49,12 @@ def validateRefreshToken(token: str) -> dict | None:
 def createPasswordResetToken(kontoId: int) -> str:
     """Generiert Klartext-Token (geht per Mail) und speichert nur den Hash in der DB."""
     token = secrets.token_urlsafe(48)
-    expiresAt = datetime.now(timezone.utc) + timedelta(minutes=PASSWORD_RESET_EXPIRE_MINUTES)
-    AccountDAO.savePasswordResetToken(kontoId, hashResetToken(token), expiresAt.isoformat())
+    expiresAt = datetime.now(timezone.utc) + timedelta(
+        minutes=PASSWORD_RESET_EXPIRE_MINUTES
+    )
+    AccountDAO.savePasswordResetToken(
+        kontoId, hashResetToken(token), expiresAt.isoformat()
+    )
     return token
 
 

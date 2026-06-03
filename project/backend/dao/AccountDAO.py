@@ -1,8 +1,8 @@
 """
 account_dao.py – Data Access Object für Account, RefreshToken und PasswordResetToken
 """
-from core.Database import getDB, getConnection
 
+from core.Database import getDB, getConnection
 
 # ── Account ──────────────────────────────────────────────────────
 

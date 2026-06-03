@@ -1,6 +1,7 @@
 """
 recipe_dao.py – Data Access Object für Recipe und Exists_from
 """
+
 from core.Database import getDB
 
 

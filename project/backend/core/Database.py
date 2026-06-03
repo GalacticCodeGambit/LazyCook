@@ -1,6 +1,7 @@
 """
 Database.py – SQLite-Verbindungsmanagement und Tabellen-Initialisierung
 """
+
 import sqlite3
 import logging
 from contextlib import contextmanager

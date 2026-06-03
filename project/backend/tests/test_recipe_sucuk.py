@@ -8,27 +8,35 @@ import services.RecipeSUCUK as recipe_service_module
 from domain.ingredient import Ingredient
 from services.RecipeSUCUK import findRecipes
 
-
 # ── Hilfsfunktionen ────────────────────────────────────────────
+
 
 def makeRawRecipe(id: int, name: str, description: str = "") -> dict:
     return {"id": id, "name": name, "description": description}
 
+
 def makeIngredients(names: list[str]) -> list[Ingredient]:
     return [Ingredient(name, 1.0) for name in names]
+
 
 def mockIngredientsByRecipeId(mapping: dict):
     return lambda rid: mapping.get(rid, [])
 
+
 def runFindRecipes(rawRecipes, ingredientMapping, searchIngredients, index=0):
     """Patcht beide DAO-Aufrufe und ruft findRecipes auf."""
-    with patch.object(recipe_service_module.RecipeDAO, "getAllRecipes", return_value=rawRecipes), \
-         patch.object(recipe_service_module.IngredientDAO, "getIngredientsForRecipe",
-                      side_effect=mockIngredientsByRecipeId(ingredientMapping)):
+    with patch.object(
+        recipe_service_module.RecipeDAO, "getAllRecipes", return_value=rawRecipes
+    ), patch.object(
+        recipe_service_module.IngredientDAO,
+        "getIngredientsForRecipe",
+        side_effect=mockIngredientsByRecipeId(ingredientMapping),
+    ):
         return findRecipes(searchIngredients, index)
 
 
 # ── Tests ──────────────────────────────────────────────────────
+
 
 class TestFindRecipesKeinTreffer:
     def testLeereDB(self):
@@ -64,7 +72,9 @@ class TestFindRecipesTreffer:
             1: makeIngredients(["Nudeln", "Salz"]),
             2: makeIngredients(["Teig"]),
         }
-        result = runFindRecipes(raw, ing, [Ingredient("Nudeln", 1), Ingredient("Teig", 1)])
+        result = runFindRecipes(
+            raw, ing, [Ingredient("Nudeln", 1), Ingredient("Teig", 1)]
+        )
         assert result[0].getName() == "Pizza"
         assert result[1].getName() == "Pasta"
 
@@ -77,7 +87,9 @@ class TestFindRecipesTreffer:
     def testAlleZutatenTreffen(self):
         raw = [makeRawRecipe(1, "Pasta")]
         ing = {1: makeIngredients(["Nudeln", "Salz"])}
-        result = runFindRecipes(raw, ing, [Ingredient("Nudeln", 1), Ingredient("Salz", 1)])
+        result = runFindRecipes(
+            raw, ing, [Ingredient("Nudeln", 1), Ingredient("Salz", 1)]
+        )
         assert result[0].getRating() == 1.0
 
 

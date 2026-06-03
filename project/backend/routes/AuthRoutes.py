@@ -1,6 +1,7 @@
 """
 routes/auth.py – Authentifizierungs-Endpunkte (Register, Login, Refresh, Logout, Passwort-Reset)
 """
+
 import logging
 import os
 from typing import Annotated
@@ -12,7 +13,15 @@ from core.Auth import validateEmail, validatePassword, verifyPassword, hashPassw
 from dao import AccountDAO
 from services import AuthService
 from services.EmailService import sendPasswordChangedEmail, sendPasswordResetEmail
-from core.Models import User, Token, UserCreate, RefreshRequest, LogoutRequest, ForgotPasswordRequest, ResetPasswordRequest
+from core.Models import (
+    User,
+    Token,
+    UserCreate,
+    RefreshRequest,
+    LogoutRequest,
+    ForgotPasswordRequest,
+    ResetPasswordRequest,
+)
 from services import UserService
 
 logger = logging.getLogger(__name__)

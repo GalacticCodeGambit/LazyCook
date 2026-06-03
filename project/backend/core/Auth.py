@@ -1,6 +1,7 @@
 """
 Auth.py – Kryptographie, Validierung, JWT-Encoding und FastAPI-Dependency
 """
+
 import re
 import os
 from datetime import datetime, timedelta, timezone

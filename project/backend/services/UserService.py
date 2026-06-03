@@ -1,6 +1,7 @@
 """
 user_service.py – Geschäftslogik für Account-Verwaltung
 """
+
 import logging
 
 from core.Auth import hashPassword, verifyPassword, validateEmail, validatePassword

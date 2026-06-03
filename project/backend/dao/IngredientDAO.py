@@ -1,6 +1,7 @@
 """
 ingredient_dao.py – Data Access Object für Ingredient und IngredientUsage
 """
+
 from core.Database import getDB, getConnection
 from domain.ingredient import Ingredient
 

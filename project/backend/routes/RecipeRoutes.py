@@ -1,6 +1,7 @@
 """
 routes/recipes.py – Rezept- und Zutaten-Endpunkte
 """
+
 from typing import Annotated
 
 from fastapi import APIRouter, Depends, HTTPException, Response
@@ -26,7 +27,9 @@ async def searchRecipes(
         IngredientDAO.incrementIngredientUsage(account["id"], zutat.name, zutat.unit)
 
     topRows = IngredientDAO.getTopIngredients(account["id"], limit=5)
-    topIngredients = [{"name": r["displayName"], "unit": r["lastUnit"]} for r in topRows]
+    topIngredients = [
+        {"name": r["displayName"], "unit": r["lastUnit"]} for r in topRows
+    ]
 
     # TODO: eigentliche Rezept-Suche implementieren
     return {"rezepte": [], "topIngredients": topIngredients}
@@ -47,4 +50,6 @@ async def getTopIngredientsForUser(
     response.headers["Pragma"] = "no-cache"
 
     rows = IngredientDAO.getTopIngredients(account["id"], limit=limit)
-    return {"ingredients": [{"name": r["displayName"], "unit": r["lastUnit"]} for r in rows]}
+    return {
+        "ingredients": [{"name": r["displayName"], "unit": r["lastUnit"]} for r in rows]
+    }
