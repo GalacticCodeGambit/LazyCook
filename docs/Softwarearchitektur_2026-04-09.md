@@ -302,6 +302,7 @@ Das Backend folgt einer dreischichtigen Struktur innerhalb des Backends:
 6. Backend prüft ob E-Mail bereits existiert und gibt entsprechende Meldung zurück
 7. Frontend zeigt Erfolgsmeldung und leitet direkt zum RecipeFinder weiter (ADR02)
 
+
 ## Szenario 2: Benutzeranmeldung
 
 1. Nutzer gibt E-Mail und Passwort auf der Anmeldeseite ein
@@ -318,6 +319,8 @@ Das Backend folgt einer dreischichtigen Struktur innerhalb des Backends:
 4. Backend filtert die Rezepte in der Datenbank anhand der eingegebenen Zutaten über die Besteht_Aus-Tabelle
 5. Backend gibt passende Rezepte als JSON zurück
 6. Frontend zeigt maximal 12 Rezepte als 3x4 Matrix auf einer Seite an. Weitere können über einen Button geladen werden (maximal 96 Rezepte) (ADR03)
+
+![UML-Sequenzdiagramm_Rezepte-filtern.drawio.png](https://github.com/GalacticCodeGambit/LazyCook/blob/49d82de42d345200ba9f4e0ddb18b2245cba3c40/docs/UML/UML-Sequenzdiagramm_Rezepte-filtern.drawio.png)
 
 ## Szenario 4: Benutzerabmeldung
 
@@ -353,6 +356,15 @@ Das Backend folgt einer dreischichtigen Struktur innerhalb des Backends:
 3. Es wird geprüft ob für die Email ein Account hinterlegt ist
 4. Nutzer erhält Email mit Link zur Passwortänderungsseite
 5. Nutzer gibt neues Passwort ein
+
+## Szenario 8: Rezept suchen nach Titel
+
+1. Nutzer gibt Rezeptnamen in Suchfeld ein
+2. Rezepte mit ähnlichem Titel werden in der Datenbank gesucht
+3. Rezepte werden im Frontend angezeigt
+
+![UML-Sequenzdiagramm_automatischer-Rezeptvorschlag.png](https://github.com/GalacticCodeGambit/LazyCook/blob/49d82de42d345200ba9f4e0ddb18b2245cba3c40/docs/UML/UML-Sequenzdiagramm_automatischer-Rezeptvorschlag.png)
+
 ---
 
 # Verteilungssicht
