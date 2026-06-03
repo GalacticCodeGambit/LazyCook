@@ -39,7 +39,7 @@
 
 ### Stunden pro Phase
 
-![Milestone: Zeit pro Sprint](statistics/MilestoneTimePerSprint.png)
+![Milestone: Zeit pro Sprint](statistics/Milestone-Time-Per-Sprint.png)
 
 ### Disziplin & Phase kombiniert
 
