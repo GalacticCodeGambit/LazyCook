@@ -9,13 +9,15 @@ Der Nutzer sollte nicht zu viele Informationen auf der Website gleichzeitig sehe
 * Maximal 20 Rezeptvorschläge
 * Maximal 3 Rezeptvorschläge auf einer Seite und Scrolling bis maximal 10 Vorschläge
 * Maximal 10 Rezeptvorschläge
+* Maximal 96 Rezeptvorschläge
 * 3x3 Matrix
+* 3x4 Matrix
 * Listenansicht 
 * Blockansicht
 
 ## Entscheidung
 
-Gewählte Variante: 3x3-Matrix. Eine 3x3 Matrix gibt dem Benutzer eine angenehme Anzahl von Rezepten, die er auf einen Blick erfassen kann. Die einzelnen Rezeptkacheln sind groß genug für Bilder und weitere Rezeptinfos. Eine maximale Begrenzung ist nicht nötig, da dafür noch nicht genügen Elemente in der Datenbank enthalten sind.
+Gewählte Variante: 3x3-Matrix (12 Rezepte auf einen Blick). Eine 3x4 Matrix gibt dem Benutzer eine angenehme Anzahl von Rezepten, die er auf einen Blick erfassen kann. Die einzelnen Rezeptkacheln sind groß genug für Bilder und weitere Rezeptinfos. Die maximale Anzahl wird auf 96 Rezepte begrenzt, die immer in 12er Schritten druch klick auf einen Button angezeigt werden. Damit kann man 4 mal neue Rezepte laden. Der Nutzer kann also viele Rezepte durchsuchen. Es wird nicht erwartet das der Nutzer die vollen 96 Rezepte abfragt.
 
 ## Status
 
@@ -24,6 +26,6 @@ Angenommen
 ## Konsequenzen
 
 * Gut, dem Nutzer werden nicht zu viele Rezepte zeitgleich angezeigt, die Rezeptinfos sind gut zu erkennen.
-* Schlecht, bei zu vielen passenden Rezepten in der Datenbank gibt es keine Begrenzung bezüglich der maximalen Anzahl was zu langen Ladezeiten führen kann.
+
 
 
