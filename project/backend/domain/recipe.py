@@ -1,5 +1,4 @@
-from Ingredient import Ingredient
-from Database import addIngredientToRecipe, addRecipe, getIngredientByName
+from domain.ingredient import Ingredient
 
 
 class Recipe:
@@ -12,16 +11,6 @@ class Recipe:
         self.__rating = 0.0
         self.__countPersons = 1
         self.__matching = 0
-
-    def saveInDB(self) -> bool:
-        rid = addRecipe(self.__name, self.__description, None)
-        for ingredient in self.__ingredients:
-            result = getIngredientByName(ingredient.getName())
-            if not result:
-                return False
-            zid = result["id"]
-            addIngredientToRecipe(zid, rid, ingredient.getAmount())
-        return True
 
     def getName(self) -> str:
         return self.__name

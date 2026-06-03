@@ -4,10 +4,9 @@ from unittest.mock import patch
 
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 
-import RecipeSUCUK
-import Ingredient as IngredientModule
-from Ingredient import Ingredient
-from RecipeSUCUK import findRecipes
+import services.RecipeSUCUK as recipe_service_module
+from domain.ingredient import Ingredient
+from services.RecipeSUCUK import findRecipes
 
 
 # ── Hilfsfunktionen ────────────────────────────────────────────
@@ -15,17 +14,17 @@ from RecipeSUCUK import findRecipes
 def makeRawRecipe(id: int, name: str, description: str = "") -> dict:
     return {"id": id, "name": name, "description": description}
 
-def makeRawIngredient(name: str, amount: float = 1.0) -> dict:
-    return {"name": name, "amount": amount, "amountType": "g"}
+def makeIngredients(names: list[str]) -> list[Ingredient]:
+    return [Ingredient(name, 1.0) for name in names]
 
-def mockIngredients(mapping: dict):
+def mockIngredientsByRecipeId(mapping: dict):
     return lambda rid: mapping.get(rid, [])
 
 def runFindRecipes(rawRecipes, ingredientMapping, searchIngredients, index=0):
-    """Hilfsfunktion: patcht beide DB-Aufrufe und ruft findRecipes auf."""
-    with patch.object(RecipeSUCUK, "getAllRecipes", return_value=rawRecipes), \
-         patch.object(IngredientModule, "getAllIngredientsForRecipe",
-                      side_effect=mockIngredients(ingredientMapping)):
+    """Patcht beide DAO-Aufrufe und ruft findRecipes auf."""
+    with patch.object(recipe_service_module.RecipeDAO, "getAllRecipes", return_value=rawRecipes), \
+         patch.object(recipe_service_module.IngredientDAO, "getIngredientsForRecipe",
+                      side_effect=mockIngredientsByRecipeId(ingredientMapping)):
         return findRecipes(searchIngredients, index)
 
 
@@ -38,14 +37,14 @@ class TestFindRecipesKeinTreffer:
 
     def testKeineUebereinstimmung(self):
         raw = [makeRawRecipe(1, "Pasta")]
-        ing = {1: [makeRawIngredient("Nudeln")]}
+        ing = {1: makeIngredients(["Nudeln"])}
         result = runFindRecipes(raw, ing, [Ingredient("Mehl", 1)])
         assert len(result) == 1
         assert result[0].getRating() == 0.0
 
     def testLeereZutatenliste(self):
         raw = [makeRawRecipe(1, "Pasta"), makeRawRecipe(2, "Pizza")]
-        ing = {1: [makeRawIngredient("Nudeln")], 2: [makeRawIngredient("Teig")]}
+        ing = {1: makeIngredients(["Nudeln"]), 2: makeIngredients(["Teig"])}
         result = runFindRecipes(raw, ing, [])
         assert len(result) == 2
 
@@ -53,32 +52,31 @@ class TestFindRecipesKeinTreffer:
 class TestFindRecipesTreffer:
     def testEinTreffer(self):
         raw = [makeRawRecipe(1, "Pasta")]
-        ing = {1: [makeRawIngredient("Nudeln"), makeRawIngredient("Salz")]}
+        ing = {1: makeIngredients(["Nudeln", "Salz"])}
         result = runFindRecipes(raw, ing, [Ingredient("Nudeln", 1)])
         assert len(result) == 1
         assert result[0].getName() == "Pasta"
-        assert result[0].getRating() == 0.5  # 1 von 2 Zutaten
+        assert result[0].getRating() == 0.5
 
     def testMehrereTrefferSortierungNachRating(self):
         raw = [makeRawRecipe(1, "Pasta"), makeRawRecipe(2, "Pizza")]
         ing = {
-            1: [makeRawIngredient("Nudeln"), makeRawIngredient("Salz")],
-            2: [makeRawIngredient("Teig")],
+            1: makeIngredients(["Nudeln", "Salz"]),
+            2: makeIngredients(["Teig"]),
         }
-        # Nudeln trifft Pasta (1/2 = 0.5), Teig trifft Pizza (1/1 = 1.0)
         result = runFindRecipes(raw, ing, [Ingredient("Nudeln", 1), Ingredient("Teig", 1)])
-        assert result[0].getName() == "Pizza"  # Rating 1.0
-        assert result[1].getName() == "Pasta"  # Rating 0.5
+        assert result[0].getName() == "Pizza"
+        assert result[1].getName() == "Pasta"
 
     def testRatingBerechnung(self):
         raw = [makeRawRecipe(1, "Pasta")]
-        ing = {1: [makeRawIngredient("A"), makeRawIngredient("B"), makeRawIngredient("C")]}
+        ing = {1: makeIngredients(["A", "B", "C"])}
         result = runFindRecipes(raw, ing, [Ingredient("A", 1), Ingredient("B", 1)])
-        assert round(result[0].getRating(), 4) == round(2 / 3, 4)  # 2 von 3 Zutaten
+        assert round(result[0].getRating(), 4) == round(2 / 3, 4)
 
     def testAlleZutatenTreffen(self):
         raw = [makeRawRecipe(1, "Pasta")]
-        ing = {1: [makeRawIngredient("Nudeln"), makeRawIngredient("Salz")]}
+        ing = {1: makeIngredients(["Nudeln", "Salz"])}
         result = runFindRecipes(raw, ing, [Ingredient("Nudeln", 1), Ingredient("Salz", 1)])
         assert result[0].getRating() == 1.0
 
@@ -86,7 +84,7 @@ class TestFindRecipesTreffer:
 class TestFindRecipesPaginierung:
     def _buildRecipes(self, n: int):
         raw = [makeRawRecipe(i, f"Rezept{i}") for i in range(n)]
-        ing = {i: [makeRawIngredient(f"Zutat{i}")] for i in range(n)}
+        ing = {i: makeIngredients([f"Zutat{i}"]) for i in range(n)}
         return raw, ing
 
     def testErsteSeite(self):
