@@ -5,7 +5,7 @@ from dao import IngredientDAO, RecipeDAO
 from pathlib import Path
 
 EXCLUDE_INGREDIENTS = ["Salz", "Pfeffer", "Zucker"]
-PATH = Path(__file__).parent.parent / "recipes_perfect.json"
+PATH = Path(__file__).parent.parent / "ImportRecipes" / "recipes_metric.json"
 
 
 def extractRecipesFromJSON(filePath: str) -> list[Recipe]:
@@ -15,7 +15,7 @@ def extractRecipesFromJSON(filePath: str) -> list[Recipe]:
         recipe = __formatRecipe(
             recipeData["Name"],
             recipeData["Ingredients"],
-            recipeData["Instructions"],
+            "", # recplace with Instructions, as soon as json complete
         )
         __saveRecipeInDB(recipe)
         recipes.append(recipe)
@@ -77,7 +77,7 @@ def __saveRecipeInDB(recipe: Recipe) -> bool:
     for ingredient in recipe.getIngredients():
         result = IngredientDAO.getIngredientByName(ingredient.getName())
         if result:
-            RecipeDAO.addIngredientToRecipe(result["id"], ingredient.getAmount())
+            RecipeDAO.addIngredientToRecipe(rid ,result["id"] ,ingredient.getAmount())
     return True
 
 
