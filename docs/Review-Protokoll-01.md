@@ -15,7 +15,7 @@ Warum: Umfangreiches Verständnis schaffen, da es sich um ein Zentrales Feature 
 Planen/Umsetzung von Features die auf den Algorithmus darauf Bauen. 
 
 ### **Komponenten für den Review**: <br>
-Datei: `RecipeSucuk.py`
+Datei: `RecipeSUCUK.py`
 
 ### **Kriterien für den Review**: 
 - Codequalität 
@@ -24,11 +24,11 @@ Datei: `RecipeSucuk.py`
 - Wartbarkeit
 
 ### **Review-Methodik**:
-Walkthroughs und Code Review von `RecipeSucuk.py`
+Walkthroughs und Code Review von `RecipeSUCUK.py`
 
 ### **Ergebnisse**:
 - Umsetzung der Anzeigen der Rezepte
   Top 100 Matching Rezepte werden an Frontend geschickt von Algorithmus. 
-  Danach ist der Mehr-Button nicht mehr da.	
-- Müssen Test schreiben für die Datei `RecipeSucuk.py`.
-- Akronyme für `RecipeSucuk.py` wurde bestimmt (SUCUK - Search for Uncomplicated Cooking and User-friendly Kitchen recipes)
+  Danach ist der Mehr-Button nicht mehr da.	(Verantwortlicher: Niclas Matzke, Deadline:08.06.2026)
+- Müssen Test schreiben für die Datei `RecipeSUCUK.py`. (Verantwortlicher: Eden Bernhard, Deadline:03.06.2026)
+- Akronyme für `RecipeSUCUK.py` wurde bestimmt (SUCUK - Search for Uncomplicated Cooking and User-friendly Kitchen recipes)

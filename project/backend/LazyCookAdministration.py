@@ -4,10 +4,11 @@ from contextlib import asynccontextmanager
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from Database import initDB
-from Routes import router
+from core.Database import initDB
+from routes.AuthRoutes import router as auth_router
+from routes.UserRoutes import router as users_router
+from routes.RecipeRoutes import router as recipes_router
 
-# Frontend-URL aus Env, mit Dev-Fallback (Frontend läuft per compose.yaml auf Port 8000)
 FRONTEND_URL = os.environ.get("FRONTEND_URL", "http://localhost:8000")
 
 
@@ -27,4 +28,6 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-app.include_router(router)
+app.include_router(auth_router)
+app.include_router(users_router)
+app.include_router(recipes_router)

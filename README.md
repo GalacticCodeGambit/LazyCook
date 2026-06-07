@@ -4,6 +4,17 @@
 [![SonarCloud Full Metrics (main branch)](https://github.com/GalacticCodeGambit/LazyCook/actions/workflows/sonarqube-main.yml/badge.svg)](https://github.com/GalacticCodeGambit/LazyCook/actions/workflows/sonarqube-main.yml)
 
 LazyCook soll eine Webanwendung sein, die es ermöglicht, vorhandene Zutaten einzutragen. Darauf basierend soll LazyCook mögliche Rezepte/Gerichte vorschlagen, die du aus diesen Zutaten machen kannst.
+
+## Star History
+
+<a href="https://www.star-history.com/?repos=GalacticCodeGambit%2FLazyCook&type=timeline&legend=bottom-right">
+ <picture>
+   <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/chart?repos=GalacticCodeGambit/LazyCook&type=timeline&theme=dark&legend=bottom-right" />
+   <source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/chart?repos=GalacticCodeGambit/LazyCook&type=timeline&legend=bottom-right" />
+   <img alt="Star History Chart" src="https://api.star-history.com/chart?repos=GalacticCodeGambit/LazyCook&type=timeline&legend=bottom-right" />
+ </picture>
+</a>
+
 ## Features
 - [x] [#23](https://github.com/GalacticCodeGambit/LazyCook/issues/23) Zutaten hinzufügen können 
 - [x] [#24](https://github.com/GalacticCodeGambit/LazyCook/issues/24) Zutaten entfernen können  
@@ -36,7 +47,10 @@ Für die Funktion [#115](https://github.com/GalacticCodeGambit/LazyCook/issues/1
 ```
 GMAIL_USER=<dein.mail@gmail.com>
 GMAIL_PASSWORD=<dein_gmail_passwort>
+JWT_SECRET_KEY=<ein_langes_zufallssecret>
 ```
+
+Hinweis: `JWT_SECRET_KEY` sollte in produktiven Umgebungen immer gesetzt und einzigartig sein. Für lokale Tests nutzt `compose.yaml` einen Dev-Default, damit der erste Start nicht abbricht.
 
 ## Verwendete Technologien
 - Frontend: HTML, CSS, TypeScript/React

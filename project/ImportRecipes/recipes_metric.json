@@ -1,0 +1,748 @@
+[
+    {
+        "Name": "Apfel-Cranberry-Crostada",
+        "Ingredients": [
+            "3 EL Butter",
+            "900 g Granny-Smith-Äpfel (oder andere feste, knackige Äpfel), geschält, geviertelt, entkernt und in 1/4 Zoll dicke Scheiben geschnitten",
+            "450 g Macintosh-Äpfel (oder andere Äpfel mit weicher Konsistenz, die beim Kochen auseinanderfallen), geschält, geviertelt, entkernt und in 0.6 cm dicke Scheiben geschnitten",
+            "0.5 Tasse Zucker",
+            "0.5 Tasse getrocknete Preiselbeeren",
+            "1 Blatt gefrorener Blätterteig, aufgetaut, aber noch kalt (Packungsanweisungen beachten)",
+            "1 Eiweiß, leicht geschlagen",
+            "1 EL Zucker",
+            "1 Tasse Optional: Eis oder leicht gesüßte Schlagsahne"
+        ],
+        "Url": "https://www.allrecipes.com/recipe/76931/apple-cranberry-crostada/"
+    },
+    {
+        "Name": "Apfelkuchen von Oma Ople",
+        "Ingredients": [
+            "8 kleine Granny-Smith-Äpfel, oder nach Bedarf",
+            "0.5 Tasse ungesalzene Butter",
+            "3 EL Allzweckmehl",
+            "0.5 Tasse weißer Zucker",
+            "0.5 Tasse verpackter brauner Zucker",
+            "0.25 Tasse Wasser",
+            "1 (9 Zoll) doppelter Kuchenteig, aufgetaut"
+        ],
+        "Url": "https://www.allrecipes.com/recipe/12682/apple-pie-by-grandma-ople/"
+    },
+    {
+        "Name": "Sarahs hausgemachtes Apfelmus",
+        "Ingredients": [
+            "4 Äpfel – geschält, entkernt und gehackt",
+            "0.75 Tasse Wasser",
+            "0.25 Tasse weißer Zucker",
+            "0.5 TL gemahlener Zimt"
+        ],
+        "Url": "https://www.allrecipes.com/recipe/51301/sarahs-applesauce/"
+    },
+    {
+        "Name": "Apfel-Crisp",
+        "Ingredients": [
+            "10 Tassen Allzweckäpfel, geschält, entkernt und in Scheiben geschnitten",
+            "1 Tasse weißer Zucker",
+            "1 EL Allzweckmehl",
+            "1 TL gemahlener Zimt",
+            "0.5 Tasse Wasser",
+            "1 Tasse schnell kochende Haferflocken",
+            "1 Tasse Allzweckmehl",
+            "1 Tasse brauner Zucker",
+            "0.25 TL Backpulver",
+            "0.25 TL Backpulver",
+            "0.5 Tasse Butter, geschmolzen"
+        ],
+        "Url": "https://www.allrecipes.com/recipe/12409/apple-crisp-ii/"
+    },
+    {
+        "Name": "Apfelkuchenfüllung",
+        "Ingredients": [
+            "18 Tassen dünn geschnittene Äpfel",
+            "3 EL Zitronensaft",
+            "10 Tassen Wasser",
+            "4.5 Tassen weißer Zucker",
+            "1 Tasse Maisstärke",
+            "2 TL gemahlener Zimt",
+            "1 TL Salz",
+            "0.25 TL gemahlene Muskatnuss"
+        ],
+        "Url": "https://www.allrecipes.com/recipe/12681/apple-pie-filling/"
+    },
+    {
+        "Name": "Einfache Apfel-Crisp mit Hafer-Topping",
+        "Ingredients": [
+            "6 Äpfel – geschält, entkernt und in Scheiben geschnitten",
+            "2 EL weißer Zucker",
+            "1.5 TL gemahlener Zimt, geteilt",
+            "1 Tasse brauner Zucker",
+            "0.75 Tasse altmodische Haferflocken",
+            "0.75 Tasse Allzweckmehl",
+            "0.5 Tasse kalte Butter"
+        ],
+        "Url": "https://www.allrecipes.com/recipe/229088/apple-crisp-with-oat-topping/"
+    },
+    {
+        "Name": "Einfacher Apfelwein",
+        "Ingredients": [
+            "1 (1892 ml) Flasche Apfelwein",
+            "3 Zimtstangen",
+            "1 TL ganzer Piment",
+            "1 TL ganze Nelken",
+            "0.333 Tasse brauner Zucker"
+        ],
+        "Url": "https://www.allrecipes.com/recipe/42022/easy-apple-cider/"
+    },
+    {
+        "Name": "Apfel-Cranberry-Crisp",
+        "Ingredients": [
+            "900 g Granny-Smith-Äpfel – geschält, entkernt und in dünne Scheiben geschnitten",
+            "0.75 Tasse Preiselbeeren",
+            "0.25 Tasse weißer Zucker",
+            "1 EL gemahlener Zimt",
+            "1 TL gemahlene Muskatnuss"
+        ],
+        "Url": "https://www.allrecipes.com/recipe/41893/apple-cranberry-crisp/"
+    },
+    {
+        "Name": "Altmodische Apfelknödel",
+        "Ingredients": [
+            "1 Rezept Gebäck für Kuchen mit doppeltem Boden",
+            "6 große Granny-Smith-Äpfel, geschält und entkernt",
+            "0.5 Tasse Butter",
+            "0.75 Tasse brauner Zucker",
+            "1 TL gemahlener Zimt",
+            "0.5 TL gemahlene Muskatnuss",
+            "3 Tassen Wasser",
+            "2 Tassen weißer Zucker",
+            "1 TL Vanilleextrakt"
+        ],
+        "Url": "https://www.allrecipes.com/recipe/46232/old-fashioned-apple-dumplings/"
+    },
+    {
+        "Name": "Südliche Bratäpfel",
+        "Ingredients": [
+            "0.5 Tasse Butter",
+            "0.5 Tasse weißer Zucker",
+            "2 EL gemahlener Zimt",
+            "4 Granny-Smith-Äpfel – geschält, entkernt und in Scheiben geschnitten"
+        ],
+        "Url": "https://www.allrecipes.com/recipe/230907/southern-fried-apples/"
+    },
+    {
+        "Name": "Apple-Umsätze",
+        "Ingredients": [
+            "2 EL Zitronensaft",
+            "4 Tassen Wasser",
+            "4 Granny-Smith-Äpfel – geschält, entkernt und in Scheiben geschnitten",
+            "2 EL Butter",
+            "1 Tasse brauner Zucker",
+            "1 TL gemahlener Zimt",
+            "1 EL Maisstärke",
+            "1 EL Wasser",
+            "1 (489 g) Packung gefrorene Blätterteigblätter, aufgetaut",
+            "1 Tasse Puderzucker",
+            "1 EL Milch",
+            "1 TL Vanilleextrakt"
+        ],
+        "Url": "https://www.allrecipes.com/recipe/59124/apple-turnovers/"
+    },
+    {
+        "Name": "Apple Crisp – perfekt und einfach",
+        "Ingredients": [
+            "2.5 Tassen Äpfel – geschält, entkernt und in Scheiben geschnitten",
+            "1 Tasse gesiebtes Allzweckmehl",
+            "1 Tasse weißer Zucker",
+            "0.5 TL gemahlener Zimt",
+            "0.25 TL Salz",
+            "0.5 Tasse Butter, weich"
+        ],
+        "Url": "https://www.allrecipes.com/recipe/229274/apple-crisp-perfect-and-easy/"
+    },
+    {
+        "Name": "Die besten Karamelläpfel",
+        "Ingredients": [
+            "8 große säuerliche Äpfel",
+            "8 Essstäbchen aus Holz für Griffe",
+            "2 Tassen verpackter brauner Zucker",
+            "1 (397 g) Dose gesüßte Kondensmilch",
+            "1 Tasse leichter Maissirup",
+            "1 Tasse Butter",
+            "2 TL Vanilleextrakt"
+        ],
+        "Url": "https://www.allrecipes.com/recipe/228210/the-best-caramel-apples/"
+    },
+    {
+        "Name": "Mulligatawny-Suppe",
+        "Ingredients": [
+            "0.5 Tasse gehackte Zwiebel",
+            "2 Stangen Sellerie, gehackt",
+            "1 Karotte, gewürfelt",
+            "0.25 Tasse Butter",
+            "1.5 EL Allzweckmehl",
+            "1.5 TL Currypulver",
+            "4 Tassen Hühnerbrühe",
+            "0.5 Äpfel, entkernt und gehackt",
+            "0.25 Tasse weißer Reis",
+            "1 Hähnchenbrusthälfte ohne Haut und Knochen – in Würfel geschnitten",
+            "1 Prise getrockneter Thymian, Salz und gemahlener schwarzer Pfeffer nach Geschmack",
+            "0.5 Tasse Sahne, erhitzt"
+        ],
+        "Url": "https://www.allrecipes.com/recipe/13087/mulligatawny-soup-i/"
+    },
+    {
+        "Name": "Sautierte Äpfel",
+        "Ingredients": [
+            "0.25 Tasse Butter",
+            "4 große säuerliche Äpfel – geschält, entkernt und in 0.6 cm dicke Scheiben geschnitten",
+            "0.5 Tasse kaltes Wasser",
+            "2 TL Maisstärke",
+            "0.5 Tasse brauner Zucker",
+            "0.5 TL gemahlener Zimt"
+        ],
+        "Url": "https://www.allrecipes.com/recipe/21672/sauteed-apples/"
+    },
+    {
+        "Name": "Hausgemachter Apfelwein",
+        "Ingredients": [
+            "10 große Äpfel, geviertelt, Wasser, zum Bedecken",
+            "0.75 Tasse weißer Zucker",
+            "1 EL gemahlener Zimt",
+            "1 EL gemahlener Piment"
+        ],
+        "Url": "https://www.allrecipes.com/recipe/211772/homemade-apple-cider/"
+    },
+    {
+        "Name": "Apfelkuchenfüllung aus der Dose",
+        "Ingredients": [
+            "4.5 Tassen weißer Zucker",
+            "1 Tasse Maisstärke",
+            "2 TL gemahlener Zimt",
+            "0.25 TL gemahlene Muskatnuss",
+            "10 Tassen Wasser",
+            "2 TL Salz",
+            "3 EL Zitronensaft",
+            "2 Tropfen gelbe Lebensmittelfarbe",
+            "2.7 kg Äpfel"
+        ],
+        "Url": "https://www.allrecipes.com/recipe/15942/canned-apple-pie-filling/"
+    },
+    {
+        "Name": "Einfacher Apfelkuchen",
+        "Ingredients": [
+            "1 (400 g) Packung Teig für einen 9-Zoll-Kuchen mit doppeltem Boden",
+            "0.75 Tasse weißer Zucker oder mehr nach Geschmack",
+            "1 TL gemahlener Zimt",
+            "6 Tassen dünn geschnittene Äpfel",
+            "1 EL Butter"
+        ],
+        "Url": "https://www.allrecipes.com/recipe/12324/apple-pie-i/"
+    },
+    {
+        "Name": "Apfelstreuselkuchen",
+        "Ingredients": [
+            "6 Tassen dünn geschnittene Äpfel",
+            "1 EL Zitronensaft (optional)",
+            "0.75 Tasse weißer Zucker",
+            "2 EL Allzweckmehl",
+            "0.5 TL gemahlener Zimt",
+            "0.125 TL gemahlene Muskatnuss",
+            "0.5 Tasse Rosinen (optional)",
+            "0.5 Tasse gehackte Walnüsse (optional)",
+            "1 (9 Zoll) Tortenboden",
+            "0.5 Tasse Allzweckmehl",
+            "0.5 Tasse verpackter brauner Zucker",
+            "3 EL Butter"
+        ],
+        "Url": "https://www.allrecipes.com/recipe/15587/apple-crumb-pie/"
+    },
+    {
+        "Name": "Karamelläpfel",
+        "Ingredients": [
+            "6 Äpfel",
+            "6 Bastelstäbchen aus Holz, Kochspray",
+            "1 (397 g) Packung einzeln verpackte Karamellbonbons, unverpackt",
+            "2 EL Milch"
+        ],
+        "Url": "https://www.allrecipes.com/recipe/21130/caramel-apples/"
+    },
+    {
+        "Name": "Deutscher Apfelkuchen",
+        "Ingredients": [
+            "1 Tasse Pflanzenöl",
+            "2 Eier",
+            "2 Tassen weißer Zucker",
+            "1 TL Vanilleextrakt",
+            "2 Tassen Allzweckmehl",
+            "2 TL gemahlener Zimt",
+            "1 TL Backpulver",
+            "0.5 TL Salz",
+            "4 Tassen Äpfel – geschält, entkernt und gewürfelt"
+        ],
+        "Url": "https://www.allrecipes.com/recipe/7915/german-apple-cake-i/"
+    },
+    {
+        "Name": "Tolle Wurst-, Apfel- und Cranberry-Füllung",
+        "Ingredients": [
+            "3.75 Tassen gewürfeltes Weißbrot",
+            "1.5 Tassen gewürfeltes Vollkornbrot",
+            "450 g gemahlene Putenwurst",
+            "1 Tasse gehackte Zwiebel",
+            "0.75 Tasse gehackter Sellerie",
+            "2.5 TL getrockneter Salbei",
+            "1.5 TL getrockneter Rosmarin",
+            "0.5 TL getrockneter Thymian",
+            "1 Golden Delicious Apfel, entkernt und gehackt",
+            "0.75 Tasse getrocknete Preiselbeeren",
+            "0.333 Tasse gehackte frische Petersilie",
+            "1 gekochte Putenleber, fein gehackt",
+            "0.75 Tasse Putenbrühe",
+            "4 EL ungesalzene Butter, geschmolzen"
+        ],
+        "Url": "https://www.allrecipes.com/recipe/13651/awesome-sausage-apple-and-cranberry-stuffing/"
+    },
+    {
+        "Name": "Apfelkuchen",
+        "Ingredients": [
+            "2 EL Butter",
+            "2 große grüne Äpfel – geschält, entkernt und in Stücke geschnitten",
+            "2 EL brauner Zucker",
+            "0.25 Tasse weißer Zucker",
+            "0.25 TL Salz",
+            "1.5 TL gemahlener Zimt, oder nach Geschmack",
+            "1 TL Wasser oder bei Bedarf mehr (optional)",
+            "450 g vorbereiteter Tortenteig, in 4 Stücke geschnitten",
+            "1 Ei",
+            "2 TL Milch",
+            "1 TL weißer Zucker oder nach Bedarf"
+        ],
+        "Url": "https://www.allrecipes.com/recipe/234374/apple-hand-pies/"
+    },
+    {
+        "Name": "Erstaunliche Apfelbutter",
+        "Ingredients": [
+            "4.5 kg Äpfel, geviertelt",
+            "4 Tassen ungesüßter Apfelsaft",
+            "1 Tasse weißer Zucker",
+            "1 EL Apfelessig",
+            "1.5 TL gemahlener Zimt",
+            "0.5 TL gemahlene Nelken",
+            "0.5 TL gemahlener Piment",
+            "6 halbe Pint-Einmachgläser mit Deckel und Ringen"
+        ],
+        "Url": "https://www.allrecipes.com/recipe/229892/amazing-apple-butter/"
+    },
+    {
+        "Name": "Einfache Apfel-Zimt-Muffins",
+        "Ingredients": [
+            "1.5 Tassen Allzweckmehl",
+            "0.75 Tasse weißer Zucker",
+            "2 TL Backpulver",
+            "1 TL gemahlener Zimt",
+            "0.5 TL Salz",
+            "1 Ei",
+            "0.333 Tasse Pflanzenöl",
+            "0.333 Tasse Milch",
+            "2 Äpfel – geschält, entkernt und gehackt"
+        ],
+        "Url": "https://www.allrecipes.com/recipe/24352/easy-apple-cinnamon-muffins/"
+    },
+    {
+        "Name": "Debbies fantastisches Apfelbrot",
+        "Ingredients": [
+            "2 Eier",
+            "2 Tassen weißer Zucker",
+            "0.5 Tasse Pflanzenöl",
+            "2 TL Vanilleextrakt",
+            "2 Tassen Äpfel, geschält und gewürfelt",
+            "2 Tassen Allzweckmehl",
+            "1.5 TL Salz",
+            "1 TL Backpulver",
+            "0.5 TL gemahlener Zimt oder mehr nach Geschmack"
+        ],
+        "Url": "https://www.allrecipes.com/recipe/231288/debbies-amazing-apple-bread/"
+    },
+    {
+        "Name": "Mamas Apfelstückchen",
+        "Ingredients": [
+            "1 l Pflanzenöl zum Frittieren",
+            "1.5 Tassen Allzweckmehl",
+            "1 EL weißer Zucker",
+            "2 TL Backpulver",
+            "0.5 TL Salz",
+            "0.667 Tasse Milch",
+            "2 große Eier, geschlagen",
+            "1 EL Pflanzenöl",
+            "3 Tassen Äpfel – geschält, entkernt und gehackt",
+            "1 Tasse Zimtzucker"
+        ],
+        "Url": "https://www.allrecipes.com/recipe/90295/moms-apple-fritters/"
+    },
+    {
+        "Name": "Einfache Apfelchips mit Kuchenfüllung",
+        "Ingredients": [
+            "1 (595 g) Dose Apfelkuchenfüllung",
+            "0.5 TL gemahlener Zimt",
+            "0.5 TL gemahlene Muskatnuss",
+            "1 Tasse Margarine",
+            "0.25 Tasse brauner Zucker",
+            "2 Tassen Allzweckmehl"
+        ],
+        "Url": "https://www.allrecipes.com/recipe/22917/easy-apple-crisp-with-pie-filling/"
+    },
+    {
+        "Name": "Apfelstrudel-Muffins",
+        "Ingredients": [
+            "2 Tassen Allzweckmehl",
+            "1 TL Backpulver",
+            "0.5 TL Backpulver",
+            "0.5 TL Salz",
+            "1 Tasse weißer Zucker",
+            "0.5 Tasse Butter",
+            "2 große Eier",
+            "1.25 TL Vanille",
+            "1.5 Tassen gehackte Äpfel"
+        ],
+        "Url": "https://www.allrecipes.com/recipe/33157/apple-strudel-muffins/"
+    },
+    {
+        "Name": "Köstliche Zimt-Bratäpfel",
+        "Ingredients": [
+            "1 TL Butter",
+            "2 EL brauner Zucker",
+            "3 TL Vanillezucker",
+            "3 TL gemahlener Zimt",
+            "1 TL gemahlene Muskatnuss",
+            "6 große Äpfel – geschält, entkernt und in Scheiben geschnitten",
+            "3.5 EL Wasser"
+        ],
+        "Url": "https://www.allrecipes.com/recipe/228683/delicious-cinnamon-baked-apples/"
+    },
+    {
+        "Name": "Waldorfsalat",
+        "Ingredients": [
+            "0.5 Tasse Mayonnaise",
+            "1 EL weißer Zucker",
+            "1 TL Zitronensaft",
+            "0.125 TL Salz",
+            "3 Äpfel – geschält, entkernt und gehackt",
+            "1 Tasse dünn geschnittener Sellerie",
+            "0.5 Tasse gehackte Walnüsse",
+            "0.5 Tasse Rosinen (optional)"
+        ],
+        "Url": "https://www.allrecipes.com/recipe/16800/waldorf-salad-ii/"
+    },
+    {
+        "Name": "Bratäpfel aus der Mikrowelle",
+        "Ingredients": [
+            "2 Äpfel",
+            "2 EL brauner Zucker",
+            "1 TL gemahlener Zimt",
+            "1 TL gemahlene Muskatnuss",
+            "2 TL Butter"
+        ],
+        "Url": "https://www.allrecipes.com/recipe/18389/microwave-baked-apples/"
+    },
+    {
+        "Name": "Deutscher Apfelpfannkuchen",
+        "Ingredients": [
+            "4 Eier",
+            "0.5 Tasse ungebleichtes Allzweckmehl",
+            "1 EL Zucker",
+            "0.5 TL Backpulver",
+            "1 Prise Salz",
+            "1 Tasse Milch",
+            "1 TL Vanilleextrakt",
+            "2 EL ungesalzene Butter, geschmolzen",
+            "0.5 TL gemahlene Muskatnuss",
+            "0.25 Tasse ungesalzene Butter",
+            "0.5 Tasse weißer Zucker, geteilt",
+            "0.5 TL gemahlener Zimt",
+            "0.5 TL gemahlene Muskatnuss",
+            "1 großer säuerlicher Apfel – geschält, entkernt und in Scheiben geschnitten"
+        ],
+        "Url": "https://www.allrecipes.com/recipe/23900/german-apple-pancake/"
+    },
+    {
+        "Name": "Apfel-Zimt-Haferflocken-Muffins",
+        "Ingredients": [
+            "0.25 Tasse schnell kochende Haferflocken",
+            "1 EL brauner Zucker",
+            "1 EL geschmolzene Butter",
+            "0.25 TL gemahlener Zimt"
+        ],
+        "Url": "https://www.allrecipes.com/recipe/244987/apple-cinnamon-oatmeal-muffins/"
+    },
+    {
+        "Name": "Apfelmus-Schweinekoteletts",
+        "Ingredients": [
+            "1 EL Butter",
+            "1 Apfel – geschält, entkernt und in Scheiben geschnitten",
+            "0.25 Tasse gehackte Zwiebel",
+            "2 (1/2 Zoll dick) Schweinekoteletts",
+            "0.5 TL Salz, gemahlener schwarzer Pfeffer nach Geschmack",
+            "0.75 Tasse Apfelmus",
+            "2 EL brauner Zucker",
+            "0.5 TL gemahlener Senf",
+            "0.125 TL gemahlener Zimt"
+        ],
+        "Url": "https://www.allrecipes.com/recipe/229254/applesauce-pork-chops/"
+    },
+    {
+        "Name": "Apfelbutter für den ganzen Tag",
+        "Ingredients": [
+            "2.5 kg Äpfel – geschält, entkernt und fein gehackt",
+            "4 Tassen weißer Zucker",
+            "2 TL gemahlener Zimt",
+            "0.25 TL gemahlene Nelken",
+            "0.25 TL Salz"
+        ],
+        "Url": "https://www.allrecipes.com/recipe/21205/all-day-apple-butter/"
+    },
+    {
+        "Name": "Einfache Morning Glory Muffins",
+        "Ingredients": [
+            "2 Tassen Allzweckmehl",
+            "1.25 Tassen weißer Zucker",
+            "2 TL Backpulver",
+            "2 TL gemahlener Zimt",
+            "0.25 TL Salz",
+            "2 Tassen geraspelte Karotten",
+            "1 Apfel – geschält, entkernt und zerkleinert",
+            "0.5 Tasse Rosinen",
+            "0.5 Tasse gehackte Walnüsse",
+            "0.5 Tasse ungesüßte Kokosraspeln",
+            "3 große Eier",
+            "1 Tasse Pflanzenöl",
+            "2 TL Vanilleextrakt"
+        ],
+        "Url": "https://www.allrecipes.com/recipe/20995/easy-morning-glory-muffins/"
+    },
+    {
+        "Name": "Apfel-Haferflocken-Crisp",
+        "Ingredients": [
+            "1 Tasse brauner Zucker",
+            "1 Tasse Haferflocken",
+            "1 Tasse Allzweckmehl",
+            "0.5 Tasse Butter, geschmolzen",
+            "3 Tassen Äpfel – geschält, entkernt und gehackt",
+            "0.5 Tasse weißer Zucker",
+            "2 TL gemahlener Zimt"
+        ],
+        "Url": "https://www.allrecipes.com/recipe/24127/apple-oatmeal-crisp/"
+    },
+    {
+        "Name": "Veronicas Apfelpfannkuchen",
+        "Ingredients": [
+            "1 Tasse geriebener säuerlicher Apfel",
+            "1 Tasse Milch",
+            "0.25 Tasse Butter, geschmolzen",
+            "1 großes Ei",
+            "1.25 Tassen Allzweckmehl",
+            "1 EL weißer Zucker",
+            "1.25 TL Backpulver",
+            "0.25 TL gemahlener Zimt"
+        ],
+        "Url": "https://www.allrecipes.com/recipe/23095/veronicas-apple-pancakes/"
+    },
+    {
+        "Name": "Gewürztes Apfelmusbrot",
+        "Ingredients": [
+            "1.25 Tassen Apfelmus",
+            "1 Tasse weißer Zucker",
+            "0.5 Tasse Pflanzenöl",
+            "2 große Eier",
+            "3 EL Milch",
+            "2 Tassen Allzweckmehl",
+            "1 TL Backpulver",
+            "0.5 TL Backpulver",
+            "0.5 TL gemahlener Zimt",
+            "0.25 TL gemahlene Muskatnuss",
+            "0.25 TL gemahlener Piment",
+            "0.25 TL Salz",
+            "0.5 Tasse gehackte Pekannüsse"
+        ],
+        "Url": "https://www.allrecipes.com/recipe/17683/spiced-applesauce-bread/"
+    },
+    {
+        "Name": "Gebackene Apfelrosen",
+        "Ingredients": [
+            "1 großer roter Apfel, entkernt und in sehr dünne Scheiben geschnitten",
+            "0.25 Tasse weißer Zucker",
+            "1 TL gemahlener Zimt",
+            "1 Blatt gefrorener Blätterteig, aufgetaut",
+            "0.25 Tasse geschmolzene Butter",
+            "1 großes Ei",
+            "2 TL Wasser",
+            "1 TL Puderzucker (optional)"
+        ],
+        "Url": "https://www.allrecipes.com/recipe/244198/baked-apple-roses/"
+    },
+    {
+        "Name": "Omas Apfelbrotpudding",
+        "Ingredients": [
+            "4 Tassen weiche Brotwürfel",
+            "2 Tassen geschälte und in Scheiben geschnittene Äpfel",
+            "0.25 Tasse Rosinen",
+            "1.75 Tassen Milch",
+            "1 Tasse brauner Zucker",
+            "0.25 Tasse Margarine",
+            "2 große Eier, geschlagen",
+            "1 TL gemahlener Zimt",
+            "0.5 TL Vanilleextrakt"
+        ],
+        "Url": "https://www.allrecipes.com/recipe/27138/grammas-apple-bread-pudding/"
+    },
+    {
+        "Name": "Holländischer Apfelkuchen mit Haferflockenstreusel",
+        "Ingredients": [
+            "5 Tassen Äpfel – geschält, entkernt und in Scheiben geschnitten",
+            "0.667 Tassen weißer Zucker",
+            "2 EL Allzweckmehl",
+            "0.5 TL gemahlener Zimt",
+            "0.25 TL gemahlene Muskatnuss",
+            "0.25 TL gemahlener Piment",
+            "1 (9 Zoll) gefrorener Tortenboden",
+            "2 EL Butter, Alufolie"
+        ],
+        "Url": "https://www.allrecipes.com/recipe/15683/dutch-apple-pie-with-oatmeal-streusel/"
+    },
+    {
+        "Name": "Bratäpfel",
+        "Ingredients": [
+            "4 säuerliche grüne Äpfel",
+            "0.5 Tasse brauner Zucker",
+            "4 EL Butter",
+            "2 TL gemahlener Zimt"
+        ],
+        "Url": "https://www.allrecipes.com/recipe/21127/baked-apples/"
+    },
+    {
+        "Name": "Altmodischer Apfelkuchen",
+        "Ingredients": [
+            "2 (9 Zoll) ungebackene Tortenböden",
+            "7 Tassen geschälte, entkernte und in Scheiben geschnittene Äpfel",
+            "1 Tasse weißer Zucker",
+            "2 EL Allzweckmehl",
+            "1 TL gemahlener Zimt",
+            "0.25 TL Salz",
+            "0.125 TL gemahlene Muskatnuss",
+            "2 EL Butter"
+        ],
+        "Url": "https://www.allrecipes.com/recipe/12583/old-fashioned-apple-pie/"
+    },
+    {
+        "Name": "Schneller Blätterteig-Apfelstrudel",
+        "Ingredients": [
+            "4 mittelgroße Äpfel – geschält, entkernt und gehackt",
+            "0.75 Tasse weißer Zucker",
+            "0.5 Tasse Rosinen",
+            "0.5 Tasse gehackte Walnüsse",
+            "2 TL gemahlener Zimt",
+            "1 EL Allzweckmehl",
+            "0.5 (496 g) Packung gefrorener Blätterteig, aufgetaut",
+            "1 großes Ei, leicht geschlagen",
+            "1 EL weißer Zucker oder nach Geschmack"
+        ],
+        "Url": "https://www.allrecipes.com/recipe/261603/quick-puff-pastry-apple-strudel/"
+    },
+    {
+        "Name": "Gebratene Apfelkuchen",
+        "Ingredients": [
+            "2 Tassen Allzweckmehl",
+            "1 TL Salz",
+            "0.5 Tassen Backfett, gekühlt",
+            "0.5 Tasse kaltes Wasser"
+        ],
+        "Url": "https://www.allrecipes.com/recipe/12680/fried-apple-pies/"
+    },
+    {
+        "Name": "Bratäpfel mit Zimt",
+        "Ingredients": [
+            "0.25 Tasse Butter",
+            "8 Äpfel, entkernt und gehackt",
+            "0.5 Tasse brauner Zucker",
+            "0.25 TL gemahlener Zimt",
+            "0.25 TL Muskatnuss"
+        ],
+        "Url": "https://www.allrecipes.com/recipe/236250/skillet-apples-with-cinnamon/"
+    },
+    {
+        "Name": "Omas Eisenpfanne-Apfelkuchen",
+        "Ingredients": [
+            "0.5 Tasse Butter",
+            "1 Tasse brauner Zucker",
+            "5 Granny-Smith-Äpfel – geschält, entkernt, geviertelt und in dünne Scheiben geschnitten",
+            "3 (9 Zoll) gekühlte vorgerollte Tortenböden",
+            "1 Tasse weißer Zucker, geteilt",
+            "2 TL gemahlener Zimt, geteilt",
+            "0.25 Tasse weißer Zucker",
+            "1 EL Butter, in kleine Stücke schneiden"
+        ],
+        "Url": "https://www.allrecipes.com/recipe/213569/grandmas-iron-skillet-apple-pie/"
+    },
+    {
+        "Name": "Apfelchips",
+        "Ingredients": [
+            "2 Golden Delicious-Äpfel, entkernt und in dünne Scheiben geschnitten",
+            "1.5 TL weißer Zucker",
+            "0.5 TL gemahlener Zimt"
+        ],
+        "Url": "https://www.allrecipes.com/recipe/233281/apple-chips/"
+    },
+    {
+        "Name": "Apfelgelee",
+        "Ingredients": [
+            "1.6 kg Äpfel, entkernt und gewürfelt",
+            "3 Tassen Wasser, oder nach Bedarf",
+            "7.5 Tassen weißer Zucker",
+            "0.5 TL Butter",
+            "1 (57 g) Packung Fruchtpektinpulver"
+        ],
+        "Url": "https://www.allrecipes.com/recipe/228810/apple-jelly/"
+    },
+    {
+        "Name": "Einfacher Apfel-Krautsalat",
+        "Ingredients": [
+            "3 Tassen gehackter Kohl",
+            "1 ungeschälter roter Apfel, entkernt und gehackt",
+            "1 ungeschälter Granny-Smith-Apfel, entkernt und gehackt",
+            "1 Karotte, gerieben",
+            "0.5 Tasse fein gehackte rote Paprika",
+            "2 Frühlingszwiebeln, fein gehackt",
+            "0.333 Tassen Mayonnaise",
+            "0.333 Tassen brauner Zucker",
+            "1 EL Zitronensaft oder nach Geschmack"
+        ],
+        "Url": "https://www.allrecipes.com/recipe/34615/easy-apple-coleslaw/"
+    },
+    {
+        "Name": "Einfacher Apfelstrudel",
+        "Ingredients": [
+            "1 Granny-Smith-Apfel – geschält, entkernt und grob zerkleinert",
+            "3 Granny-Smith-Äpfel – geschält, entkernt und in Scheiben geschnitten",
+            "1 Tasse brauner Zucker",
+            "1 Tasse goldene Rosinen",
+            "1 Blatt gefrorener Blätterteig, aufgetaut",
+            "1 Ei",
+            "0.25 Tasse Milch"
+        ],
+        "Url": "https://www.allrecipes.com/recipe/47821/easy-apple-strudel/"
+    },
+    {
+        "Name": "Schweinefilet mit Äpfeln und Zwiebeln",
+        "Ingredients": [
+            "2 (1 1/900 g) Schweinefilets",
+            "2 TL Pflanzenöl",
+            "1 TL Meersalz",
+            "2 EL Pflanzenöl, geteilt, oder mehr nach Bedarf",
+            "3 mittelgroße Granny-Smith-Äpfel – geschält, entkernt und in Achtel geschnitten",
+            "2 mittelsüße Zwiebeln, vertikal in Scheiben geschnitten",
+            "3 TL gehackter frischer Thymian, geteilt",
+            "0.25 TL gemahlener schwarzer Pfeffer, oder nach Geschmack",
+            "1 EL Dijon-Senf",
+            "1 Tasse Hühnerbrühe",
+            "1 EL Butter"
+        ],
+        "Url": "https://www.allrecipes.com/recipe/275977/pork-tenderloin-with-apples-and-onions/"
+    }
+]

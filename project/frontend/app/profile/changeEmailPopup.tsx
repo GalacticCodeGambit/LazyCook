@@ -31,15 +31,15 @@ export default function ChangeEmail (){
 
     return (
         <div className="popup w-[480px] max-w-full">
-                <h2 className="popup__title">E-Mail ändern</h2>
-                <div className="popup__fields">
+                <h2 className="popup-title">E-Mail ändern</h2>
+                <div className="popup-fields">
                     <input
                         type="email"
                         placeholder="Neue E-Mail-Adresse"
                         value={newEmail}
                         onChange={(e) => setNewEmail(e.target.value)}
                         onKeyDown={(e) => e.key === "Enter" && handleEmailChange()}
-                        className="popup__input"
+                        className="popup-input"
                     />
                 </div>
                 {emailMsg && <p className="text-sm">{emailMsg}</p>}
