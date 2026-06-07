@@ -15,7 +15,7 @@ Welcher Designprinzipien soll für das Projekt verwendet werden? Um eine einheit
 
 ## Entscheidung
 
-Gewählte Variante: "Single Responsibility Principle (SRP)", da wir als Architekturentscheideung das Schichtenmodell gewählt haben, passt SRP perfekt dazu. Wir möchten einen klare Trennung der Verantwortlichkeiten und Funktionalitäten, sodass Codeänderungen nicht an mehreren Stellen passieren müssen und Fehler weitreichend das ganze Projekt beeinflussen. Zudem möchten wir Elemente in der Datenpersistenz und dem Frontend einfach bei Bedarf austauschen können.
+Gewählte Variante: "Single Responsibility Principle (SRP)", da wir als Architekturentscheideung das Schichtenmodell gewählt haben, passt SRP perfekt dazu. Wir möchten einen klare Trennung der Verantwortlichkeiten und Funktionalitäten, sodass Codeänderungen nicht an mehreren Stellen passieren müssen und Fehler nicht weitreichend das ganze Projekt beeinflussen. Zudem möchten wir Elemente in der Datenpersistenz und dem Frontend einfach bei Bedarf austauschen können.
 
 ## Status
 
