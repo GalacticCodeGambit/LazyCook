@@ -60,7 +60,7 @@ Nutzer geben ihre vorhandenen Zutaten (Name, Menge, Einheit) und die Personenanz
 
 **Kernziele:**
 - Schnell: Rezepte in **< 5 Sekunden** nach Klick auf „Filtern"
-- Sicher: Passwörter gehasht mit **bcrypt + automatischem Salt**
+- Sicherheit: Passwörter gehasht mit **bcrypt + automatischem Salt** Speichern
 - Benutzerfreundlich: Registrierung → RecipeFinder in **wenigen Klicks** (ADR02)
 - Cross-Browser-kompatibel: Chrome, Firefox, Safari, Edge
 
