@@ -380,7 +380,7 @@ LazyCookAdministration.py
 
 ```python
 def validatePassword(pw: str) -> str | None:
-    if len(pw) < 8:                          # +1
+    if len(pw) < 8:                         # +1
         return "..."
     if not re.search(r"[A-Z]", pw):         # +1
         return "..."
@@ -402,8 +402,8 @@ Der SUCUK-Algorithmus hat trotz verschachtelter Schleifen eine niedrige CC, weil
 
 ```python
 def _scoreRecipes(recipes: list[Recipe], ingredient) -> None:
-    for recipe in recipes:                        # +1 (Schleife)
-        for recipeIngredient in recipe.getIngredients():  # +1 (Schleife)
+    for recipe in recipes:                                          # +1 (Schleife)
+        for recipeIngredient in recipe.getIngredients():            # +1 (Schleife)
             if recipeIngredient.getName() == ingredient.getName():  # +1
                 recipe.incrementMatching()
                 recipe.setRating(recipe.getMatching() / len(recipe.getIngredients()))
@@ -480,7 +480,7 @@ def validateRefreshToken(token: str) -> dict | None:
         return None
     expiresAt = datetime.fromisoformat(entry["expiresAt"])   # ┐
     if expiresAt.tzinfo is None:                             # │ diese 4 Zeilen
-        expiresAt = expiresAt.replace(tzinfo=timezone.utc)  # │ sind dupliziert
+        expiresAt = expiresAt.replace(tzinfo=timezone.utc)   # │ sind dupliziert
     if expiresAt < datetime.now(timezone.utc):               # ┘
         return None
     return entry
@@ -492,7 +492,7 @@ def validatePasswordResetToken(token: str) -> dict | None:
         return None
     expiresAt = datetime.fromisoformat(entry["expiresAt"])   # ┐
     if expiresAt.tzinfo is None:                             # │ identisch
-        expiresAt = expiresAt.replace(tzinfo=timezone.utc)  # │
+        expiresAt = expiresAt.replace(tzinfo=timezone.utc)   # │
     if expiresAt < datetime.now(timezone.utc):               # ┘
         return None
     return entry
