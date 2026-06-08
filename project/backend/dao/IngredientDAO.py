@@ -30,7 +30,8 @@ def getIngredientByName(name: str) -> dict | None:
 def getAllIngredients() -> list[dict]:
     with getDB() as con:
         cur = con.cursor()
-        cur.execute("SELECT id, name, amountType FROM Ingredient")        return [dict(row) for row in cur.fetchall()]
+        cur.execute("SELECT id, name, amountType FROM Ingredient")
+        return [dict(row) for row in cur.fetchall()]
 
 
 def getIngredientsForRecipe(rid: int) -> list[Ingredient]:
