@@ -397,36 +397,41 @@ export default function RecipeFinder() {
                         suggestions={suggestions}
                     />
                 </Modal>
-                {/* Rezept Detail Popup */}
                 {selectedRecipe && (
                     <div
                         className="fixed inset-0 z-50 flex items-center justify-center bg-black/50"
                         onClick={() => setSelectedRecipe(null)}
                     >
                         <div
-                            className="bg-white rounded-2xl shadow-xl w-full max-w-lg mx-4 flex flex-col max-h-[80vh] overflow-hidden"
+                            className="bg-white rounded-2xl shadow-xl w-full max-w-2xl mx-4 flex flex-col"
+                            style={{ maxHeight: "90vh" }}
                             onClick={e => e.stopPropagation()}
                         >
                             {/* Header */}
-                            <div className="p-6 border-b">
-                                <h2 className="text-xl font-semibold">{selectedRecipe.name}</h2>
-                                <p className="text-sm text-gray-500 mt-1">{selectedRecipe.description}</p>
-                                <div className="flex gap-4 mt-2 text-sm text-gray-500">
+                            <div className="p-8 border-b">
+                                <h2 className="text-2xl font-semibold mb-2">{selectedRecipe.name}</h2>
+                                <div className="flex gap-4 text-sm text-gray-500">
                                     <span>🎯 {Math.round(selectedRecipe.rating * 100)}% Match</span>
                                     <span>🥦 {selectedRecipe.ingredients.length} Zutaten</span>
+                                    <span>👥 {servings} {servings === 1 ? "Person" : "Personen"}</span>
                                 </div>
                             </div>
 
                             {/* Inhalt scrollbar */}
-                            <div className="p-6 overflow-y-auto flex flex-col gap-6">
-                                {/* Zutaten */}
+                            <div className="p-8 overflow-y-auto flex flex-col gap-8" style={{ flex: 1 }}>
+
+                                {/* Zutaten – skaliert */}
                                 <div>
-                                    <h3 className="font-semibold mb-3">Zutaten</h3>
+                                    <h3 className="font-semibold text-lg mb-4">Zutaten</h3>
                                     <ul className="flex flex-col gap-2">
                                         {selectedRecipe.ingredients.map((ing, idx) => (
                                             <li key={idx} className="flex justify-between text-sm border-b pb-2">
-                                                <span>{ing.name}</span>
-                                                <span className="text-gray-500">{ing.amount}</span>
+                                                <span className="text-gray-800">{ing.name}</span>
+                                                <span className="text-gray-500 font-medium">
+                                    {Number.isInteger(ing.amount * servings)
+                                        ? ing.amount * servings
+                                        : (ing.amount * servings).toFixed(1)}
+                                </span>
                                             </li>
                                         ))}
                                     </ul>
@@ -434,17 +439,17 @@ export default function RecipeFinder() {
 
                                 {/* Zubereitung */}
                                 <div>
-                                    <h3 className="font-semibold mb-3">Zubereitung</h3>
-                                    <p className="text-sm text-gray-600 leading-relaxed">
-                                        {selectedRecipe.description}
+                                    <h3 className="font-semibold text-lg mb-4">Zubereitung</h3>
+                                    <p className="text-sm text-gray-600 leading-relaxed whitespace-pre-line">
+                                        {selectedRecipe.description || "Keine Zubereitung verfügbar."}
                                     </p>
                                 </div>
                             </div>
 
                             {/* Footer */}
-                            <div className="p-4 border-t">
+                            <div className="p-6 border-t">
                                 <button
-                                    className="w-full py-2 bg-black text-white rounded-lg text-sm"
+                                    className="w-full py-3 bg-black text-white rounded-lg text-sm font-medium"
                                     onClick={() => setSelectedRecipe(null)}
                                 >
                                     Schließen
