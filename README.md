@@ -33,24 +33,28 @@ LazyCook soll eine Webanwendung sein, die es ermöglicht, vorhandene Zutaten ein
 - [x] [#47](https://github.com/GalacticCodeGambit/LazyCook/issues/47) Der Nutzer kann bereits hinzugefügte Zutaten bearbeiten, wie z.B. Menge, Einheit
 - [x] [#45](https://github.com/GalacticCodeGambit/LazyCook/issues/45) Passwörter "sicher" in Datenbank Abspeichern als Hash und vom Frontend/Backend "sicher" behandeln
 
- ## Installation und Setup
-1. Klonen das Repository:  
+ ## Setup
+### Anforderungen
+- Docker
+
+### Installation
+1. Kopiere das Repository auf deinen lokalen Rechner:  <br>
    `git clone https://github.com/GalacticCodeGambit/LazyCook.git`
-2. Navigieren zum Projektverzeichnis:  
+2. (Optional) `.env`-Datei erstellen: <br>
+   Für die Funktion [#115](https://github.com/GalacticCodeGambit/LazyCook/issues/115) von Email Versenden/Empfangen muss im Ordner `project/` eine `.env` Datei mit den folgenden Variablen angelegt werden:
+   ```
+   GMAIL_USER=<dein.mail@gmail.com>
+   GMAIL_PASSWORD=<dein_gmail_passwort>
+   JWT_SECRET_KEY=<ein_langes_zufallssecret>
+   ```
+   Hinweis: `JWT_SECRET_KEY` sollte in produktiven Umgebungen immer gesetzt und einzigartig sein. Für lokale Tests nutzt `compose.yaml` einen Dev-Default, damit der erste Start nicht abbricht.
+   
+3. Navigieren zum Projektverzeichnis:  <br>
    `cd LazyCook/project`
-3. Starten der Anwendung mit: Docker Compose:
+4. Starten der Anwendung mit: Docker Compose: <br>
    `docker compose up --build -d`
 <!--Unterschied zu "docker compose up -d"? -->
 Die Anwendung sollte jetzt unter `http://localhost:8000` erreichbar sein.
-
-Für die Funktion [#115](https://github.com/GalacticCodeGambit/LazyCook/issues/115) von Email Versenden/Empfangen muss im Ordner `project/` eine `.env` Datei mit den folgenden Variablen angelegt werden:
-```
-GMAIL_USER=<dein.mail@gmail.com>
-GMAIL_PASSWORD=<dein_gmail_passwort>
-JWT_SECRET_KEY=<ein_langes_zufallssecret>
-```
-
-Hinweis: `JWT_SECRET_KEY` sollte in produktiven Umgebungen immer gesetzt und einzigartig sein. Für lokale Tests nutzt `compose.yaml` einen Dev-Default, damit der erste Start nicht abbricht.
 
 ## Verwendete Technologien
 - Frontend: HTML, CSS, TypeScript/React
