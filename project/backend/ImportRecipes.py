@@ -77,7 +77,7 @@ def __saveRecipeInDB(recipe: Recipe) -> bool:
     for ingredient in recipe.getIngredients():
         result = IngredientDAO.getIngredientByName(ingredient.getName())
         if result:
-            RecipeDAO.addIngredientToRecipe(rid ,result["id"] ,ingredient.getAmount())
+            RecipeDAO.addIngredientToRecipe(rid, result["id"], ingredient.getAmount())
     return True
 
 
