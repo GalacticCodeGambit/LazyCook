@@ -5,7 +5,7 @@ recipe_dao.py – Data Access Object für Recipe und Exists_from
 from core.Database import getDB
 
 
-def addRecipe(name: str, description: str, vid: int) -> int:
+def addRecipe(name: str, description: str) -> int:
     with getDB() as con:
         cur = con.cursor()
         cur.execute(

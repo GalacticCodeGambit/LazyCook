@@ -154,7 +154,7 @@ class TestRefreshToken:
 
 class TestRezeptUndZutat:
     def testRezeptHinzufuegen(self):
-        rid = addRecipe("Testrezept", "Beschreibung", None)
+        rid = addRecipe("Testrezept", "Beschreibung")
         assert isinstance(rid, int)
 
     def testZutatHinzufuegen(self):
@@ -171,7 +171,7 @@ class TestRezeptUndZutat:
         assert getIngredientByName("Nichtvorhanden") is None
 
     def testZutatZuRezeptVerknuepfen(self):
-        rid = addRecipe("Pasta", "Lecker", None)
+        rid = addRecipe("Pasta", "Lecker")
         zid = addIngredient("Nudeln", "g")
         addIngredientToRecipe(zid, rid, 200.0)
         zutaten = getAllIngredientsForRecipe(rid)
@@ -180,8 +180,8 @@ class TestRezeptUndZutat:
         assert zutaten[0]["amount"] == 200.0
 
     def testAlleRezepteAbrufen(self):
-        addRecipe("Rezept1", "Beschr1", None)
-        addRecipe("Rezept2", "Beschr2", None)
+        addRecipe("Rezept1", "Beschr1")
+        addRecipe("Rezept2", "Beschr2")
         assert len(getAllRecipes()) == 2
 
     def testZutatZuRezeptOhneGueltigeIDs(self):
