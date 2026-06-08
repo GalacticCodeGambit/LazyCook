@@ -42,7 +42,7 @@ def initDB():
         cur = con.cursor()
 
         cur.execute("""
-            CREATE TABLE IF NOT EXISTS Account (
+                CREATE TABLE IF NOT EXISTS Account (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
                 email VARCHAR(250) NOT NULL UNIQUE,
                 name TEXT NOT NULL,
