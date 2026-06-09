@@ -15,7 +15,7 @@ def extractRecipesFromJSON(filePath: str) -> list[Recipe]:
         recipe = __formatRecipe(
             recipeData["Name"],
             recipeData["Ingredients"],
-            "", # recplace with Instructions, as soon as json complete
+            recipeData["Description"],
         )
         __saveRecipeInDB(recipe)
         recipes.append(recipe)
@@ -73,11 +73,11 @@ def __saveRecipeInDB(recipe: Recipe) -> bool:
     for existing in RecipeDAO.getAllRecipes():
         if recipe.getName().lower().strip() == existing["name"].lower().strip():
             return False
-    rid = RecipeDAO.addRecipe(recipe.getName(), recipe.getDescription(), None)
+    rid = RecipeDAO.addRecipe(recipe.getName(), recipe.getDescription())
     for ingredient in recipe.getIngredients():
         result = IngredientDAO.getIngredientByName(ingredient.getName())
         if result:
-            RecipeDAO.addIngredientToRecipe(rid ,result["id"] ,ingredient.getAmount())
+            RecipeDAO.addIngredientToRecipe(rid, result["id"], ingredient.getAmount())
     return True
 
 

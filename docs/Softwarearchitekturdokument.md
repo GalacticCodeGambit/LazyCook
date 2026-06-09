@@ -170,16 +170,18 @@ Das Gesamtsystem besteht aus drei Hauptbausteinen: dem Frontend, dem Backend und
 ┌────────────────────────▼────────────────────────────────┐
 │              Backend (FastAPI/Python)                   │
 │  ┌──────────────────┐  ┌────────────────────────────┐   │
-│  │ Routes.py        │  │ Geschäftslogik             │   │
-│  │ (API-Endpunkte)  │  │                            |   |
-│  │                  │  │                            │   │
-│  │                  │  └────────────────────────────┘   │
-│  └──────────┬───────┘                                   │
-│             │                                           │
-│  ┌──────────▼───────┐                                   │
-│  │ Database.py      │                                   │
-│  │ (Datenzugriff)   │                                   │
-│  └──────────┬───────┘                                   │
+│  │ routes/          │  │ services/                  │   │
+│  │ AuthRoutes.py    │  │ AuthService.py             │   │
+│  │ RecipeRoutes.py  │  │ UserService.py             │   │
+│  │ UserRoutes.py    │  │ RecipeSUCUK.py             │   │
+│  └──────────┬───────┘  │ EmailService.py            │   │
+│             │           └────────────────────────────┘   │
+│  ┌──────────▼───────┐  ┌────────────────────────────┐   │
+│  │ core/            │  │ dao/                       │   │
+│  │ Database.py      │  │ AccountDAO.py              │   │
+│  │ Auth.py          │  │ IngredientDAO.py           │   │
+│  │ Models.py        │  │ RecipeDAO.py               │   │
+│  └──────────┬───────┘  └────────────────────────────┘   │
 └─────────────┼───────────────────────────────────────────┘
               │ SQLite3
 ┌─────────────▼───────────────────────────────────────────┐
@@ -230,19 +232,37 @@ Die Zerlegung folgt dem schichtbasierten Architekturstil (ADR04). Das Frontend i
 
 **Ablageort:** `project/backend/`
 
-**Klassenstruktur:**
-- `LazyCookAdministartion` – Hauptmodul startet die FastAPI-App
-- `Database` – Datenzugriffsschicht (DAO), verwaltet SQLite-Verbindungen und CRUD-Operationen
-- `Person` – Abstrakte Basisklasse für Nutzer (Name, E-Mail, Passwort, Rolle)
-- `Routes` – Definition der Fast-API Schnittstellen
-- `Auth` – Authentifizierungslogik mit Tokens 
-- `Recipe` – Repräsentiert ein Rezept (Name, Zutaten, Zubereitung, Dauer, Bewertung)
-- `Ingredient` – Repräsentiert eine Zutat (Name, Menge)
-- `Models` – Pydantic-Modelle für API-Validierung (e.g. UserSignUpIn, UserResponse, SessionResponse)
-- `ImportRecipe` - Einmaliges Einfügen von Rezepten in die Datenbank
-- `EmailService` - Logik zum versenden automatischer Email bei der "Passwort vergessen" Funktion
-- `RecipeSUCUK` - Logik zum Filtern der Rezepte
-- `SearchRecipeNames` - Gezieltes Suchen nach Rezepten durch Rezeptname
+**Paket- und Klassenstruktur:**
+
+`core/` – Querschnittliche Infrastruktur
+- `core/Database.py` – SQLite-Verbindung und grundlegende Datenbankfunktionen
+- `core/Auth.py` – Token-Logik und Authentifizierungshilfsfunktionen
+- `core/Models.py` – Pydantic-Modelle für API-Validierung (z.B. UserSignUpIn, UserResponse, SessionResponse)
+
+`dao/` – Datenzugriffsschicht
+- `dao/AccountDAO.py` – CRUD-Operationen für Benutzerkonten
+- `dao/IngredientDAO.py` – CRUD-Operationen für Zutaten
+- `dao/RecipeDAO.py` – CRUD-Operationen für Rezepte
+
+`domain/` – Domänenmodelle
+- `domain/recipe.py` – Domänenklasse Rezept (Name, Zutaten, Zubereitung, Dauer, Bewertung)
+- `domain/ingredient.py` – Domänenklasse Zutat (Name, Menge)
+- `domain/person.py` – Abstrakte Basisklasse für Nutzer (Name, E-Mail, Passwort, Rolle)
+
+`routes/` – API-Schicht
+- `routes/AuthRoutes.py` – FastAPI-Endpunkte für Authentifizierung (Login, Register, Logout)
+- `routes/RecipeRoutes.py` – FastAPI-Endpunkte für Rezepte
+- `routes/UserRoutes.py` – FastAPI-Endpunkte für Benutzerverwaltung
+
+`services/` – Geschäftslogik
+- `services/AuthService.py` – Geschäftslogik für Authentifizierung und Passwortverwaltung
+- `services/UserService.py` – Geschäftslogik für Benutzerverwaltung
+- `services/RecipeSUCUK.py` – Logik zum Filtern der Rezepte anhand der Zutateneingabe
+- `services/EmailService.py` – Versenden automatischer E-Mails (z.B. Passwort vergessen)
+
+Einstiegspunkte
+- `LazyCookAdministration.py` – Entry-Point, CORS-Middleware, FastAPI-Start
+- `ImportRecipes.py` – Einmaliges Einfügen von Rezepten in die Datenbank
 
 ### Datenbank (SQLite)
 
@@ -276,17 +296,26 @@ Das Frontend ist als Next.js-Anwendung mit dem App-Router strukturiert:
 
 ### Whitebox Backend
 
-Das Backend folgt einer dreischichtigen Struktur innerhalb des Backends:
+Das Backend folgt einer paketbasierten Schichtenstruktur:
 
-| Baustein | Verantwortung |
-|----------|---------------|
+| Paket / Datei | Verantwortung |
+|---------------|---------------|
 | `LazyCookAdministration.py` | Entry-Point, CORS-Middleware, FastAPI-Start |
-| `Routes.py` | API-Schicht: FastAPI-Endpunkte, Passwort-Hashing/Verifizierung |
-| `Database.py` | Datenzugriffsschicht: SQLite-Verbindung, Tabellenerstellung, CRUD-Operationen |
-| `Recipe.py`, `Ingredient.py` | Domänenmodelle: Rezept- und Zutaten-Entitäten |
-| `Models.py` | API-Modelle: Pydantic-Schemas für Request/Response-Validierung |
-| `RecipeSUCUK.py` | Geschäftslogik: Filtern der Rezepte anhand der Zutateneingabe |
-| `SearchRecipeNames.py` | Geschäftslogik: Suchen von Rezepten anhand eines Rezeptnamens |
+| `core/Database.py` | SQLite-Verbindung und grundlegende Datenbankfunktionen |
+| `core/Auth.py` | Token-Logik und Authentifizierungshilfsfunktionen |
+| `core/Models.py` | Pydantic-Schemas für Request/Response-Validierung |
+| `dao/AccountDAO.py` | CRUD-Operationen für Benutzerkonten |
+| `dao/IngredientDAO.py` | CRUD-Operationen für Zutaten |
+| `dao/RecipeDAO.py` | CRUD-Operationen für Rezepte |
+| `domain/recipe.py`, `domain/ingredient.py`, `domain/person.py` | Domänenmodelle: Rezept-, Zutaten- und Nutzer-Entitäten |
+| `routes/AuthRoutes.py` | API-Endpunkte für Authentifizierung (Login, Register, Logout) |
+| `routes/RecipeRoutes.py` | API-Endpunkte für Rezepte |
+| `routes/UserRoutes.py` | API-Endpunkte für Benutzerverwaltung |
+| `services/AuthService.py` | Geschäftslogik für Authentifizierung und Passwortverwaltung |
+| `services/UserService.py` | Geschäftslogik für Benutzerverwaltung |
+| `services/RecipeSUCUK.py` | Geschäftslogik: Filtern der Rezepte anhand der Zutateneingabe |
+| `services/EmailService.py` | Versenden automatischer E-Mails |
+| `ImportRecipes.py` | Einmaliges Einfügen von Rezepten in die Datenbank |
 
 ---
 
@@ -296,9 +325,9 @@ Das Backend folgt einer dreischichtigen Struktur innerhalb des Backends:
 
 1. Nutzer gibt E-Mail und Passwort auf der Registrierungsseite ein
 2. Frontend sendet POST-Request an `/auth/register` mit E-Mail und Passwort als JSON
-3. Backend (`Routes.registrieren()`) erzeugt ein 16-Byte zufälliges Salt
+3. Backend (`routes/AuthRoutes.py` → `services/AuthService.py`) erzeugt ein 16-Byte zufälliges Salt
 4. Backend hasht das Passwort mit PBKDF2-HMAC (SHA256, 100.000 Iterationen)
-5. Backend speichert E-Mail, gehashtes Passwort und Salt (jeweils Base64-kodiert) in der Konto-Tabelle via `Database.createAccount()`
+5. Backend speichert E-Mail, gehashtes Passwort und Salt (jeweils Base64-kodiert) in der Konto-Tabelle via `dao/AccountDAO.py`
 6. Backend prüft ob E-Mail bereits existiert und gibt entsprechende Meldung zurück
 7. Frontend zeigt Erfolgsmeldung und leitet direkt zum RecipeFinder weiter (ADR02)
 
@@ -307,7 +336,7 @@ Das Backend folgt einer dreischichtigen Struktur innerhalb des Backends:
 
 1. Nutzer gibt E-Mail und Passwort auf der Anmeldeseite ein
 2. Frontend sendet POST-Request an `/auth/login`
-3. Backend ruft `Database.getAccountByEmail(email)` auf, um Salt und gehashtes Passwort aus der Datenbank zu laden
+3. Backend (`routes/AuthRoutes.py` → `services/AuthService.py`) ruft `dao/AccountDAO.py` auf, um Salt und gehashtes Passwort aus der Datenbank zu laden
 4. Backend hasht das eingegebene Passwort mit dem gespeicherten Salt und vergleicht das Ergebnis
 5. Bei Übereinstimmung: Erfolgsmeldung; bei Fehler: Fehlermeldung ("Falsches Passwort" oder "Kein Konto hinterlegt")
 
