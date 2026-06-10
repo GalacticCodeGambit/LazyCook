@@ -63,7 +63,7 @@ Die Anwendung sollte jetzt unter `http://localhost:8000` erreichbar sein.
 - Tests: Pytest
 - CI/CD: GitHub Actions
 - Linting: Super-Linter
-- Metriken Analyse: SonarQube Cloude
+- Metriken Analyse: SonarQube Cloud
 - Containerization: Docker
 - Projekt Management: GitHub Projects
 
