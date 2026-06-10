@@ -29,6 +29,10 @@ jobs:
           # remove stale containers/volumes from previous runs that can cause compose to read invalid metadata
           docker compose -f project/compose.yaml down --remove-orphans --volumes || true
           docker compose -f project/compose.yaml up -d
+        env:
+          GMAIL_USER: ${{ secrets.GMAIL_USER }}
+          GMAIL_PASSWORD: ${{ secrets.GMAIL_PASSWORD }}
+          JWT_SECRET_KEY: ${{ secrets.GMAIL_JWT_SECRETS_KEY }}
 
       - name: Wait for frontend on :8000
         run: |
