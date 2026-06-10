@@ -18,6 +18,7 @@ def findRecipes(ingredients: list, index: int) -> list[Recipe]:
     recipes.sort(key=lambda r: r.getRating(), reverse=True)
     return recipes[12 * index : 12 * (index + 1)]
 
+
 def getMatchingRecipeNames(searchTerm: str) -> list[Recipe]:
     """Gibt Rezepte zurück, deren Name den Suchbegriff enthält."""
     searchTerm = searchTerm.lower()

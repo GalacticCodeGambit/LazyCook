@@ -2,6 +2,7 @@ from domain.ingredient import Ingredient
 from dao.RecipeDAO import addRecipe, addIngredientToRecipe
 from dao.IngredientDAO import getIngredientByName
 
+
 class Recipe:
     def __init__(self, name: str, ingredients: list[Ingredient], description: str):
         self.__name = name

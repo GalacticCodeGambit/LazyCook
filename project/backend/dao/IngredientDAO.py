@@ -37,12 +37,15 @@ def getAllIngredients() -> list[dict]:
 def getIngredientsForRecipe(rid: int) -> list[Ingredient]:
     with getDB() as con:
         cur = con.cursor()
-        cur.execute("""
+        cur.execute(
+            """
                     SELECT Ingredient.name, Exists_from.amount, Ingredient.amountType
                     FROM Ingredient
                              JOIN Exists_from ON Ingredient.id = Exists_from.zid
                     WHERE Exists_from.rid = ?
-                    """, (rid,))
+                    """,
+            (rid,),
+        )
         ingredients = []
         for row in cur.fetchall():
             ing = Ingredient(row["name"], row["amount"])
