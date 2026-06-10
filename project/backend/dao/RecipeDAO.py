@@ -76,6 +76,7 @@ def getAllocatedRecipes(name: str) -> list[dict]:
             (name,),
         )
         return [dict(row) for row in cur.fetchall()]
+
 def getAllRecipesPaginated(offset: int) -> list[dict]:
     with getDB() as con:
         cur = con.cursor()

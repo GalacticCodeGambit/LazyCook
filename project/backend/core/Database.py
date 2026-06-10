@@ -134,3 +134,7 @@ def initDB():
         """)
 
     logger.info("Datenbank-Tabellen erfolgreich initialisiert")
+
+
+if __name__ == "__main__":
+    initDB()
