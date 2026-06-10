@@ -26,29 +26,30 @@
 ![Stunden pro Person](statistics/Time.png)
 
 | Person | Stunden (ca.) |
-|--------|--------------|
-| Samuel Göbel (GalacticCodeGambit) | ~37 h |
-| Eden Bernhard (EdenBernhard) | ~25 h |
-| Niclas Matzke (Nicoolaus) | ~18 h |
-| Alexander Groer (PrussianBaron) | ~10 h |
-| Frederik Behne (Hellocrafting) | ~6 h |
+|--------|---------------|
+| Samuel Göbel (GalacticCodeGambit) | ~31.69 h      |
+| Eden Bernhard (EdenBernhard) | ~83 h         |
+| Niclas Matzke (Nicoolaus) | ~40.46 h      |
+| Alexander Groer (PrussianBaron) | ~13.46 h      |
+| Frederik Behne (Hellocrafting) | ~89.82 h      |
 
 ### Stunden pro Disziplin
 
 ![Disziplin: Zeit pro Sprint](statistics/Discipline-Time-per-Sprint.png)
 
-Die Implementierung dominiert klar in Sprint 4 und 6 (~15 h/Sprint). Sprint 1 war anforderungslastig, danach verschob sich der Fokus auf Analyse & Entwurf und schließlich auf reine Implementierung.
+Die Implementierung dominiert klar in Sprint 4 und 6 (~15 h/Sprint). Sprint 1 war anforderungslastig, danach verschob sich der Fokus auf Analyse & Entwurf und schließlich auf reine Implementierung und Testing.
 
 ### Stunden pro Phase (Milestone)
 
 ![Milestone: Zeit pro Sprint](statistics/Milestone-Time-Per-Sprint.png)
 
-| Phase | Schwerpunkt-Sprints |
-|-------|---------------------|
-| 1. Anforderungsdefinition | Sprint 1–2 |
-| 2. Planung & Entwurf | Sprint 1–3, Sprint 6 |
-| 3. Implementierung | Sprint 4–6 (Kern) |
-| 5. Deployment | Sprint 7–9 |
+| Phase | Schwerpunkt-Sprints                      |
+|-------|------------------------------------------|
+| 1. Anforderungsdefinition | Sprint 1–2                               |
+| 2. Planung & Entwurf | Sprint 1–9                               |
+| 3. Implementierung | Sprint 4–6 (3 Monate Pause) Sprint 10-20 |
+| 4. Testing & Qualitätssicherung | Sprint 13   |                             
+| 5. Deployment | Sprint 19-20                          |
 
 ---
 
@@ -75,7 +76,7 @@ Die Demo zeigt den vollständigen Nutzerflow:
 3. **Rezeptfilterung (SUCUK)** – Echtzeitfilterung der Datenbank; Rezepte werden nach Übereinstimmungsgrad sortiert und als 3×4-Matrix angezeigt
 4. **Mehr laden** – Über „Mehr anzeigen" können bis zu 96 Rezepte nachgeladen werden (ADR03)
 5. **Rezeptsuche nach Name** – Freitextsuche im Suchfeld findet Rezepte mit ähnlichem Titel
-6. **Profilverwaltung** – E-Mail ändern, Passwort ändern, Konto löschen
+6. **Profilverwaltung** – E-Mail ändern, Passwort ändern, Konto löschen mit ausgehender Bestätigungsemail
 
 ---
 
@@ -261,13 +262,13 @@ Push / PR → main
 | Kategorie | Wert |
 |-----------|------|
 | Automatisierte Testfälle | 74 |
-| Code-Coverage gesamt | **48,3 %** |
-| Line Coverage | **50,8 %** |
-| Branch Coverage | **34,6 %** |
-| Coverable Lines | 711 |
-| Gedeckte Zeilen | 361 |
-| Coverable Branches | 130 |
-| Gedeckte Branches | 45 |
+| Code-Coverage gesamt | **53,7 %** |
+| Line Coverage | **54,9 %** |
+| Branch Coverage | **45,1 %** |
+| Coverable Lines | 677 |
+| Gedeckte Zeilen | 372 |
+| Coverable Branches | 102 |
+| Gedeckte Branches | 46 |
 
 ---
 
@@ -279,12 +280,12 @@ SonarCloud misst drei Kernmetriken kontinuierlich: **Coverage**, **Zyklomatische
 
 | Metrik | Wert | Bewertung |
 |--------|------|-----------|
-| **Line Coverage** | 50,8 % (361 / 711 Zeilen) | Kern-Logik gut abgedeckt; E-Mail-/Route-Layer bewusst ausgenommen |
-| **Branch Coverage** | 34,6 % (45 / 130 Branches) | Niedrig durch untestbare `except`-Pfade (SMTP, Logging) |
+| **Line Coverage** | 54,9 % (372 / 677 Zeilen) | Kern-Logik gut abgedeckt; E-Mail-/Route-Layer bewusst ausgenommen |
+| **Branch Coverage** | 45,1 % (46 / 102 Branches) | Niedrig durch untestbare `except`-Pfade (SMTP, Logging) |
 | **Zyklomatische Komplexität** | Ø niedrig pro Datei | Durch Dateiaufteilung deutlich gesunken; Einzelfälle ≤ 6 akzeptiert |
 | **Code-Duplikate** | Minimal (1 bekannter 4-Zeiler) | Verbindungslogik zentralisiert; verbleibende Duplikate bewusst belassen |
 | **Testfälle gesamt** | 74 | 6 Module, 0 bekannte Fehler |
-| **Coverable Lines** | 711 | davon 350 ungedeckt (hauptsächlich EmailService + Routes) |
+| **Coverable Lines** | 677 | davon 305 ungedeckt (hauptsächlich EmailService + Routes) |
 
 ---
 
@@ -299,8 +300,8 @@ Coverage misst, welcher Anteil des Codes tatsächlich durch Tests ausgeführt wi
 
 | Metrik | Wert |
 |--------|------|
-| Line Coverage | **50,8 %** (361 von 711 Zeilen gedeckt) |
-| Branch Coverage | **34,6 %** (45 von 130 Branches gedeckt) |
+| Line Coverage | **54,9 %** (372 von 677 Zeilen gedeckt) |
+| Branch Coverage | **45,1 %** (46 von 102 Branches gedeckt) |
 
 **Gut abgedeckte Bereiche**
 
@@ -337,7 +338,7 @@ with patch("services.EmailService.sendPasswordResetEmail"):
     ...
 ```
 
-Die `except`-Zweige in den Routen, die E-Mail-Fehler abfangen, bleiben dadurch ungetestet – das erklärt die niedrige Branch Coverage von 34,6 %. Da diese Branches nur Logging auslösen (kein kritischer Pfad), ist das vertretbar.
+Die `except`-Zweige in den Routen, die E-Mail-Fehler abfangen, bleiben dadurch ungetestet – das erklärt die noch niedrige Branch Coverage von 45,1 %. Da diese Branches nur Logging auslösen (kein kritischer Pfad), ist das vertretbar.
 
 ```python
 # routes/AuthRoutes.py – der except-Branch wird in Tests nie ausgelöst
@@ -515,7 +516,7 @@ SonarCloud flaggt diesen 4-Zeilen-Block als Duplikat. **Kein Refactoring nötig*
 | 4 | **Backend-Paketarchitektur** | Klare Schichten: `core/` · `dao/` · `domain/` · `routes/` · `services/` – jede Datei hat eine Verantwortung |
 | 5 | **5 dokumentierte ADRs** | Jede Schlüsselentscheidung mit Kontext, Alternativen und Konsequenzen dokumentiert |
 | 6 | **74 automatisierte Tests** | Risikobasierte Teststrategie: Unit-Tests, DB-Integrationstests, Mock-Tests, CI-Smoketest |
-| 7 | **SonarCloud Quality Gate** | Kontinuierliche Qualitätsmessung: 48,3 % Coverage, 0 bekannte Bugs im getesteten Umfang |
+| 7 | **SonarCloud Quality Gate** | Kontinuierliche Qualitätsmessung: 53,7 % Coverage, 0 bekannte Bugs im getesteten Umfang |
 | 8 | **Docker-Deployment** | Reproduzierbares Setup mit `docker compose up` – Frontend und Backend vollständig containerisiert |
 
 ---
@@ -529,5 +530,27 @@ SonarCloud flaggt diesen 4-Zeilen-Block als Duplikat. **Kein Refactoring nötig*
 - **Architekturdokument:** `docs/Softwarearchitekturdokument.md`
 
 ---
+
+## Screenshots der Webanwendung
+
+![Anmelden](Images/AnmeldeScreen.png)
+
+![Registrieren](Images/RegistrierenScreen.png)
+
+![Homepage](Images/ShowHomepageScreen.png)
+
+![AddIngredients](Images/AddIngredientsScreen.png)
+
+![FilterRecipes](Images/FilterRecipeScreen.png)
+
+![SearchRecipes](Images/SearchRecipeScreen.png)
+
+![ShowProfile](Images/ProfileScreen.png)
+
+![ChangeEmail](Images/ChangeEmailScreen.png)
+
+![ChangePassword](Images/ChangePasswordScreen.png)
+
+
 
 *Handout erstellt für die Abschlusspräsentation · DHBW Karlsruhe · Juni 2026*
