@@ -17,8 +17,8 @@ router = APIRouter()
 
 @router.post("/recipes/search")
 async def searchRecipes(
-        body: RecipeSearchRequest,
-        currentUser: Annotated[User, Depends(getCurrentUser)],
+    body: RecipeSearchRequest,
+    currentUser: Annotated[User, Depends(getCurrentUser)],
 ):
     account = AccountDAO.getAccountByEmail(currentUser.email)
     if account is None:
@@ -49,22 +49,22 @@ async def searchRecipes(
                     {
                         "name": i.getName(),
                         "amount": i.getAmount(),
-                        "unit": i.getAmountType() or ""
+                        "unit": i.getAmountType() or "",
                     }
                     for i in r.getIngredients()
-                ]
+                ],
             }
             for r in recipes
         ],
-        "topIngredients": topIngredients
+        "topIngredients": topIngredients,
     }
 
 
 @router.get("/ingredients/top")
 async def getTopIngredientsForUser(
-        response: Response,
-        currentUser: Annotated[User, Depends(getCurrentUser)],
-        limit: int = 5,
+    response: Response,
+    currentUser: Annotated[User, Depends(getCurrentUser)],
+    limit: int = 5,
 ):
     account = AccountDAO.getAccountByEmail(currentUser.email)
     if account is None:

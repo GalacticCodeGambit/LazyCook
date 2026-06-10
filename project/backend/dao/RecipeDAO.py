@@ -77,22 +77,29 @@ def getAllocatedRecipes(name: str) -> list[dict]:
         )
         return [dict(row) for row in cur.fetchall()]
 
+
 def getAllRecipesPaginated(offset: int) -> list[dict]:
     with getDB() as con:
         cur = con.cursor()
-        cur.execute("""
+        cur.execute(
+            """
                     SELECT r.id, r.name, r.description
                     FROM Recipe r
                     ORDER BY r.name
                         LIMIT 12 OFFSET ?
-                    """, (offset,))
+                    """,
+            (offset,),
+        )
         return [dict(row) for row in cur.fetchall()]
 
 
-def searchRecipesByIngredients(likeConditions: str, likeParams: list, offset: int) -> list[dict]:
+def searchRecipesByIngredients(
+    likeConditions: str, likeParams: list, offset: int
+) -> list[dict]:
     with getDB() as con:
         cur = con.cursor()
-        cur.execute(f"""
+        cur.execute(
+            f"""
             SELECT
                 r.id, r.name, r.description,
                 COUNT(DISTINCT CASE WHEN {likeConditions} THEN i.id END) AS matching,
@@ -103,8 +110,11 @@ def searchRecipesByIngredients(likeConditions: str, likeParams: list, offset: in
             GROUP BY r.id
             ORDER BY matching DESC, r.name
             LIMIT 12 OFFSET ?
-        """, (*likeParams, offset))
+        """,
+            (*likeParams, offset),
+        )
         return [dict(row) for row in cur.fetchall()]
+
 
 def getAllRecipesWithIngredients() -> list[dict]:
     with getDB() as con:
@@ -123,11 +133,18 @@ def getAllRecipesWithIngredients() -> list[dict]:
     for row in rows:
         rid = row["id"]
         if rid not in recipes:
-            recipes[rid] = {"id": rid, "name": row["name"], "description": row["description"], "ingredients": []}
+            recipes[rid] = {
+                "id": rid,
+                "name": row["name"],
+                "description": row["description"],
+                "ingredients": [],
+            }
         if row["ing_name"]:
-            recipes[rid]["ingredients"].append({
-                "name": row["ing_name"],
-                "amount": row["amount"],
-                "amountType": row["amountType"]
-            })
+            recipes[rid]["ingredients"].append(
+                {
+                    "name": row["ing_name"],
+                    "amount": row["amount"],
+                    "amountType": row["amountType"],
+                }
+            )
     return list(recipes.values())
