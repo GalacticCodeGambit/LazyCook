@@ -67,7 +67,7 @@ Die Anwendung sollte jetzt unter `http://localhost:8000` erreichbar sein.
 
 ### Code-Quality / Linting
 - Der Workflow `.github/workflows/lint.yml` prüft das Projekt mit **GitHub Super-Linter**.
-- Dabei werden u.a. Python-, TypeScript-, JavaScript-, YAML- und Dockerfile-Dateien validiert.
+- Dabei werden u.a. Python-, TypeScript-, JavaScript-, GitHub-Action-, YAML- und Dockerfile-Dateien validiert.
 
 <!-- 
 - Mockup: Figma
