@@ -4,7 +4,7 @@ from domain.ingredient import Ingredient
 from dao import IngredientDAO, RecipeDAO
 from pathlib import Path
 
-EXCLUDE_INGREDIENTS = ["Salz", "Pfeffer", "Zucker"]
+EXCLUDE_INGREDIENTS = ["Salz", "Pfeffer"]
 PATH = Path(__file__).parent.parent / "ImportRecipes" / "recipes_metric.json"
 
 
