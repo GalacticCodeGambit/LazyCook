@@ -19,6 +19,7 @@ def extractRecipesFromJSON(filePath: str) -> list[Recipe]:
         )
         __saveRecipeInDB(recipe)
         recipes.append(recipe)
+
     return recipes
 
 
@@ -27,7 +28,7 @@ def __readJsonFile(filePath: str) -> str:
         return file.read()
 
 
-def __formatRecipe(name: str, ingredientsRaw: dict, description: str) -> Recipe:
+def __formatRecipe(name: str, ingredientsRaw: list, description: str) -> Recipe:
     ingredients = []
     for ingredient in ingredientsRaw:
         formattedIngredient = __formatIngredient(ingredient)
