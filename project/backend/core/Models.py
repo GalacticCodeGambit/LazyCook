@@ -50,4 +50,5 @@ class IngredientSearch(BaseModel):
 
 class RecipeSearchRequest(BaseModel):
     zutaten: list[IngredientSearch]
-    servings: int
+    servings: int = 1
+    index: int = 0

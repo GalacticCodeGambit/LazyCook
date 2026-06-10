@@ -30,7 +30,7 @@ async def searchRecipes(
     # Echte Rezept-Suche
     ingredients = [Ingredient(z.name, z.amount) for z in body.zutaten]
     index = getattr(body, "index", 0)
-    recipes = findRecipes(ingredients, index)
+    recipes = findRecipes(ingredients, body.index)
 
     topRows = IngredientDAO.getTopIngredients(account["id"], limit=5)
     topIngredients = [
@@ -46,7 +46,11 @@ async def searchRecipes(
                 "duration": r.getDuration() if hasattr(r, "getDuration") else "",
                 "matching": r.getMatching(),
                 "ingredients": [
-                    {"name": i.getName(), "amount": i.getAmount()}
+                    {
+                        "name": i.getName(),
+                        "amount": i.getAmount(),
+                        "unit": i.getAmountType() or ""
+                    }
                     for i in r.getIngredients()
                 ]
             }

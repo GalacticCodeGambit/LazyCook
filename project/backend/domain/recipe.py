@@ -1,7 +1,6 @@
 from domain.ingredient import Ingredient
-from Ingredient import Ingredient
-from Database import addIngredientToRecipe, addRecipe, getIngredientByName
-
+from dao.RecipeDAO import addRecipe, addIngredientToRecipe
+from dao.IngredientDAO import getIngredientByName
 
 class Recipe:
     def __init__(self, name: str, ingredients: list[Ingredient], description: str):

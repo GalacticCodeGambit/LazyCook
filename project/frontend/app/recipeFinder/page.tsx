@@ -19,7 +19,7 @@ interface Recipe {
     rating: number;
     duration: string;
     matching: number;
-    ingredients: { name: string; amount: number }[];
+    ingredients: { name: string; amount: number; unit: string }[];
 }
 
 interface IngredientInput {
@@ -71,6 +71,9 @@ export default function RecipeFinder() {
 
     const [servings, setServings] = useState(1);
 
+    const [pageIndex, setPageIndex] = useState(0);
+    const [hasMore, setHasMore] = useState(true);
+
     const [searching, setSearching] = useState(false);
     const [results, setResults] = useState<Recipe[] | null>(null);
     const [visibleCount, setVisibleCount] = useState(12);
@@ -97,6 +100,22 @@ export default function RecipeFinder() {
             return [];
         }
     });
+
+    const loadMore = async () => {
+        const nextIndex = pageIndex + 1;
+        try {
+            const res = await fetchWithAuth('/recipes/search', {
+                method: "POST",
+                headers: {"Content-Type": "application/json"},
+                body: JSON.stringify({zutaten: ingredients, servings, index: nextIndex}),
+            });
+            const data = await res.json();
+            const newRecipes = data.rezepte ?? [];
+            setResults(prev => [...(prev ?? []), ...newRecipes]);
+            setPageIndex(nextIndex);
+            setHasMore(newRecipes.length === 12);
+        } catch {}
+    };
 
     useEffect(() => {
         if (!loading && !user) {
@@ -141,14 +160,17 @@ export default function RecipeFinder() {
     // Beim ersten Laden alle Rezepte anzeigen
     useEffect(() => {
         if (!user) return;
-        console.log("Lade Rezepte...", API_URL); // NEU
         fetchWithAuth(`/recipes/search`, {
             method: "POST",
             headers: {"Content-Type": "application/json"},
-            body: JSON.stringify({zutaten: [], servings: 1}),
+            body: JSON.stringify({zutaten: [], servings: 1, index: 0}),
         })
             .then(res => res.json())
-            .then(data => setResults(data.rezepte ?? []))
+            .then(data => {
+                const rezepte = data.rezepte ?? [];
+                setResults(rezepte);
+                setHasMore(rezepte.length === 12);
+            })
             .catch(() => {});
     }, [user]);
 
@@ -193,6 +215,8 @@ export default function RecipeFinder() {
         setSearchError("");
         setSearching(true);
         setVisibleCount(12);
+        setPageIndex(0);
+        setHasMore(true);
         try {
             const res = await fetchWithAuth('/recipes/search', {
                 method: "POST",
@@ -359,7 +383,7 @@ export default function RecipeFinder() {
                             <div className="finder-results__grid">
                                 {results
                                     .filter(r => r.name.toLowerCase().includes(searchText.toLowerCase()))
-                                    .slice(0, visibleCount)
+                                    .sort((a, b) => b.rating - a.rating)  // NEU – nach Match sortieren
                                     .map((recipe, idx) => (
                                         <div key={idx} className="recipe-card">
                                             <div className="recipe-card__body">
@@ -377,9 +401,9 @@ export default function RecipeFinder() {
                                         </div>
                                     ))}
                             </div>
-                            {visibleCount < results.filter(r => r.name.toLowerCase().includes(searchText.toLowerCase())).length && (
+                            {hasMore && (
                                 <div className="finder-results__more">
-                                    <button onClick={() => setVisibleCount(v => v + 12)} className="finder-results__more-btn">
+                                    <button onClick={loadMore} className="finder-results__more-btn">
                                         Mehr anzeigen
                                     </button>
                                 </div>
@@ -431,6 +455,7 @@ export default function RecipeFinder() {
                                     {Number.isInteger(ing.amount * servings)
                                         ? ing.amount * servings
                                         : (ing.amount * servings).toFixed(1)}
+                                                    {ing.unit ? ` ${ing.unit}` : ""}  {/* unit NEU */}
                                 </span>
                                             </li>
                                         ))}
