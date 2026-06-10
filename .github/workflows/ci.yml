@@ -29,6 +29,10 @@ jobs:
           # remove stale containers/volumes from previous runs that can cause compose to read invalid metadata
           docker compose -f project/compose.yaml down --remove-orphans --volumes || true
           docker compose -f project/compose.yaml up -d
+        env:
+          GMAIL_USER: ${{ secrets.GMAIL_USER }}
+          GMAIL_PASSWORD: ${{ secrets.GMAIL_PASSWORD }}
+          JWT_SECRET_KEY: ${{ secrets.JWT_SECRETS_KEY }}
 
       - name: Wait for frontend on :8000
         run: |
@@ -54,4 +58,9 @@ jobs:
 
       - name: Run backend tests
         run: |
-          docker compose -f project/compose.yaml exec -T backend-dev sh -c "python -m pytest tests/ -v"
+          docker compose -f project/compose.yaml run --rm backend-dev sh -c "python -m pytest tests/ -v"
+
+        env:
+          GMAIL_USER: ${{ secrets.GMAIL_USER }}
+          GMAIL_PASSWORD: ${{ secrets.GMAIL_PASSWORD }}
+          JWT_SECRET_KEY: ${{ secrets.JWT_SECRETS_KEY }}

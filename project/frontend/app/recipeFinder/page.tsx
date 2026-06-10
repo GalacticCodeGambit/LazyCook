@@ -11,6 +11,16 @@ import AddIngredientsPopup from "@/app/recipeFinder/popup";
 import ProfileDropdown from "@/app/components/profile_dropdown";
 
 const EINHEITEN = ["Stück", "g", "kg", "ml", "l", "EL", "TL", "Prise"];
+const API_URL = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:3000";
+
+interface Recipe {
+    name: string;
+    description: string;
+    rating: number;
+    duration: string;
+    matching: number;
+    ingredients: { name: string; amount: number; unit: string }[];
+}
 
 interface IngredientInput {
     name: string;
@@ -61,8 +71,15 @@ export default function RecipeFinder() {
 
     const [servings, setServings] = useState(1);
 
+    const [pageIndex, setPageIndex] = useState(0);
+    const [hasMore, setHasMore] = useState(true);
+
     const [searching, setSearching] = useState(false);
-    const [results, setResults] = useState<any[] | null>(null);
+    const [results, setResults] = useState<Recipe[] | null>(null);
+    const [visibleCount, setVisibleCount] = useState(12);
+
+    const [searchText, setSearchText] = useState("");
+
 
     const [editingIngredient, setEditingIngredient] = useState<string | null>(null);
     const [editAmount, setEditAmount] = useState("");
@@ -71,6 +88,7 @@ export default function RecipeFinder() {
     const [searchError, setSearchError] = useState("");
 
     const [modalOpen, setModalOpen] = useState(false);
+    const [selectedRecipe, setSelectedRecipe] = useState<Recipe | null>(null);
 
     // Vorschläge: localStorage als sofortiger Initialwert (instant beim Öffnen),
     // im Hintergrund per useEffect aktualisiert.
@@ -82,6 +100,22 @@ export default function RecipeFinder() {
             return [];
         }
     });
+
+    const loadMore = async () => {
+        const nextIndex = pageIndex + 1;
+        try {
+            const res = await fetchWithAuth('/recipes/search', {
+                method: "POST",
+                headers: {"Content-Type": "application/json"},
+                body: JSON.stringify({zutaten: ingredients, servings, index: nextIndex}),
+            });
+            const data = await res.json();
+            const newRecipes = data.rezepte ?? [];
+            setResults(prev => [...(prev ?? []), ...newRecipes]);
+            setPageIndex(nextIndex);
+            setHasMore(newRecipes.length === 12);
+        } catch {}
+    };
 
     useEffect(() => {
         if (!loading && !user) {
@@ -123,6 +157,23 @@ export default function RecipeFinder() {
         localStorage.setItem("ingredients", JSON.stringify(ingredients));
     }, [ingredients]);
 
+    // Beim ersten Laden alle Rezepte anzeigen
+    useEffect(() => {
+        if (!user) return;
+        fetchWithAuth(`/recipes/search`, {
+            method: "POST",
+            headers: {"Content-Type": "application/json"},
+            body: JSON.stringify({zutaten: [], servings: 1, index: 0}),
+        })
+            .then(res => res.json())
+            .then(data => {
+                const rezepte = data.rezepte ?? [];
+                setResults(rezepte);
+                setHasMore(rezepte.length === 12);
+            })
+            .catch(() => {});
+    }, [user]);
+
     if (loading) {
         return (
             <div className="min-h-screen flex items-center justify-center">
@@ -163,6 +214,9 @@ export default function RecipeFinder() {
         }
         setSearchError("");
         setSearching(true);
+        setVisibleCount(12);
+        setPageIndex(0);
+        setHasMore(true);
         try {
             const res = await fetchWithAuth('/recipes/search', {
                 method: "POST",
@@ -194,10 +248,6 @@ export default function RecipeFinder() {
                         <span className="text-xl">Lazy Cook</span>
                     </div>
 
-                    <nav className="hidden md:flex items-center gap-6">
-                        <a href="#" className="text-gray-700 hover:text-black">Favoriten</a>
-                    </nav>
-
                     <ProfileDropdown>
                     </ProfileDropdown>
 
@@ -209,8 +259,8 @@ export default function RecipeFinder() {
                 <aside className="finder-sidebar">
 
                     {/* Zutaten hinzufügen */}
-                    <div className="finder-sidebar__section">
-                        <p className="finder-sidebar__title">Zutaten</p>
+                    <div className="finder-sidebar-section">
+                        <p className="finder-sidebar-title">Zutaten</p>
                         <div style={{ display: "flex", gap: 8 }}>
                             <Button
                                 onPointerDown={() => {
@@ -304,6 +354,64 @@ export default function RecipeFinder() {
                     </div>
                 </aside>
 
+                {/* Rezepte Anzeige */}
+                <main className="finder-results">
+                    {/* Suchleiste */}
+                    <div className="finder-results__search">
+                        <div className="finder-results__search-wrapper">
+                            <Search size={16} className="finder-results__search-icon" />
+                            <input
+                                type="text"
+                                placeholder="Rezept suchen…"
+                                value={searchText}
+                                onChange={e => setSearchText(e.target.value)}
+                                className="finder-results__search-input"
+                            />
+                        </div>
+                    </div>
+
+                    {results === null ? (
+                        <div className="finder-results__empty">
+                            <p className="text-gray-400 text-sm">Laden…</p>
+                        </div>
+                    ) : results.length === 0 ? (
+                        <div className="finder-results__empty">
+                            <p className="text-gray-400 text-sm">Keine passenden Rezepte gefunden.</p>
+                        </div>
+                    ) : (
+                        <>
+                            <div className="finder-results__grid">
+                                {results
+                                    .filter(r => r.name.toLowerCase().includes(searchText.toLowerCase()))
+                                    .sort((a, b) => b.rating - a.rating)  // NEU – nach Match sortieren
+                                    .map((recipe, idx) => (
+                                        <div key={idx} className="recipe-card">
+                                            <div className="recipe-card__body">
+                                                <h3 className="recipe-card__title">{recipe.name}</h3>
+                                                <p className="recipe-card__description">{recipe.description}</p>
+                                                <div className="recipe-card__meta">
+                                                    <span>🎯 {Math.round(recipe.rating * 100)}% Match</span>
+                                                    {recipe.duration && <span>⏱ {recipe.duration}</span>}
+                                                    <span>🥦 {recipe.ingredients.length} Zutaten</span>
+                                                </div>
+                                                <button className="recipe-card__btn" onClick={() => setSelectedRecipe(recipe)}>
+                                                    Rezept ansehen
+                                                </button>
+                                            </div>
+                                        </div>
+                                    ))}
+                            </div>
+                            {hasMore && (
+                                <div className="finder-results__more">
+                                    <button onClick={loadMore} className="finder-results__more-btn">
+                                        Mehr anzeigen
+                                    </button>
+                                </div>
+                            )}
+                        </>
+                    )}
+                </main>
+
                 <Modal open={modalOpen} onCloseAction={() => setModalOpen(false)}>
                     <AddIngredientsPopup
                         ingredients={ingredients}
@@ -313,6 +421,68 @@ export default function RecipeFinder() {
                         suggestions={suggestions}
                     />
                 </Modal>
+                {selectedRecipe && (
+                    <div
+                        className="fixed inset-0 z-50 flex items-center justify-center bg-black/50"
+                        onClick={() => setSelectedRecipe(null)}
+                    >
+                        <div
+                            className="bg-white rounded-2xl shadow-xl w-full max-w-2xl mx-4 flex flex-col"
+                            style={{ maxHeight: "90vh" }}
+                            onClick={e => e.stopPropagation()}
+                        >
+                            {/* Header */}
+                            <div className="p-8 border-b">
+                                <h2 className="text-2xl font-semibold mb-2">{selectedRecipe.name}</h2>
+                                <div className="flex gap-4 text-sm text-gray-500">
+                                    <span>🎯 {Math.round(selectedRecipe.rating * 100)}% Match</span>
+                                    <span>🥦 {selectedRecipe.ingredients.length} Zutaten</span>
+                                    <span>👥 {servings} {servings === 1 ? "Person" : "Personen"}</span>
+                                </div>
+                            </div>
+
+                            {/* Inhalt scrollbar */}
+                            <div className="p-8 overflow-y-auto flex flex-col gap-8" style={{ flex: 1 }}>
+
+                                {/* Zutaten – skaliert */}
+                                <div>
+                                    <h3 className="font-semibold text-lg mb-4">Zutaten</h3>
+                                    <ul className="flex flex-col gap-2">
+                                        {selectedRecipe.ingredients.map((ing, idx) => (
+                                            <li key={idx} className="flex justify-between text-sm border-b pb-2">
+                                                <span className="text-gray-800">{ing.name}</span>
+                                                <span className="text-gray-500 font-medium">
+                                    {Number.isInteger(ing.amount * servings)
+                                        ? ing.amount * servings
+                                        : (ing.amount * servings).toFixed(1)}
+                                                    {ing.unit ? ` ${ing.unit}` : ""}  {/* unit NEU */}
+                                </span>
+                                            </li>
+                                        ))}
+                                    </ul>
+                                </div>
+
+                                {/* Zubereitung */}
+                                <div>
+                                    <h3 className="font-semibold text-lg mb-4">Zubereitung</h3>
+                                    <p className="text-sm text-gray-600 leading-relaxed whitespace-pre-line">
+                                        {selectedRecipe.description || "Keine Zubereitung verfügbar."}
+                                    </p>
+                                </div>
+                            </div>
+
+                            {/* Footer */}
+                            <div className="p-6 border-t">
+                                <button
+                                    className="w-full py-3 bg-black text-white rounded-lg text-sm font-medium"
+                                    onClick={() => setSelectedRecipe(null)}
+                                >
+                                    Schließen
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                )}
             </div>
         </div>
     );

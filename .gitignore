@@ -32,9 +32,9 @@ dist/
 build/
 
 # Project data / local databases
-project/data/*.sqlite3
-project/data/*.sqlite
-project/data/*.db
+#project/data/*.sqlite3
+#project/data/*.sqlite
+#project/data/*.db
 
 # Logs
 *.log

@@ -1,4 +1,4 @@
-name: "Lint code base"
+name: "Lint Code Base"
 
 on:
   pull_request:
@@ -11,7 +11,7 @@ permissions:
 
 jobs:
   linter:
-    name: Lint code base
+    name: Lint Code Base
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
