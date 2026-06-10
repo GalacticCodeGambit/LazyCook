@@ -32,7 +32,7 @@ jobs:
         env:
           GMAIL_USER: ${{ secrets.GMAIL_USER }}
           GMAIL_PASSWORD: ${{ secrets.GMAIL_PASSWORD }}
-          JWT_SECRET_KEY: ${{ secrets.GMAIL_JWT_SECRETS_KEY }}
+          JWT_SECRET_KEY: ${{ secrets.JWT_SECRETS_KEY }}
 
       - name: Wait for frontend on :8000
         run: |
@@ -63,4 +63,4 @@ jobs:
         env:
           GMAIL_USER: ${{ secrets.GMAIL_USER }}
           GMAIL_PASSWORD: ${{ secrets.GMAIL_PASSWORD }}
-          JWT_SECRET_KEY: ${{ secrets.GMAIL_JWT_SECRETS_KEY }}
+          JWT_SECRET_KEY: ${{ secrets.JWT_SECRETS_KEY }}
