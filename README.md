@@ -18,8 +18,8 @@ LazyCook soll eine Webanwendung sein, die es ermöglicht, vorhandene Zutaten ein
 ## Features
 - [x] [#23](https://github.com/GalacticCodeGambit/LazyCook/issues/23) Zutaten hinzufügen können 
 - [x] [#24](https://github.com/GalacticCodeGambit/LazyCook/issues/24) Zutaten entfernen können  
-- [ ] [#25](https://github.com/GalacticCodeGambit/LazyCook/issues/25) Rezepte/Gerichte automatisch vorgeschlagen bekommen auf Grundlage der eingetragenen Zutaten
-- [ ] [#30](https://github.com/GalacticCodeGambit/LazyCook/issues/30) Personenzahl hinzufügen können und vorgeschlagene Rezept/Gericht Größe automatisch anpassen 
+- [x] [#25](https://github.com/GalacticCodeGambit/LazyCook/issues/25) Rezepte/Gerichte automatisch vorgeschlagen bekommen auf Grundlage der eingetragenen Zutaten
+- [x] [#201](https://github.com/GalacticCodeGambit/LazyCook/issues/201) Personenzahl hinzufügen können und vorgeschlagene Rezept/Gericht Größe automatisch anpassen 
 - [x] [#27](https://github.com/GalacticCodeGambit/LazyCook/issues/27) Als User mit Konto anmelden können
 - [x] [#26](https://github.com/GalacticCodeGambit/LazyCook/issues/26) Als User mit neuem Konto registrieren können
 
