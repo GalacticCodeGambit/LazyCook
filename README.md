@@ -18,14 +18,14 @@ LazyCook soll eine Webanwendung sein, die es ermöglicht, vorhandene Zutaten ein
 ## Features
 - [x] [#23](https://github.com/GalacticCodeGambit/LazyCook/issues/23) Zutaten hinzufügen können 
 - [x] [#24](https://github.com/GalacticCodeGambit/LazyCook/issues/24) Zutaten entfernen können  
-- [ ] [#25](https://github.com/GalacticCodeGambit/LazyCook/issues/25) Rezepte/Gerichte automatisch vorgeschlagen bekommen auf Grundlage der eingetragenen Zutaten
-- [ ] [#30](https://github.com/GalacticCodeGambit/LazyCook/issues/30) Personenzahl hinzufügen können und vorgeschlagene Rezept/Gericht Größe automatisch anpassen 
+- [x] [#25](https://github.com/GalacticCodeGambit/LazyCook/issues/25) Rezepte/Gerichte automatisch vorgeschlagen bekommen auf Grundlage der eingetragenen Zutaten
+- [x] [#201](https://github.com/GalacticCodeGambit/LazyCook/issues/201) Personenzahl hinzufügen können und vorgeschlagene Rezept/Gericht Größe automatisch anpassen 
 - [x] [#27](https://github.com/GalacticCodeGambit/LazyCook/issues/27) Als User mit Konto anmelden können
 - [x] [#26](https://github.com/GalacticCodeGambit/LazyCook/issues/26) Als User mit neuem Konto registrieren können
 
 ### Optionale Features
 - [ ] KI-basierte Rezeptvorschläge Einbindung
-- [ ] [#33](https://github.com/GalacticCodeGambit/LazyCook/issues/33) Alle gespeicherten Zutaten aus der Datenbank, sollen auf einer Seite angezeigt werden und Suchbar sein z.B. nach Gerichtname "Pizza".
+- [x] [#33](https://github.com/GalacticCodeGambit/LazyCook/issues/33) Alle gespeicherten Zutaten aus der Datenbank, sollen auf einer Seite angezeigt werden und Suchbar sein z.B. nach Gerichtname "Pizza".
 - [ ] Auf der Zutaten-Seite, werden grundlegende Zutaten wie z.B. Tomaten, Mehl, Salz und Milch automatisch vorgeschlagen. Diese sollen hinzufügbar oder ignorierbar sein.
 - [x] [#46](https://github.com/GalacticCodeGambit/LazyCook/issues/46) Konto löschen/bearbeiten können 
 - [ ] Fehlende Zutaten werden von einem Rezept in einer Einkaufliste aufgelistet
@@ -62,12 +62,14 @@ Die Anwendung sollte jetzt unter `http://localhost:8000` erreichbar sein.
 - DB: SQLite
 - Tests: Pytest
 - CI/CD: GitHub Actions
+- Linting: Super-Linter
+- Metriken Analyse: SonarQube Cloude
 - Containerization: Docker
 - Projekt Management: GitHub Projects
 
-### Code-Quality / Linting
+### Linting
 - Der Workflow `.github/workflows/lint.yml` prüft das Projekt mit **GitHub Super-Linter**.
-- Dabei werden u.a. Python-, TypeScript-, JavaScript-, YAML- und Dockerfile-Dateien validiert.
+- Dabei werden u.a. Python-, TypeScript-, JavaScript-, GitHub-Action-, YAML- und Dockerfile-Dateien validiert.
 
 <!-- 
 - Mockup: Figma
