@@ -62,10 +62,12 @@ Die Anwendung sollte jetzt unter `http://localhost:8000` erreichbar sein.
 - DB: SQLite
 - Tests: Pytest
 - CI/CD: GitHub Actions
+- Linting: Super-Linter
+- Metriken Analyse: SonarQube Cloude
 - Containerization: Docker
 - Projekt Management: GitHub Projects
 
-### Code-Quality / Linting
+### Linting
 - Der Workflow `.github/workflows/lint.yml` prüft das Projekt mit **GitHub Super-Linter**.
 - Dabei werden u.a. Python-, TypeScript-, JavaScript-, GitHub-Action-, YAML- und Dockerfile-Dateien validiert.
 
