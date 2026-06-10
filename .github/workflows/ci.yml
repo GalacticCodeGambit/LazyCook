@@ -58,7 +58,7 @@ jobs:
 
       - name: Run backend tests
         run: |
-          docker compose -f project/compose.yaml exec -T backend-dev sh -c "python -m pytest tests/ -v"
+          docker compose -f project/compose.yaml run --rm backend-dev sh -c "python -m pytest tests/ -v"
 
         env:
           GMAIL_USER: ${{ secrets.GMAIL_USER }}
