@@ -49,7 +49,7 @@ def getAllIngredientsForRecipe(rid: int) -> list[dict]:
         return [dict(row) for row in cur.fetchall()]
 
 
-def addIngredientToRecipe(zid: int, rid: int, amount: float) -> bool:
+def addIngredientToRecipe(rid: int, zid: int, amount: float) -> bool:
     if not zid or not rid:
         return False
     try:
