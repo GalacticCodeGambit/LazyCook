@@ -19,18 +19,38 @@ def makeIngredients(names: list[str]) -> list[Ingredient]:
     return [Ingredient(name, 1.0) for name in names]
 
 
-def mockIngredientsByRecipeId(mapping: dict):
-    return lambda rid: mapping.get(rid, [])
+def _toIngredientDicts(ingredients: list[Ingredient]) -> list[dict]:
+    """Wandelt Ingredient-Objekte in das von _initRecipes erwartete dict-Format um."""
+    return [
+        {
+            "name": ing.getName(),
+            "amount": ing.getAmount(),
+            "amountType": ing.getAmountType(),
+        }
+        for ing in ingredients
+    ]
+
+
+def _buildRecipesWithIngredients(rawRecipes, ingredientMapping) -> list[dict]:
+    """Baut die kombinierte Struktur, wie sie getAllRecipesWithIngredients liefert."""
+    return [
+        {
+            "id": raw["id"],
+            "name": raw["name"],
+            "description": raw["description"],
+            "ingredients": _toIngredientDicts(ingredientMapping.get(raw["id"], [])),
+        }
+        for raw in rawRecipes
+    ]
 
 
 def runFindRecipes(rawRecipes, ingredientMapping, searchIngredients, index=0):
-    """Patcht beide DAO-Aufrufe und ruft findRecipes auf."""
+    """Patcht den kombinierten DAO-Aufruf und ruft findRecipes auf."""
+    combined = _buildRecipesWithIngredients(rawRecipes, ingredientMapping)
     with patch.object(
-        recipe_service_module.RecipeDAO, "getAllRecipes", return_value=rawRecipes
-    ), patch.object(
-        recipe_service_module.IngredientDAO,
-        "getIngredientsForRecipe",
-        side_effect=mockIngredientsByRecipeId(ingredientMapping),
+        recipe_service_module.RecipeDAO,
+        "getAllRecipesWithIngredients",
+        return_value=combined,
     ):
         return findRecipes(searchIngredients, index)
 
