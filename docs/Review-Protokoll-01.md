@@ -29,6 +29,6 @@ Walkthroughs und Code Review von `RecipeSUCUK.py`
 ### **Ergebnisse**:
 - Umsetzung der Anzeigen der Rezepte
   Top 100 Matching Rezepte werden an Frontend geschickt von Algorithmus. 
-  Danach ist der Mehr-Button nicht mehr da.	(Verantwortlicher: Niclas Matzke, Deadline:08.06.2026)
-- Müssen Test schreiben für die Datei `RecipeSUCUK.py`. (Verantwortlicher: Eden Bernhard, Deadline:03.06.2026)
+  Danach ist der Mehr-Button nicht mehr da.	(Verantwortlicher: Niclas Matzke, Deadline:08.06.2026, Bearbeitungsstand: beendet)
+- Müssen Test schreiben für die Datei `RecipeSUCUK.py`. (Verantwortlicher: Eden Bernhard, Deadline:03.06.2026, Bearbeitungsstand: beendet)
 - Akronyme für `RecipeSUCUK.py` wurde bestimmt (SUCUK - Search for Uncomplicated Cooking and User-friendly Kitchen recipes)
