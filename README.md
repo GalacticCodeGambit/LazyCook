@@ -26,7 +26,7 @@ LazyCook soll eine Webanwendung sein, die es ermöglicht, vorhandene Zutaten ein
 ### Optionale Features
 - [ ] KI-basierte Rezeptvorschläge Einbindung
 - [x] [#33](https://github.com/GalacticCodeGambit/LazyCook/issues/33) Alle gespeicherten Zutaten aus der Datenbank, sollen auf einer Seite angezeigt werden und Suchbar sein z.B. nach Gerichtname "Pizza".
-- [ ] Auf der Zutaten-Seite, werden grundlegende Zutaten wie z.B. Tomaten, Mehl, Salz und Milch automatisch vorgeschlagen. Diese sollen hinzufügbar oder ignorierbar sein.
+- [x] Auf der Zutaten-Seite, werden grundlegende Zutaten wie z.B. Tomaten, Mehl, Salz und Milch automatisch vorgeschlagen. Diese sollen hinzufügbar oder ignorierbar sein.
 - [x] [#46](https://github.com/GalacticCodeGambit/LazyCook/issues/46) Konto löschen/bearbeiten können 
 - [ ] Fehlende Zutaten werden von einem Rezept in einer Einkaufliste aufgelistet
 - [ ] Der Nutzer kann Rezepte in die Datenbank hinzufügen/erstellen 
