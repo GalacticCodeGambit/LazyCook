@@ -35,19 +35,20 @@ def getAllIngredients() -> list[dict]:
 
 
 def getIngredientsForRecipe(rid: int) -> list[Ingredient]:
-    """Gibt die Zutaten eines Rezepts als Ingredient-Objekte zurück."""
     with getDB() as con:
         cur = con.cursor()
-        cur.execute(
-            """
-            SELECT Ingredient.name, Exists_from.amount
-            FROM Ingredient
-            JOIN Exists_from ON Ingredient.id = Exists_from.zid
-            WHERE Exists_from.rid = ?
-            """,
-            (rid,),
-        )
-        return [Ingredient(row["name"], row["amount"]) for row in cur.fetchall()]
+        cur.execute("""
+                    SELECT Ingredient.name, Exists_from.amount, Ingredient.amountType
+                    FROM Ingredient
+                             JOIN Exists_from ON Ingredient.id = Exists_from.zid
+                    WHERE Exists_from.rid = ?
+                    """, (rid,))
+        ingredients = []
+        for row in cur.fetchall():
+            ing = Ingredient(row["name"], row["amount"])
+            ing.setAmountType(row["amountType"])
+            ingredients.append(ing)
+        return ingredients
 
 
 def incrementIngredientUsage(AccountID: int, name: str, unit: str | None) -> None:

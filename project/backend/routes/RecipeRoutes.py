@@ -9,16 +9,17 @@ from fastapi import APIRouter, Depends, HTTPException, Response
 from core.Auth import getCurrentUser
 from dao import AccountDAO, IngredientDAO
 from core.Models import User, RecipeSearchRequest
+from domain.ingredient import Ingredient
+from services.RecipeSUCUK import findRecipes
 
 router = APIRouter()
 
 
 @router.post("/recipes/search")
 async def searchRecipes(
-    body: RecipeSearchRequest,
-    currentUser: Annotated[User, Depends(getCurrentUser)],
+        body: RecipeSearchRequest,
+        currentUser: Annotated[User, Depends(getCurrentUser)],
 ):
-    """Sucht Rezepte basierend auf den übergebenen Zutaten und trackt die Nutzung."""
     account = AccountDAO.getAccountByEmail(currentUser.email)
     if account is None:
         raise HTTPException(status_code=404, detail="Account nicht gefunden")
@@ -26,22 +27,45 @@ async def searchRecipes(
     for zutat in body.zutaten:
         IngredientDAO.incrementIngredientUsage(account["id"], zutat.name, zutat.unit)
 
+    # Echte Rezept-Suche
+    ingredients = [Ingredient(z.name, z.amount) for z in body.zutaten]
+    index = getattr(body, "index", 0)
+    recipes = findRecipes(ingredients, body.index)
+
     topRows = IngredientDAO.getTopIngredients(account["id"], limit=5)
     topIngredients = [
         {"name": r["displayName"], "unit": r["lastUnit"]} for r in topRows
     ]
 
-    # TODO: eigentliche Rezept-Suche implementieren
-    return {"rezepte": [], "topIngredients": topIngredients}
+    return {
+        "rezepte": [
+            {
+                "name": r.getName(),
+                "description": r.getDescription(),
+                "rating": r.getRating(),
+                "duration": r.getDuration() if hasattr(r, "getDuration") else "",
+                "matching": r.getMatching(),
+                "ingredients": [
+                    {
+                        "name": i.getName(),
+                        "amount": i.getAmount(),
+                        "unit": i.getAmountType() or ""
+                    }
+                    for i in r.getIngredients()
+                ]
+            }
+            for r in recipes
+        ],
+        "topIngredients": topIngredients
+    }
 
 
 @router.get("/ingredients/top")
 async def getTopIngredientsForUser(
-    response: Response,
-    currentUser: Annotated[User, Depends(getCurrentUser)],
-    limit: int = 5,
+        response: Response,
+        currentUser: Annotated[User, Depends(getCurrentUser)],
+        limit: int = 5,
 ):
-    """Liefert die meistgenutzten Zutaten des aktuellen Users."""
     account = AccountDAO.getAccountByEmail(currentUser.email)
     if account is None:
         raise HTTPException(status_code=404, detail="Account nicht gefunden")
